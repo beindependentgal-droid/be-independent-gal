@@ -48,6 +48,10 @@ lerna-debug.log*
 .cache/
 *.pem
 
+# Production builds
+dist/
+build/
+
 # Supabase
 supabase/.branches/
 supabase/.temp/
