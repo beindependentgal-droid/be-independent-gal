@@ -34,7 +34,7 @@ export function MemberProfile({
   return (
     <div className="rounded-2xl border border-border bg-card overflow-hidden">
       {/* Header gradient */}
-      <div className="h-24 bg-gradient-to-r from-purple-200 to-pink-200" />
+      <div className="h-24 bg-gradient-to-r from-primary- to-secondary-" />
 
       {/* Content */}
       <div className="px-6 pb-6">

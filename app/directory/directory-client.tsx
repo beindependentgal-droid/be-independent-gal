@@ -115,7 +115,7 @@ export default function DirectoryClient() {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setSearchQuery(e.target.value)
                 }
-                className="w-full pl-10 h-12 rounded-full bg-gray-100 border-0 focus:bg-white focus:ring-2 focus:ring-pink-500"
+                className="w-full pl-10 h-12 rounded-full bg-gray-100 border-0 focus:bg-white focus:ring-2 focus:ring-secondary-"
               />
             </div>
 
@@ -131,7 +131,7 @@ export default function DirectoryClient() {
                   onChange={(e: ChangeEvent<HTMLSelectElement>) =>
                     setSkillFilter(e.target.value)
                   }
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary- bg-white"
                 >
                   <option value="">All skills</option>
                   <option value="leadership">Leadership</option>
@@ -154,7 +154,7 @@ export default function DirectoryClient() {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setMentorOnly(e.target.checked)
                   }
-                  className="h-4 w-4 rounded border-gray-300 text-secondary- focus:ring-pink-500 cursor-pointer"
+                  className="h-4 w-4 rounded border-gray-300 text-secondary- focus:ring-secondary- cursor-pointer"
                 />
                 <label
                   htmlFor="mentor-filter"

@@ -151,7 +151,7 @@ export default function ProfilePage() {
     { title: 'Launch Night', caption: 'Celebrating growth', category: 'Events', tone: 'from-amber-500 to-orange-500' },
     { title: 'Workshop', caption: 'Mentorship in motion', category: 'Learning', tone: 'from-emerald-500 to-teal-500' },
     { title: 'Retreat', caption: 'Reflection and connection', category: 'Wellness', tone: 'from-sky-500 to-cyan-500' },
-    { title: 'Brand Shoot', caption: 'Personal style story', category: 'Portfolio', tone: 'from-purple-500 to-pink-500' },
+    { title: 'Brand Shoot', caption: 'Personal style story', category: 'Portfolio', tone: 'from-primary- to-secondary-' },
   ]
   const events = ['Women’s Retreat', 'BIG Festival', 'Girl Talk Friday', 'Business Networking']
   const recommendations = [

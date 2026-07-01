@@ -221,7 +221,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
       ) : null}
 
       <label className="mt-5 flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-        <input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} className="mt-1 h-4 w-4 rounded border-slate-300 text-secondary- focus:ring-pink-500" />
+        <input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} className="mt-1 h-4 w-4 rounded border-slate-300 text-secondary- focus:ring-secondary-" />
         <span>
           I agree to the BIG community terms and privacy policy.
         </span>

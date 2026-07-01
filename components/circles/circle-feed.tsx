@@ -30,7 +30,7 @@ export function CircleFeed({ feed, onPost }: CircleFeedProps) {
       {/* Create post input */}
       <div className="rounded-2xl border border-border bg-card p-6">
         <div className="flex gap-4">
-          <div className="h-12 w-12 shrink-0 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" />
+          <div className="h-12 w-12 shrink-0 rounded-full bg-gradient-to-br from-primary- to-secondary-" />
           <div className="flex-1">
             <textarea
               value={draft}

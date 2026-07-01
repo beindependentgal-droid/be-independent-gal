@@ -302,7 +302,7 @@ export default function HomePage() {
       </section>
 
       {/* Sister Circles CTA */}
-      <section className="py-16 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 sm:px-12 lg:px-16">
+      <section className="py-16 bg-gradient-to-r from-primary- to-secondary- text-white px-6 sm:px-12 lg:px-16">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <h2 className="text-4xl font-bold">Sister Circles</h2>
           <p className="text-xl text-white/90 leading-relaxed">

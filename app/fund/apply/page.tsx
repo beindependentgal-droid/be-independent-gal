@@ -160,7 +160,7 @@ export default function ApplyPage() {
                   <select
                     id="industry"
                     required
-                    className="w-full h-12 rounded-xl border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    className="w-full h-12 rounded-xl border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-secondary-"
                   >
                     <option value="">Select an industry</option>
                     <option value="technology">Technology</option>
@@ -183,7 +183,7 @@ export default function ApplyPage() {
                   <select
                     id="stage"
                     required
-                    className="w-full h-12 rounded-xl border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    className="w-full h-12 rounded-xl border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-secondary-"
                   >
                     <option value="">Select a stage</option>
                     <option value="idea">Idea Stage</option>
@@ -202,7 +202,7 @@ export default function ApplyPage() {
                   <select
                     id="revenue"
                     required
-                    className="w-full h-12 rounded-xl border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    className="w-full h-12 rounded-xl border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-secondary-"
                   >
                     <option value="">Select revenue range</option>
                     <option value="0">No revenue yet</option>
@@ -267,7 +267,7 @@ export default function ApplyPage() {
                   <select
                     id="fundingType"
                     required
-                    className="w-full h-12 rounded-xl border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    className="w-full h-12 rounded-xl border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-secondary-"
                   >
                     <option value="">Select funding type</option>
                     <option value="grant">Grant</option>
@@ -354,7 +354,7 @@ export default function ApplyPage() {
                   id="terms"
                   type="checkbox"
                   required
-                  className="w-5 h-5 rounded border-gray-300 text-secondary- focus:ring-pink-500 cursor-pointer mt-1"
+                  className="w-5 h-5 rounded border-gray-300 text-secondary- focus:ring-secondary- cursor-pointer mt-1"
                 />
                 <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer">
                   I confirm that all information provided in this application is accurate and complete. *
@@ -366,7 +366,7 @@ export default function ApplyPage() {
                   id="privacy"
                   type="checkbox"
                   required
-                  className="w-5 h-5 rounded border-gray-300 text-secondary- focus:ring-pink-500 cursor-pointer mt-1"
+                  className="w-5 h-5 rounded border-gray-300 text-secondary- focus:ring-secondary- cursor-pointer mt-1"
                 />
                 <label htmlFor="privacy" className="text-sm text-gray-700 cursor-pointer">
                   I agree to BIG's privacy policy and terms of service. *

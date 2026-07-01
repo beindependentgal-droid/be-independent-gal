@@ -376,7 +376,7 @@ export function GoogleForm() {
                         name="contactMethod"
                         checked={values.contactMethod === option.value}
                         onChange={() => updateField('contactMethod', option.value as ContactMethod)}
-                        className="h-4 w-4 border-slate-300 text-secondary- focus:ring-pink-500"
+                        className="h-4 w-4 border-slate-300 text-secondary- focus:ring-secondary-"
                       />
                       <span className="text-sm font-medium text-slate-700">{option.label}</span>
                     </label>
@@ -389,7 +389,7 @@ export function GoogleForm() {
                   type="checkbox"
                   checked={values.updates}
                   onChange={(event) => updateField('updates', event.target.checked)}
-                  className="mt-1 h-4 w-4 rounded border-slate-300 text-secondary- focus:ring-pink-500"
+                  className="mt-1 h-4 w-4 rounded border-slate-300 text-secondary- focus:ring-secondary-"
                 />
                 <span className="text-sm leading-7 text-slate-600">
                   Yes, keep me updated with events, learning opportunities, and community invitations.

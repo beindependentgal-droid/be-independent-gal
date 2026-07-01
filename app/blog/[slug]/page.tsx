@@ -242,7 +242,7 @@ export default async function ArticlePage({ params }: Props) {
         description="Dive deeper into topics that matter to you or connect with sisters in our community."
         cta1={{ text: 'Back to Community', href: '/community' }}
         cta2={{ text: 'Browse Circles', href: '/circles' }}
-        background="bg-gradient-to-r from-purple-600 to-pink-600"
+        background="bg-gradient-to-r from-primary- to-secondary-"
       />
     </div>
   )
