@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/lib/auth-context'
+import { getAccessToken } from '@/lib/auth-utils'
 
 interface ProfileFormData {
   first_name: string
@@ -55,7 +56,16 @@ export default function EditProfilePage() {
     const fetchProfile = async () => {
       try {
         setIsLoading(true)
-        const res = await fetch('/api/profiles/me')
+            const token = await getAccessToken()
+        if (!token) {
+          throw new Error('Unauthorized')
+        }
+
+        const res = await fetch('/api/profiles', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
 
         if (!res.ok) {
           throw new Error('Failed to load profile')
@@ -66,11 +76,11 @@ export default function EditProfilePage() {
           first_name: profile.first_name || '',
           last_name: profile.last_name || '',
           profession: profile.profession || '',
-          city: profile.city || '',
-          bio: profile.user_profile_extended?.bio || '',
-          skills: (profile.user_profile_extended?.skills || []).join(', '),
-          interests: (profile.user_profile_extended?.interests || []).join(', '),
-          mentoring_areas: (profile.user_profile_extended?.mentoring_areas || []).join(', '),
+          city: profile.location || profile.city || '',
+          bio: profile.bio || profile.user_profile_extended?.bio || '',
+          skills: (profile.skills || profile.user_profile_extended?.skills || []).join(', '),
+          interests: (profile.interests || profile.user_profile_extended?.interests || []).join(', '),
+          mentoring_areas: (profile.mentoring_areas || profile.user_profile_extended?.mentoring_areas || []).join(', '),
           avatar_url: profile.avatar_url || '',
         }
         setFormData(convertedData)
@@ -146,10 +156,16 @@ export default function EditProfilePage() {
           .filter(Boolean),
       }
 
-      const res = await fetch('/api/profiles/me', {
+      const token = await getAccessToken()
+      if (!token) {
+        throw new Error('Unauthorized')
+      }
+
+      const res = await fetch('/api/profiles', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updateData),
       })

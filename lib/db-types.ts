@@ -1,5 +1,7 @@
 // Database Types for Be Independent Gal - Auto-generated from Supabase schema
 
+export type Database = any;
+
 export interface UserProfile {
   id: string;
   full_name: string | null;
@@ -168,6 +170,9 @@ export interface Article {
   excerpt: string | null;
   featured_image_url: string | null;
   author_id: string;
+  author_name?: string | null;
+  author_avatar_url?: string | null;
+  circle_id?: string | null;
   circle_name: string | null;
   status: "draft" | "published" | "archived";
   published_at: string | null;

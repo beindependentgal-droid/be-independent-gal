@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 
 // Disable static generation for this API route
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 function getServiceRoleClient() {
   const supabaseUrl = process.env.SUPABASE_URL?.trim();
@@ -10,10 +10,13 @@ function getServiceRoleClient() {
 
   // Return null during build time if credentials are missing
   if (!supabaseUrl || !serviceRoleKey) {
-    if (process.env.NODE_ENV === 'production' && !process.env.NEXT_DEPLOYMENT_URL) {
+    if (
+      process.env.NODE_ENV === "production" &&
+      !process.env.NEXT_DEPLOYMENT_URL
+    ) {
       return null;
     }
-    return createClient(supabaseUrl || '', serviceRoleKey || '', {
+    return createClient(supabaseUrl || "", serviceRoleKey || "", {
       auth: {
         persistSession: false,
         autoRefreshToken: false,
@@ -32,6 +35,13 @@ function getServiceRoleClient() {
 export async function POST(request: NextRequest) {
   try {
     const supabase = getServiceRoleClient();
+    if (!supabase) {
+      return NextResponse.json(
+        { error: "Supabase credentials not configured" },
+        { status: 500 },
+      );
+    }
+
     const authHeader = request.headers.get("authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return NextResponse.json(

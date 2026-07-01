@@ -1,5 +1,13 @@
-import { NextRequest } from 'next/server';
-import { requireAuth, successResponse, errorResponse, supabase, getPaginationParams, recordActivity, sendNotification } from '@/lib/api-utils';
+import { NextRequest } from "next/server";
+import {
+  requireAuth,
+  successResponse,
+  errorResponse,
+  supabase,
+  getPaginationParams,
+  recordActivity,
+  sendNotification,
+} from "@/lib/api-utils";
 
 // GET /api/messages/conversations - List user's conversations
 export async function GET(request: NextRequest) {
@@ -11,8 +19,12 @@ export async function GET(request: NextRequest) {
 
   try {
     // Get conversations where user is a participant
-    const { data: conversations, error, count } = await supabase
-      .from('conversations')
+    const {
+      data: conversations,
+      error,
+      count,
+    } = await supabase
+      .from("conversations")
       .select(
         `
         *,
@@ -20,18 +32,20 @@ export async function GET(request: NextRequest) {
         participant_1:participant_1_id(id, first_name, last_name, avatar_url),
         participant_2:participant_2_id(id, first_name, last_name, avatar_url)
       `,
-        { count: 'exact' }
+        { count: "exact" },
       )
       .or(`participant_1_id.eq.${userId},participant_2_id.eq.${userId}`)
-      .order('updated_at', { ascending: false })
+      .order("updated_at", { ascending: false })
       .range(offset, offset + pageSize - 1);
 
     if (error) throw error;
 
     // Get the other participant for each conversation
-    const formattedConversations = conversations?.map((conv) => {
+    const formattedConversations = conversations?.map((conv: any) => {
       const otherParticipant =
-        conv.participant_1_id === userId ? conv.participant_2 : conv.participant_1;
+        conv.participant_1_id === userId
+          ? conv.participant_2
+          : conv.participant_1;
       const lastMessage = conv.messages?.[0];
 
       return {
@@ -63,29 +77,30 @@ export async function POST(request: NextRequest) {
   const { otherUserId } = await request.json();
 
   if (!otherUserId) {
-    return errorResponse('otherUserId is required', 400);
+    return errorResponse("otherUserId is required", 400);
   }
 
   if (userId === otherUserId) {
-    return errorResponse('Cannot create conversation with yourself', 400);
+    return errorResponse("Cannot create conversation with yourself", 400);
   }
 
   try {
     // Ensure consistent ordering of participants
-    const [p1, p2] = userId < otherUserId ? [userId, otherUserId] : [otherUserId, userId];
+    const [p1, p2] =
+      userId < otherUserId ? [userId, otherUserId] : [otherUserId, userId];
 
     // Try to find existing conversation
     let { data: conversation } = await supabase
-      .from('conversations')
-      .select('*')
-      .eq('participant_1_id', p1)
-      .eq('participant_2_id', p2)
+      .from("conversations")
+      .select("*")
+      .eq("participant_1_id", p1)
+      .eq("participant_2_id", p2)
       .single();
 
     // Create if doesn't exist
     if (!conversation) {
       const { data: newConv, error: createError } = await supabase
-        .from('conversations')
+        .from("conversations")
         .insert({
           participant_1_id: p1,
           participant_2_id: p2,
@@ -97,7 +112,7 @@ export async function POST(request: NextRequest) {
       conversation = newConv;
 
       // Record activity
-      await recordActivity(userId, 'conversation_started', 5);
+      await recordActivity(userId, "conversation_started", 5);
     }
 
     return successResponse(conversation, 201);

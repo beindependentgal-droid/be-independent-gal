@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { Activity, ShieldCheck, Users, AlertTriangle, ArrowRight, CheckCircle2, XCircle, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -58,12 +58,14 @@ export default function AdminDashboardPage() {
   const [error, setError] = useState<string | null>(null)
   const [processingAction, setProcessingAction] = useState<{ id: string; type: "flag" | "member" } | null>(null)
 
-  const loadDashboard = async () => {
+  const loadDashboard = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
       const token = await getAccessToken()
-      const headers = token ? { Authorization: `Bearer ${token}` } : {}
+      const headers: HeadersInit | undefined = token
+        ? { Authorization: `Bearer ${token}` }
+        : undefined
 
       const [analyticsRes, usersRes, formsRes] = await Promise.all([
         fetch("/api/analytics/dashboard", { headers }),
@@ -88,7 +90,7 @@ export default function AdminDashboardPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   const summary = useMemo(() => {
     const latest = analytics.at(-1)
@@ -155,6 +157,33 @@ export default function AdminDashboardPage() {
     } finally {
       setProcessingAction(null)
     }
+  }
+
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      void loadDashboard()
+    }
+  }, [authLoading, isAuthenticated, loadDashboard])
+
+  if (!authLoading && !isAuthenticated) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-6 py-16">
+        <div className="mx-auto max-w-7xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary-">Admin</p>
+          <h1 className="mt-3 text-3xl font-semibold text-slate-900">Access denied</h1>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            You must be signed in with an admin account to view this page.
+          </p>
+          <div className="mt-6">
+            <Link href="/auth/login">
+              <Button className="rounded-full bg-secondary- px-5 py-3 text-sm font-semibold text-white hover:bg-secondary-">
+                Sign in
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </main>
+    )
   }
 
   if (authLoading || loading) {

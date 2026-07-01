@@ -24,6 +24,8 @@ function mapSupabaseUser(user: User | null | undefined): AuthUser | null {
   return {
     id: user.id,
     email: user.email || '',
+    first_name: (user.user_metadata as any)?.first_name,
+    last_name: (user.user_metadata as any)?.last_name,
     user_metadata: user.user_metadata,
   };
 }

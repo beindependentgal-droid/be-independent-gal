@@ -10,8 +10,9 @@ import {
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   const authResult = await requireAuth(request);
   if (authResult instanceof Response) {
     return authResult;
@@ -55,7 +56,7 @@ export async function PATCH(
         reviewed_by_id: userId,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", params.id)
+      .eq("id", id)
       .select("*")
       .single();
 
@@ -67,7 +68,7 @@ export async function PATCH(
       userId,
       `Moderation flag ${action}`,
       "moderation_flag",
-      params.id,
+      id,
       { action, status: nextStatus },
     );
 

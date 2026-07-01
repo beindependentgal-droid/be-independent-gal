@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@supabase/supabase-js";
-import { articleSchema } from "@/lib/db-validators";
+import { articleSchema, articleCommentSchema } from "@/lib/db-validators";
 import type { Article, ArticleComment } from "@/lib/db-types";
 
 function getSupabase() {

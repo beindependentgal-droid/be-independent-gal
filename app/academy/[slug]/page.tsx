@@ -94,7 +94,7 @@ export default function AcademyCoursePage({ params }: AcademyCoursePageProps) {
               <SectionHeading eyebrow="What you’ll learn" title="Course outcomes" />
               <ul className="space-y-3 text-sm leading-relaxed text-muted-foreground">
                 {(course.outcomes ?? []).length > 0 ? (
-                  course.outcomes.map((outcome) => (
+                  (course.outcomes ?? []).map((outcome) => (
                     <li key={outcome} className="flex items-start gap-3">
                       <span className="mt-1 inline-flex h-2 w-2 rounded-full bg-primary" />
                       <span>{outcome}</span>

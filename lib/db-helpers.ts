@@ -1,18 +1,18 @@
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from './database.types';
+import { createClient } from "@supabase/supabase-js";
+import type { Database } from "./db-types";
 
-const supabase = createClient<Database>(
+const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 );
 
 export const db = {
   // User Profiles
   async getUserProfile(userId: string) {
     const { data, error } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .eq('id', userId)
+      .from("user_profiles")
+      .select("*")
+      .eq("id", userId)
       .single();
     if (error) throw error;
     return data;
@@ -20,9 +20,9 @@ export const db = {
 
   async updateUserProfile(userId: string, updates: any) {
     const { data, error } = await supabase
-      .from('user_profiles')
+      .from("user_profiles")
       .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq('id', userId)
+      .eq("id", userId)
       .select()
       .single();
     if (error) throw error;
@@ -30,9 +30,14 @@ export const db = {
   },
 
   // User Activity
-  async logActivity(userId: string, activityType: string, pointsEarned: number, metadata: any = {}) {
+  async logActivity(
+    userId: string,
+    activityType: string,
+    pointsEarned: number,
+    metadata: any = {},
+  ) {
     const { data, error } = await supabase
-      .from('user_activity')
+      .from("user_activity")
       .insert({
         user_id: userId,
         activity_type: activityType,
@@ -47,10 +52,10 @@ export const db = {
 
   async getUserActivity(userId: string, limit = 20) {
     const { data, error } = await supabase
-      .from('user_activity')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
+      .from("user_activity")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
       .limit(limit);
     if (error) throw error;
     return data;
@@ -59,18 +64,20 @@ export const db = {
   // Messages
   async getOrCreateConversation(user1Id: string, user2Id: string) {
     const [userId1, userId2] = [user1Id, user2Id].sort();
-    
+
     const { data: existing } = await supabase
-      .from('conversations')
-      .select('*')
-      .or(`and(eq(user1_id,${userId1}),eq(user2_id,${userId2})),and(eq(user1_id,${userId2}),eq(user2_id,${userId1}))`);
+      .from("conversations")
+      .select("*")
+      .or(
+        `and(eq(user1_id,${userId1}),eq(user2_id,${userId2})),and(eq(user1_id,${userId2}),eq(user2_id,${userId1}))`,
+      );
 
     if (existing && existing.length > 0) {
       return existing[0];
     }
 
     const { data, error } = await supabase
-      .from('conversations')
+      .from("conversations")
       .insert({
         user1_id: userId1,
         user2_id: userId2,
@@ -83,20 +90,20 @@ export const db = {
 
   async getConversations(userId: string) {
     const { data, error } = await supabase
-      .from('conversations')
-      .select('*')
+      .from("conversations")
+      .select("*")
       .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
-      .order('last_message_at', { ascending: false });
+      .order("last_message_at", { ascending: false });
     if (error) throw error;
     return data;
   },
 
   async getMessages(conversationId: string, limit = 50) {
     const { data, error } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: false })
+      .from("messages")
+      .select("*")
+      .eq("conversation_id", conversationId)
+      .order("created_at", { ascending: false })
       .limit(limit);
     if (error) throw error;
     return data?.reverse() || [];
@@ -104,7 +111,7 @@ export const db = {
 
   async sendMessage(conversationId: string, senderId: string, content: string) {
     const { data, error } = await supabase
-      .from('messages')
+      .from("messages")
       .insert({
         conversation_id: conversationId,
         sender_id: senderId,
@@ -117,17 +124,18 @@ export const db = {
   },
 
   // Directory Search
-  async searchMembers(query: string, filters?: { mentor?: boolean; circle?: string }) {
-    let q = supabase
-      .from('user_directory')
-      .select('*');
+  async searchMembers(
+    query: string,
+    filters?: { mentor?: boolean; circle?: string },
+  ) {
+    let q = supabase.from("user_directory").select("*");
 
     if (query) {
       q = q.or(`full_name.ilike.%${query}%,bio.ilike.%${query}%`);
     }
 
     if (filters?.mentor) {
-      q = q.eq('is_mentor', true);
+      q = q.eq("is_mentor", true);
     }
 
     const { data, error } = await q.limit(50);
@@ -138,15 +146,15 @@ export const db = {
   // Events
   async getEvents(filters?: { circle?: string; status?: string }) {
     let q = supabase
-      .from('events')
-      .select('*')
-      .order('start_time', { ascending: true });
+      .from("events")
+      .select("*")
+      .order("start_time", { ascending: true });
 
     if (filters?.circle) {
-      q = q.eq('circle_name', filters.circle);
+      q = q.eq("circle_name", filters.circle);
     }
     if (filters?.status) {
-      q = q.eq('status', filters.status);
+      q = q.eq("status", filters.status);
     }
 
     const { data, error } = await q;
@@ -156,7 +164,7 @@ export const db = {
 
   async registerForEvent(eventId: string, userId: string) {
     const { data, error } = await supabase
-      .from('event_registrations')
+      .from("event_registrations")
       .insert({
         event_id: eventId,
         user_id: userId,
@@ -168,18 +176,21 @@ export const db = {
   },
 
   // Gamification
-  async getLeaderboard(period: 'daily' | 'weekly' | 'monthly' | 'all-time', circleName?: string) {
+  async getLeaderboard(
+    period: "daily" | "weekly" | "monthly" | "all-time",
+    circleName?: string,
+  ) {
     let q = supabase
-      .from('leaderboards')
-      .select('*')
-      .eq('period', period)
-      .order('rank', { ascending: true })
+      .from("leaderboards")
+      .select("*")
+      .eq("period", period)
+      .order("rank", { ascending: true })
       .limit(100);
 
     if (circleName) {
-      q = q.eq('circle_name', circleName);
+      q = q.eq("circle_name", circleName);
     } else {
-      q = q.is('circle_name', null);
+      q = q.is("circle_name", null);
     }
 
     const { data, error } = await q;
@@ -190,10 +201,10 @@ export const db = {
   // Articles
   async getPublishedArticles(limit = 20) {
     const { data, error } = await supabase
-      .from('articles')
-      .select('*')
-      .eq('status', 'published')
-      .order('published_at', { ascending: false })
+      .from("articles")
+      .select("*")
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
       .limit(limit);
     if (error) throw error;
     return data;
@@ -201,10 +212,10 @@ export const db = {
 
   async getArticleBySlug(slug: string) {
     const { data, error } = await supabase
-      .from('articles')
-      .select('*')
-      .eq('slug', slug)
-      .eq('status', 'published')
+      .from("articles")
+      .select("*")
+      .eq("slug", slug)
+      .eq("status", "published")
       .single();
     if (error) throw error;
     return data;
@@ -212,7 +223,7 @@ export const db = {
 
   async createArticle(authorId: string, article: any) {
     const { data, error } = await supabase
-      .from('articles')
+      .from("articles")
       .insert({
         ...article,
         author_id: authorId,
@@ -226,10 +237,10 @@ export const db = {
   // Notifications
   async getNotifications(userId: string, limit = 20) {
     const { data, error } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
+      .from("notifications")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
       .limit(limit);
     if (error) throw error;
     return data;
@@ -237,12 +248,12 @@ export const db = {
 
   async markNotificationAsRead(notificationId: string) {
     const { data, error } = await supabase
-      .from('notifications')
+      .from("notifications")
       .update({
         is_read: true,
         read_at: new Date().toISOString(),
       })
-      .eq('id', notificationId)
+      .eq("id", notificationId)
       .select()
       .single();
     if (error) throw error;
@@ -255,11 +266,11 @@ export const db = {
     since.setDate(since.getDate() - days);
 
     const { data, error } = await supabase
-      .from('user_analytics')
-      .select('*')
-      .eq('user_id', userId)
-      .gte('date', since.toISOString().split('T')[0])
-      .order('date', { ascending: false });
+      .from("user_analytics")
+      .select("*")
+      .eq("user_id", userId)
+      .gte("date", since.toISOString().split("T")[0])
+      .order("date", { ascending: false });
     if (error) throw error;
     return data;
   },

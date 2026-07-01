@@ -5,24 +5,10 @@ import { getArticleBySlug, getArticleComments } from '@/app/actions/article-acti
 import { notFound } from 'next/navigation'
 import { CalendarDays, Eye, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import FallbackImage from '@/components/ui/fallback-image'
 import { SectionHeading } from '@/components/section-heading'
 import { CtaBanner } from '@/components/cta-banner'
-
-// Define stricter types for Article and Comment
-interface Article {
-  id: string
-  slug: string
-  title: string
-  content: string // Assuming this is HTML or Markdown
-  featured_image_url?: string
-  author_id: string
-  author_name: string
-  author_avatar_url?: string
-  published_at: string
-  view_count: number
-  circle_id?: string
-  circle_name?: string
-}
+import type { Article } from '@/lib/db-types'
 
 interface Comment {
   id: string
@@ -43,7 +29,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = params
-  const article = await getArticleBySlug(slug)
+  const article = (await getArticleBySlug(slug)) as Article | null
 
   if (!article) {
     return {
@@ -60,8 +46,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: article.content.substring(0, 150) + '...',
       images: [article.featured_image_url || '/og-image.jpg'],
       type: 'article',
-      publishedTime: article.published_at,
-      authors: [article.author_name],
+      publishedTime: article.published_at ?? undefined,
+      authors: article.author_name ? [article.author_name] : undefined,
     },
     twitter: {
       card: 'summary_large_image',
@@ -83,7 +69,7 @@ export default async function ArticlePage({ params }: Props) {
     notFound() // Renders Next.js 404 page
   }
 
-  const comments = await getArticleComments(article.id)
+  const comments = (await getArticleComments(article.id)) as any[]
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -105,7 +91,6 @@ export default async function ArticlePage({ params }: Props) {
                 alt={article.title}
                 fill
                 className="object-cover"
-                priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
                 fallbackSrc="/images/article-placeholder.jpg"
               />
@@ -124,27 +109,27 @@ export default async function ArticlePage({ params }: Props) {
               {article.author_avatar_url ? (
                 <Image
                   src={article.author_avatar_url}
-                  alt={article.author_name}
+                  alt={article.author_name ?? 'Author'}
                   width={24}
                   height={24}
                   className="w-6 h-6 rounded-full object-cover"
                 />
               ) : (
                 <div className="w-6 h-6 rounded-full bg-secondary- flex items-center justify-center text-xs">
-                  {article.author_name.charAt(0)}
+                  {article.author_name ? article.author_name.charAt(0) : 'A'}
                 </div>
               )}
-              <span className="font-semibold">{article.author_name}</span>
+              <span className="font-semibold">{article.author_name ?? 'Author'}</span>
             </div>
 
             {/* Published Date */}
             <div className="flex items-center gap-2">
               <CalendarDays className="w-4 h-4 text-secondary-" />
-              <span>{new Date(article.published_at).toLocaleDateString('en-US', {
+              <span>{article.published_at ? new Date(article.published_at).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
-              })}</span>
+              }) : 'Unknown date'}</span>
             </div>
 
             {/* Views */}
@@ -154,7 +139,7 @@ export default async function ArticlePage({ params }: Props) {
             </div>
 
             {/* Circle */}
-            {article.circle_name && (
+            {article.circle_name && article.circle_id && (
               <Link href={`/circles/${article.circle_id}`} className="flex items-center gap-2 text-secondary- hover:text-secondary-">
                 <MessageCircle className="w-4 h-4" />
                 <span>{article.circle_name} Circle</span>

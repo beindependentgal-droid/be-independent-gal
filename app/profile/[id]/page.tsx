@@ -1,12 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { ProfileHeader } from '@/components/profiles/profile-header'
 import { ActivityFeed } from '@/components/profiles/activity-feed'
 import { MessageCircle, UserPlus, Award, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth-context'
+import { getAccessToken } from '@/lib/auth-utils'
 
 interface UserProfile {
   id: string
@@ -39,6 +40,7 @@ interface Activity {
 
 export default function ProfilePage() {
   const params = useParams()
+  const router = useRouter()
   const profileId = params.id as string
   const { user: currentUser } = useAuth()
 
@@ -51,9 +53,12 @@ export default function ProfilePage() {
     const fetchProfile = async () => {
       try {
         setIsLoading(true)
+        const token = await getAccessToken()
 
         // Fetch profile
-        const res = await fetch(`/api/profiles/${profileId}`)
+        const res = await fetch(`/api/profiles/${profileId}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        })
 
         if (!res.ok) {
           throw new Error('Failed to load profile')
@@ -63,7 +68,9 @@ export default function ProfilePage() {
         setProfile(profileData)
 
         // Fetch activities
-        const activitiesRes = await fetch(`/api/profiles/${profileId}/activities`)
+        const activitiesRes = await fetch(`/api/profiles/${profileId}/activities`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        })
 
         if (activitiesRes.ok) {
           const activitiesData = await activitiesRes.json()
@@ -116,7 +123,11 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Profile Header */}
-      <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} />
+      <ProfileHeader
+        profile={profile}
+        isOwnProfile={isOwnProfile}
+        onSettingsClick={() => router.push('/profile/edit')}
+      />
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-6 sm:px-12 lg:px-16 py-12">

@@ -105,7 +105,7 @@ export default async function EventsPage() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {eventsByCircle[circle].map((event) => (
+                    {eventsByCircle[circle].map((event: any) => (
                       <div key={event.id} className="block">
                         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all h-full flex flex-col">
                           {/* Event Image */}
@@ -221,7 +221,7 @@ export default async function EventsPage() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {eventsByCircle['Other'].map((event) => (
+                    {eventsByCircle['Other'].map((event: any) => (
                       <div key={event.id} className="block">
                         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all h-full flex flex-col">
                           {/* Event Image */}

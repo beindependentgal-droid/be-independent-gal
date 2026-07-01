@@ -12,8 +12,9 @@ import {
 // GET /api/messages/[conversationId] - Get messages in a conversation
 export async function GET(
   request: NextRequest,
-  { params }: { params: { conversationId: string } },
+  { params }: { params: Promise<{ conversationId: string }> },
 ) {
+  const { conversationId } = await params;
   const authResult = await requireAuth(request);
   if (authResult instanceof Response) return authResult;
 
@@ -25,7 +26,7 @@ export async function GET(
     const { data: conversation, error: convError } = await supabase
       .from("conversations")
       .select("*")
-      .eq("id", params.conversationId)
+      .eq("id", conversationId)
       .single();
 
     if (convError || !conversation) {
@@ -49,7 +50,7 @@ export async function GET(
       .select("*, sender:sender_id(id, first_name, last_name, avatar_url)", {
         count: "exact",
       })
-      .eq("conversation_id", params.conversationId)
+      .eq("conversation_id", conversationId)
       .order("created_at", { ascending: false })
       .range(offset, offset + pageSize - 1);
 
@@ -69,8 +70,9 @@ export async function GET(
 // POST /api/messages/[conversationId] - Send a message
 export async function POST(
   request: NextRequest,
-  { params }: { params: { conversationId: string } },
+  { params }: { params: Promise<{ conversationId: string }> },
 ) {
+  const { conversationId } = await params;
   const authResult = await requireAuth(request);
   if (authResult instanceof Response) return authResult;
 
@@ -86,7 +88,7 @@ export async function POST(
     const { data: conversation } = await supabase
       .from("conversations")
       .select("participant_1_id, participant_2_id")
-      .eq("id", params.conversationId)
+      .eq("id", conversationId)
       .single();
 
     if (!conversation) {
@@ -104,7 +106,7 @@ export async function POST(
     const { data: message, error: insertError } = await supabase
       .from("messages")
       .insert({
-        conversation_id: params.conversationId,
+        conversation_id: conversationId,
         sender_id: userId,
         content: content.trim(),
       })
@@ -117,7 +119,7 @@ export async function POST(
     await supabase
       .from("conversations")
       .update({ updated_at: new Date().toISOString() })
-      .eq("id", params.conversationId);
+      .eq("id", conversationId);
 
     // Record activity
     await recordActivity(userId, "message_sent", 2);
@@ -144,7 +146,7 @@ export async function POST(
       `New message from ${senderName}`,
       content.substring(0, 100),
       userId,
-      `/messages/${params.conversationId}`,
+      `/messages/${conversationId}`,
     );
 
     return successResponse(message, 201);

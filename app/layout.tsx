@@ -118,7 +118,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
 
-      <body className={`${outfit.variable} ${inter.variable} font-inter antialiased bg-white text-gray-900`}>
+      <body className={`${outfit.variable} ${inter.variable} font-inter antialiased bg-background text-foreground`}>
         <AuthProvider>
           <div className="flex flex-col min-h-screen">
             {/* Header */}

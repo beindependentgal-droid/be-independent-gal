@@ -20,7 +20,7 @@ interface Message {
 
 interface MessageThreadProps {
   messages: Message[];
-  currentUserId: string;
+  currentUserId?: string;
   isLoading?: boolean;
 }
 

@@ -90,7 +90,10 @@ export async function POST(request: NextRequest) {
 
   try {
     const supabase = getSupabase();
-    const { error } = await supabase
+    if (!supabase) {
+      throw new Error("Missing Supabase configuration");
+    }
+    const { error } = await (supabase as any)
       .from("form_submissions")
       .insert(submission);
 

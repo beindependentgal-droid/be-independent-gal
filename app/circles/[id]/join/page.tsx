@@ -9,6 +9,7 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import FallbackImage from '@/components/ui/fallback-image'
 import { CircleJoinForm } from '@/components/circles/circle-join-form'
 
 // Define circleInfo outside the component for reusability and SSR

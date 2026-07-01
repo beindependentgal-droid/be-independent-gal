@@ -9,7 +9,8 @@ interface Activity {
   title: string;
   description?: string;
   points: number;
-  timestamp: string;
+  timestamp?: string;
+  created_at?: string;
   icon?: string;
 }
 
@@ -83,7 +84,7 @@ export function ActivityFeed({ activities, isLoading }: ActivityFeedProps) {
                 </p>
               )}
               <p className="text-xs text-gray-500 mt-1">
-                {formatDistanceToNow(new Date(activity.timestamp), {
+                {formatDistanceToNow(new Date(activity.timestamp ?? activity.created_at ?? ''), {
                   addSuffix: true,
                 })}
               </p>

@@ -1,18 +1,12 @@
 import { NextRequest } from "next/server";
-import {
-  requireAuth,
-  successResponse,
-  errorResponse,
-  supabase,
-} from "@/lib/api-utils";
+import { successResponse, errorResponse, supabase } from "@/lib/api-utils";
 
 // GET /api/profiles/[id] - Get user profile by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const authResult = await requireAuth(request);
-  if (authResult instanceof Response) return authResult;
+  const { id } = await params;
 
   try {
     const { data, error } = await supabase
@@ -20,7 +14,7 @@ export async function GET(
       .select(
         "id, first_name, last_name, bio, avatar_url, skills, interests, mentoring_areas, location, available_to_mentor, total_points, level, created_at, updated_at",
       )
-      .eq("id", params.id)
+      .eq("id", id)
       .single();
 
     if (error) throw error;
@@ -30,7 +24,7 @@ export async function GET(
     const { data: badges } = await supabase
       .from("user_badges")
       .select("badge_id, badges(name, icon_url, color)")
-      .eq("user_id", params.id);
+      .eq("user_id", id);
 
     return successResponse({
       ...data,

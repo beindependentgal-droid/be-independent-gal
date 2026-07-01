@@ -48,7 +48,7 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
     try {
       await signIn(email, password)
     } catch (err: unknown) {
-      const message = String(err?.message || '').toLowerCase()
+      const message = err instanceof Error ? err.message.toLowerCase() : String(err).toLowerCase()
 
       if (message.includes('invalid') || message.includes('wrong') || message.includes('credentials')) {
         setError('Invalid email or password. Please try again.')

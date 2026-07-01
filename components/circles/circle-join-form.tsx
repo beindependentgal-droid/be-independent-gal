@@ -18,7 +18,7 @@ interface JoinFormData {
   howCanHelp: string
 }
 
-export function CircleJoinForm({ circleId }: { circleId: string }) {
+export function CircleJoinForm({ circleId, circleName }: { circleId: string; circleName?: string }) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState<JoinFormData>({

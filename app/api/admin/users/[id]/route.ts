@@ -10,8 +10,9 @@ import {
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   const authResult = await requireAuth(request);
   if (authResult instanceof Response) {
     return authResult;
@@ -43,7 +44,7 @@ export async function PATCH(
     const { data, error } = await supabase
       .from("user_profiles")
       .update(updates)
-      .eq("id", params.id)
+      .eq("id", id)
       .select("id, first_name, last_name, email, member_level, created_at")
       .single();
 
@@ -55,7 +56,7 @@ export async function PATCH(
       userId,
       "Updated member account",
       "admin_user",
-      params.id,
+      id,
       updates,
     );
 

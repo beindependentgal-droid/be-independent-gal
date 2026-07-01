@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
+import { Menu, Moon, Sun, X } from 'lucide-react'
 import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -49,6 +49,26 @@ export function SiteHeader() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  const [isThemeLoaded, setIsThemeLoaded] = useState(false)
+
+  useEffect(() => {
+    const storedTheme = typeof window !== 'undefined' ? window.localStorage.getItem('theme') : null
+    const systemDark = typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
+    const initialTheme = storedTheme === 'dark' || (!storedTheme && systemDark) ? 'dark' : 'light'
+
+    setTheme(initialTheme)
+    setIsThemeLoaded(true)
+    document.documentElement.classList.toggle('dark', initialTheme === 'dark')
+  }, [])
+
+  const toggleTheme = useCallback(() => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark'
+    setTheme(nextTheme)
+    window.localStorage.setItem('theme', nextTheme)
+    document.documentElement.classList.toggle('dark', nextTheme === 'dark')
+  }, [theme])
 
   const handleSignOut = async () => {
     try {
@@ -113,6 +133,20 @@ export function SiteHeader() {
         </button>
 
         <div className="hidden items-center gap-2 lg:flex">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle dark mode"
+            className={cn(
+              'inline-flex h-10 w-10 items-center justify-center rounded-full border transition-colors duration-300',
+              isTransparentHero
+                ? 'border-white/30 bg-white/10 text-white hover:bg-white/20'
+                : 'border-border/70 bg-background text-foreground hover:bg-muted',
+            )}
+          >
+            {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
+
           {isAuthenticated ? (
             <>
               <Link
@@ -197,6 +231,15 @@ export function SiteHeader() {
               )
             })}
             <div className="mt-2 flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label="Toggle dark mode"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/70 bg-background text-foreground transition-colors hover:bg-muted"
+              >
+                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </button>
+
               {isAuthenticated ? (
                 <>
                   <Link

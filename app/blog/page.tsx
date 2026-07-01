@@ -5,6 +5,8 @@ import { getPublishedArticles } from '@/app/actions/article-actions'
 import { Badge } from '@/components/ui/badge'
 import { PageHero } from '@/components/page-hero'
 import { SectionHeading } from '@/components/section-heading'
+import { Button } from '@/components/ui/button'
+import FallbackImage from '@/components/ui/fallback-image'
 import { Eye, MessageCircle } from 'lucide-react'
 
 export const metadata: Metadata = {

@@ -1,0 +1,214 @@
+npm warn Unknown cli config "--noEmit". This will stop working in the next major version of npm.
+npm warn Unknown cli config "--pretty". This will stop working in the next major version of npm.
+.next/dev/types/validator.ts(378,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/admin/moderation/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/admin/moderation/[id]">'.
+  Types of property 'PATCH' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(387,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/admin/users/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/admin/users/[id]">'.
+  Types of property 'PATCH' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(414,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/articles/[slug]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/articles/[slug]">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { slug: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ slug: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ slug: string; }>; }' is not assignable to type '{ params: { slug: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'slug' is missing in type 'Promise<{ slug: string; }>' but required in type '{ slug: string; }'.
+.next/dev/types/validator.ts(540,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/messages/[conversationId]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/messages/[conversationId]">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { conversationId: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ conversationId: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ conversationId: string; }>; }' is not assignable to type '{ params: { conversationId: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'conversationId' is missing in type 'Promise<{ conversationId: string; }>' but required in type '{ conversationId: string; }'.
+.next/dev/types/validator.ts(558,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/notifications/[id]/read/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/notifications/[id]/read">'.
+  Types of property 'PATCH' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(576,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/profiles/[id]/activities/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/profiles/[id]/activities">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(585,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/profiles/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/profiles/[id]">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/types/validator.ts(378,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/admin/moderation/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/admin/moderation/[id]">'.
+  Types of property 'PATCH' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/types/validator.ts(387,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/admin/users/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/admin/users/[id]">'.
+  Types of property 'PATCH' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/types/validator.ts(414,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/articles/[slug]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/articles/[slug]">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { slug: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ slug: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ slug: string; }>; }' is not assignable to type '{ params: { slug: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'slug' is missing in type 'Promise<{ slug: string; }>' but required in type '{ slug: string; }'.
+.next/types/validator.ts(540,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/messages/[conversationId]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/messages/[conversationId]">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { conversationId: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ conversationId: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ conversationId: string; }>; }' is not assignable to type '{ params: { conversationId: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'conversationId' is missing in type 'Promise<{ conversationId: string; }>' but required in type '{ conversationId: string; }'.
+.next/types/validator.ts(558,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/notifications/[id]/read/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/notifications/[id]/read">'.
+  Types of property 'PATCH' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/types/validator.ts(576,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/profiles/[id]/activities/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/profiles/[id]/activities">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/types/validator.ts(585,31): error TS2344: Type 'typeof import("C:/Users/Felix/Downloads/be-independent-gal/app/api/profiles/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/profiles/[id]">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<any>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+app/academy/[slug]/page.tsx(97,19): error TS18048: 'course.outcomes' is possibly 'undefined'.
+app/actions/article-actions.ts(149,21): error TS2552: Cannot find name 'articleCommentSchema'. Did you mean 'getArticleComments'?
+app/actions/event-actions.ts(4,23): error TS2305: Module '"@/lib/db-validators"' has no exported member 'eventRegistrationSchema'.
+app/admin/page.tsx(69,45): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(input: string | URL | Request, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Type '{ Authorization: string; } | { Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+      Type '{ Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+        Type '{ Authorization?: undefined; }' is not assignable to type 'Record<string, string>'.
+          Property 'Authorization' is incompatible with index signature.
+            Type 'undefined' is not assignable to type 'string'.
+  Overload 2 of 2, '(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Type '{ Authorization: string; } | { Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+      Type '{ Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+        Type '{ Authorization?: undefined; }' is not assignable to type 'Record<string, string>'.
+          Property 'Authorization' is incompatible with index signature.
+            Type 'undefined' is not assignable to type 'string'.
+app/admin/page.tsx(70,45): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(input: string | URL | Request, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Type '{ Authorization: string; } | { Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+      Type '{ Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+        Type '{ Authorization?: undefined; }' is not assignable to type 'Record<string, string>'.
+          Property 'Authorization' is incompatible with index signature.
+            Type 'undefined' is not assignable to type 'string'.
+  Overload 2 of 2, '(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Type '{ Authorization: string; } | { Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+      Type '{ Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+        Type '{ Authorization?: undefined; }' is not assignable to type 'Record<string, string>'.
+          Property 'Authorization' is incompatible with index signature.
+            Type 'undefined' is not assignable to type 'string'.
+app/admin/page.tsx(71,37): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(input: string | URL | Request, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Type '{ Authorization: string; } | { Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+      Type '{ Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+        Type '{ Authorization?: undefined; }' is not assignable to type 'Record<string, string>'.
+          Property 'Authorization' is incompatible with index signature.
+            Type 'undefined' is not assignable to type 'string'.
+  Overload 2 of 2, '(input: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response>', gave the following error.
+    Type '{ Authorization: string; } | { Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+      Type '{ Authorization?: undefined; }' is not assignable to type 'HeadersInit | undefined'.
+        Type '{ Authorization?: undefined; }' is not assignable to type 'Record<string, string>'.
+          Property 'Authorization' is incompatible with index signature.
+            Type 'undefined' is not assignable to type 'string'.
+app/api/auth/profile/route.ts(45,13): error TS18047: 'supabase' is possibly 'null'.
+app/api/auth/profile/route.ts(67,14): error TS18047: 'supabase' is possibly 'null'.
+app/api/auth/profile/route.ts(91,14): error TS18047: 'supabase' is possibly 'null'.
+app/api/forms/google-form/route.ts(95,15): error TS2345: Argument of type '{ full_name: string; email: string; role: string; experience: string; goals: string; interests: string[]; contact_method: string; updates: boolean; }' is not assignable to parameter of type 'never[]'.
+  Type '{ full_name: string; email: string; role: string; experience: string; goals: string; interests: string[]; contact_method: string; updates: boolean; }' is missing the following properties from type 'never[]': length, pop, push, concat, and 35 more.
+app/api/messages/conversations/route.ts(32,56): error TS7006: Parameter 'conv' implicitly has an 'any' type.
+app/api/profiles/[id]/activities/route.ts(22,50): error TS7006: Parameter 'activity' implicitly has an 'any' type.
+app/blog/[slug]/page.tsx(63,7): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+app/blog/[slug]/page.tsx(64,25): error TS2339: Property 'author_name' does not exist on type 'Article'.
+app/blog/[slug]/page.tsx(103,16): error TS2304: Cannot find name 'FallbackImage'.
+app/blog/[slug]/page.tsx(124,24): error TS2339: Property 'author_avatar_url' does not exist on type 'Article'.
+app/blog/[slug]/page.tsx(126,32): error TS2339: Property 'author_avatar_url' does not exist on type 'Article'.
+app/blog/[slug]/page.tsx(127,32): error TS2339: Property 'author_name' does not exist on type 'Article'.
+app/blog/[slug]/page.tsx(134,28): error TS2339: Property 'author_name' does not exist on type 'Article'.
+app/blog/[slug]/page.tsx(137,56): error TS2339: Property 'author_name' does not exist on type 'Article'.
+app/blog/[slug]/page.tsx(143,31): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | null' is not assignable to parameter of type 'string | number | Date'.
+      Type 'null' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | null' is not assignable to parameter of type 'string | number'.
+      Type 'null' is not assignable to type 'string | number'.
+app/blog/[slug]/page.tsx(158,47): error TS2339: Property 'circle_id' does not exist on type 'Article'.
+app/blog/[slug]/page.tsx(194,29): error TS7006: Parameter 'comment' implicitly has an 'any' type.
+app/blog/page.tsx(42,9): error TS2322: Type '{ title: string; subtitle: string; description: string; cta1: { text: string; href: string; }; imageSrc: string; }' is not assignable to type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+  Property 'subtitle' does not exist on type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+app/blog/page.tsx(75,26): error TS2304: Cannot find name 'FallbackImage'.
+app/blog/page.tsx(132,16): error TS2304: Cannot find name 'Button'.
+app/blog/page.tsx(132,76): error TS2304: Cannot find name 'Button'.
+app/blog/page.tsx(135,16): error TS2304: Cannot find name 'Button'.
+app/blog/page.tsx(135,78): error TS2304: Cannot find name 'Button'.
+app/blog/page.tsx(138,16): error TS2304: Cannot find name 'Button'.
+app/blog/page.tsx(138,75): error TS2304: Cannot find name 'Button'.
+app/blog/page.tsx(141,16): error TS2304: Cannot find name 'Button'.
+app/blog/page.tsx(141,77): error TS2304: Cannot find name 'Button'.
+app/blog/page.tsx(144,16): error TS2304: Cannot find name 'Button'.
+app/blog/page.tsx(144,84): error TS2304: Cannot find name 'Button'.
+app/blog/page.tsx(147,16): error TS2304: Cannot find name 'Button'.
+app/blog/page.tsx(147,82): error TS2304: Cannot find name 'Button'.
+app/challenges/page.tsx(72,14): error TS2304: Cannot find name 'FallbackImage'.
+app/challenges/page.tsx(153,9): error TS2322: Type '{ title: string; subtitle: string; description: string; cta1: { text: string; href: string; }; cta2: { text: string; href: string; }; imageSrc: string; }' is not assignable to type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+  Property 'subtitle' does not exist on type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+app/circles/[id]/dashboard/page.tsx(223,40): error TS2339: Property 'first_name' does not exist on type 'AuthUser'.
+app/circles/[id]/join/page.tsx(190,16): error TS2304: Cannot find name 'FallbackImage'.
+app/circles/[id]/join/page.tsx(258,45): error TS2322: Type '{ circleId: string; circleName: string; }' is not assignable to type 'IntrinsicAttributes & { circleId: string; }'.
+  Property 'circleName' does not exist on type 'IntrinsicAttributes & { circleId: string; }'.
+app/circles/page.tsx(166,9): error TS2322: Type '{ title: string; subtitle: string; description: string; cta1: { text: string; href: string; }; cta2: { text: string; href: string; }; imageSrc: string; }' is not assignable to type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+  Property 'subtitle' does not exist on type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+app/community/page.tsx(24,9): error TS2322: Type '{ title: string; subtitle: string; description: string; cta1: { text: string; href: string; }; cta2: { text: string; href: string; }; imageSrc: string; }' is not assignable to type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+  Property 'subtitle' does not exist on type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+app/contact/page.tsx(73,9): error TS2322: Type '{ title: string; subtitle: string; description: string; cta1: { text: string; href: string; }; cta2: { text: string; href: string; }; imageSrc: string; }' is not assignable to type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+  Property 'subtitle' does not exist on type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+app/events/page.tsx(44,9): error TS2322: Type '{ title: string; subtitle: string; description: string; cta1: { text: string; href: string; }; cta2: { text: string; href: string; }; imageSrc: string; }' is not assignable to type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+  Property 'subtitle' does not exist on type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+app/events/page.tsx(108,50): error TS7006: Parameter 'event' implicitly has an 'any' type.
+app/events/page.tsx(224,51): error TS7006: Parameter 'event' implicitly has an 'any' type.
+app/fund/apply/page.tsx(26,9): error TS2322: Type '{ title: string; subtitle: string; description: string; cta1: { text: string; href: string; }; cta2: { text: string; href: string; }; imageSrc: string; }' is not assignable to type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+  Property 'subtitle' does not exist on type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+app/fund/faq/page.tsx(188,9): error TS2322: Type '{ title: string; subtitle: string; description: string; cta1: { text: string; href: string; }; cta2: { text: string; href: string; }; imageSrc: string; }' is not assignable to type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+  Property 'subtitle' does not exist on type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+app/fund/page.tsx(133,9): error TS2322: Type '{ title: string; subtitle: string; description: string; cta1: { text: string; href: string; }; cta2: { text: string; href: string; }; imageSrc: string; }' is not assignable to type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+  Property 'subtitle' does not exist on type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+app/get-involved/page.tsx(80,9): error TS2322: Type '{ title: string; subtitle: string; description: string; cta1: { text: string; href: string; }; cta2: { text: string; href: string; }; imageSrc: string; }' is not assignable to type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+  Property 'subtitle' does not exist on type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+app/programs/page.tsx(97,9): error TS2322: Type '{ title: string; subtitle: string; description: string; cta1: { text: string; href: string; }; cta2: { text: string; href: string; }; imageSrc: string; }' is not assignable to type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+  Property 'subtitle' does not exist on type 'IntrinsicAttributes & { eyebrow?: string | undefined; title: string; description?: string | undefined; className?: string | undefined; }'.
+components/profiles/profile-header.tsx(43,61): error TS2339: Property 'bio' does not exist on type '{ skills?: string[] | undefined; interests?: string[] | undefined; mentoring_areas?: string[] | undefined; }'.
+components/profiles/profile-header.tsx(150,8): error TS2304: Cannot find name 'isMentor'.
+lib/db-helpers.ts(2,31): error TS2307: Cannot find module './database.types' or its corresponding type declarations.
+lib/hooks/use-profile.ts(59,37): error TS2345: Argument of type '{} | { [key: string]: any; }' is not assignable to parameter of type 'SetStateAction<UserProfile | null>'.
+  Type '{}' is not assignable to type 'SetStateAction<UserProfile | null>'.

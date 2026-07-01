@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { PageHero } from '@/components/page-hero'
 import { SectionHeading } from '@/components/section-heading'
+import FallbackImage from '@/components/ui/fallback-image'
 import { CalendarDays, Star, Trophy, ArrowRight } from 'lucide-react'
 import { Suspense } from 'react'
 

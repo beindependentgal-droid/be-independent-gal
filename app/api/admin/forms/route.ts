@@ -20,6 +20,9 @@ export async function GET(request: NextRequest) {
 
   try {
     const supabase = getSupabase();
+    if (!supabase) {
+      return errorResponse("Supabase credentials not configured", 500);
+    }
     const { data, error } = await supabase
       .from("form_submissions")
       .select("*")

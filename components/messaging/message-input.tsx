@@ -4,11 +4,12 @@ import { useState } from 'react';
 import { Send, Loader } from 'lucide-react';
 
 interface MessageInputProps {
-  onSend: (message: string) => Promise<void>;
+  onSend?: (message: string) => Promise<void>;
+  onSendMessage?: (message: string) => Promise<void>;
   isLoading?: boolean;
 }
 
-export function MessageInput({ onSend, isLoading }: MessageInputProps) {
+export function MessageInput({ onSend, onSendMessage, isLoading }: MessageInputProps) {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
 
@@ -17,9 +18,12 @@ export function MessageInput({ onSend, isLoading }: MessageInputProps) {
     
     if (!message.trim()) return;
 
+    const send = onSend ?? onSendMessage;
+    if (!send) return;
+
     try {
       setIsSending(true);
-      await onSend(message);
+      await send(message);
       setMessage('');
     } catch (error) {
       console.error('Failed to send message:', error);

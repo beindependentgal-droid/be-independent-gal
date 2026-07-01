@@ -10,35 +10,43 @@ interface Badge {
   color: string;
 }
 
-interface ProfileHeaderProps {
-  name: string;
+interface UserProfile {
+  first_name?: string;
+  last_name?: string;
   profession?: string;
   city?: string;
-  avatar?: string;
-  level?: string;
+  avatar_url?: string;
+  member_level?: string;
   points?: number;
   bio?: string;
+  is_mentor?: boolean;
   badges?: Badge[];
-  isMentor?: boolean;
-  skills?: string[];
+  user_profile_extended?: {
+    bio?: string;
+    is_mentor?: boolean;
+    skills?: string[];
+    interests?: string[];
+    mentoring_areas?: string[];
+  };
+}
+
+interface ProfileHeaderProps {
+  profile: UserProfile;
   isOwnProfile?: boolean;
   onSettingsClick?: () => void;
 }
 
-export function ProfileHeader({
-  name,
-  profession,
-  city,
-  avatar,
-  level,
-  points,
-  bio,
-  badges,
-  isMentor,
-  skills,
-  isOwnProfile,
-  onSettingsClick,
-}: ProfileHeaderProps) {
+export function ProfileHeader({ profile, isOwnProfile, onSettingsClick }: ProfileHeaderProps) {
+  const name = `${profile.first_name ?? ''} ${profile.last_name ?? ''}`.trim() || 'Member'
+  const avatar = profile.avatar_url
+  const profession = profile.profession
+  const city = profile.city
+  const level = profile.member_level
+  const points = profile.points
+  const bio = profile.bio ?? profile.user_profile_extended?.bio
+  const isMentor = profile.is_mentor ?? profile.user_profile_extended?.is_mentor ?? false
+  const badges = profile.badges
+  const skills = profile.user_profile_extended?.skills
   return (
     <div className="bg-gradient-to-r from-brand/10 to-accent/10 rounded-lg p-6 md:p-8 mb-6">
       <div className="flex gap-6 mb-6">

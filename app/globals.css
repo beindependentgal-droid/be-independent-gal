@@ -71,86 +71,127 @@
   --muted: #f1f5f9;
   --muted-foreground: #4b5563;
 
-  /* Brand Colors - Primary (Deep Purple) */
-  --primary-50: #f5eefe;
-  --primary-100: #ecdfff;
-  --primary-200: #d9bfff;
-  --primary-300: #b780ff;
-  --primary-400: #8f3bff;
-  --primary-500: #2d0162; /* main */
-  --primary-600: #25014e;
-  --primary-700: #1b0f3a;
-  --primary-800: #120827;
-  --primary-900: #08041a;
-  --primary: #2d0162;
+}
+
+:root {
+  color-scheme: light;
+
+  /* Surface Colors */
+  --background: #fdfbfc; /* Soft warm pink-tinted off-white */
+  --foreground: #220038; /* Deep Purple text for clean readability */
+  
+  /* Cards & Popovers */
+  --card: #ffffff;
+  --card-foreground: #220038;
+  --popover: #ffffff;
+  --popover-foreground: #220038;
+  
+  /* Brand Core Identity */
+  --primary: #e51a74; /* Vibrant Pink/Magenta (from "BE" & shirt) */
   --primary-foreground: #ffffff;
-
-  /* Brand Colors - Accent / Pink */
-  --secondary-50: #fde6ef;
-  --secondary-100: #fbcfdf;
-  --secondary-200: #f79abf;
-  --secondary-300: #f56a9f;
-  --secondary-400: #f2397f;
-  --secondary-500: #f71e6c; /* main */
-  --secondary-600: #d1165f;
-  --secondary-700: #ad1150;
-  --secondary-800: #890e40;
-  --secondary-900: #670b30;
-  --secondary: #f71e6c;
+  --secondary: #3b0066; /* Deep Plum/Purple (from "INDEPENDENT") */
   --secondary-foreground: #ffffff;
+  
+  /* UI Context Elements */
+  --muted: #f5f0f6; /* Very light muted purple-gray */
+  --muted-foreground: #7c6885;
+  --accent: #ff8a00; /* Warm Sunset Orange (from "GAL") */
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  
+  /* Structural Elements */
+  --border: #ebdff0; /* Soft tint border lines */
+  --input: #ebdff0;
+  --ring: #e51a74;
+  
+  /* Base Configuration */
+  --radius: 0.625rem;
 
-  /* Brand Colors - Warm / Orange */
-  --accent-50: #fff5eb;
-  --accent-100: #ffe7d0;
-  --accent-200: #ffd1a1;
-  --accent-300: #ffc07a;
-  --accent-400: #ffa84a;
-  --accent-500: #ff8503; /* main */
-  --accent-600: #e06f03;
-  --accent-700: #b95a03;
-  --accent-800: #934603;
-  --accent-900: #6f3302;
-  --accent: #ff8503;
-  --accent-foreground: #111827;
+  /* Data & Chart Gradients */
+  --chart-1: #e51a74;
+  --chart-2: #3b0066;
+  --chart-3: #ff8a00;
+  --chart-4: #ffb800;
+  --chart-5: #9c27b0;
 
-  /* Pillar Colors */
-  --learn: #2d0162;
-  --learn-500: #2d0162;
-  --learn-600: #25014e;
+  /* Navigation Sidebar Parameters */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #3b0066;
+  --sidebar-primary: #e51a74;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f5f0f6;
+  --sidebar-accent-foreground: #3b0066;
+  --sidebar-border: #ebdff0;
+  --sidebar-ring: #e51a74;
+}
 
-  --connect: #f71e6c;
-  --connect-500: #f71e6c;
-  --connect-600: #d1165f;
+.dark {
+  color-scheme: dark;
 
-  --earn: #ff8503;
-  --earn-500: #ff8503;
-  --earn-600: #e06f03;
+  --background: #11001c; /* Midnight rich dark purple */
+  --foreground: #fcf9fe;
+  
+  --card: #190326;
+  --card-foreground: #fcf9fe;
+  --popover: #190326;
+  --popover-foreground: #fcf9fe;
+  
+  --primary: #e51a74;
+  --primary-foreground: #ffffff;
+  --secondary: #ff8a00;
+  --secondary-foreground: #11001c;
+  
+  --muted: #271233;
+  --muted-foreground: #b49ebc;
+  --accent: #3b0066;
+  --accent-foreground: #fcf9fe;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  
+  --border: #2e153d;
+  --input: #2e153d;
+  --ring: #e51a74;
 
-  --thrive: #ff8503;
-  --thrive-500: #ff8503;
-  --thrive-600: #e06f03;
+  --chart-1: #e51a74;
+  --chart-2: #ff8a00;
+  --chart-3: #ffb800;
+  --chart-4: #a855f7;
+  --chart-5: #ec4899;
 
-  /* Typography Colors */
-  --text-color-primary: #2d0162;
-  --text-color-secondary: #f71e6c;
-  --text-color-accent: #ff8503;
-  --text-color-warm: #ff8503;
-  --text-color-dark: #111827;
-  --text-color-black: #000000;
-  --text-color-body: #4b5563;
+  --sidebar: #190326;
+  --sidebar-foreground: #b49ebc;
+  --sidebar-primary: #e51a74;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #271233;
+  --sidebar-accent-foreground: #fcf9fe;
+  --sidebar-border: #2e153d;
+  --sidebar-ring: #e51a74;
+}
 
-  /* Typography Scale */
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
-  --text-5xl: 3rem;
-  --text-6xl: 3.75rem;
-  --text-7xl: 4.5rem;
+@layer base {
+  :root {
+    /* Typography Colors */
+    --text-color-primary: #2d0162;
+    --text-color-secondary: #f71e6c;
+    --text-color-accent: #ff8503;
+    --text-color-warm: #ff8503;
+    --text-color-dark: #111827;
+    --text-color-black: #000000;
+    --text-color-body: #4b5563;
+
+    /* Typography Scale */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    --text-5xl: 3rem;
+    --text-6xl: 3.75rem;
+    --text-7xl: 4.5rem;
 
   /* Typography Variants */
   --text-hero: var(--text-7xl);
@@ -259,6 +300,7 @@
   --chart-3: #ffd700;
   --chart-4: #ff7700;
   --chart-5: #7e22ce;
+  }
 }
 
 /* Dark Mode */
@@ -278,11 +320,12 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--border);
   }
 
   *:focus-visible {
-    @apply outline-ring/50;
+    outline: 2px solid rgba(229, 26, 116, 0.5);
+    outline-offset: 2px;
   }
 
   html {
@@ -416,10 +459,17 @@
 @layer components {
   /* Card Component */
   .card {
-    @apply bg-card rounded-lg border border-border p-6 shadow-sm transition-all;
+    background: var(--card);
+    color: var(--card-foreground);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition) var(--ease);
 
     &:hover {
-      @apply shadow-md border-secondary;
+      box-shadow: var(--shadow-md);
+      border-color: var(--secondary);
     }
   }
 

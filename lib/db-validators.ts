@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // User Profile Validators
 export const userProfileSchema = z.object({
@@ -26,12 +26,16 @@ export type MessageInput = z.infer<typeof messageSchema>;
 // Article Validators
 export const articleSchema = z.object({
   title: z.string().min(5).max(500),
-  slug: z.string().min(1).max(255).regex(/^[a-z0-9-]+$/),
+  slug: z
+    .string()
+    .min(1)
+    .max(255)
+    .regex(/^[a-z0-9-]+$/),
   content: z.string().min(10),
   excerpt: z.string().max(500).nullable(),
   featured_image_url: z.string().url().nullable(),
   circle_name: z.string().max(255).nullable(),
-  status: z.enum(['draft', 'published', 'archived']),
+  status: z.enum(["draft", "published", "archived"]),
 });
 
 export type ArticleInput = z.infer<typeof articleSchema>;
@@ -56,10 +60,17 @@ export const eventSchema = z.object({
   location: z.string().max(255).nullable(),
   capacity: z.number().positive().nullable(),
   registration_url: z.string().url().nullable(),
-  status: z.enum(['upcoming', 'ongoing', 'completed', 'cancelled']),
+  status: z.enum(["upcoming", "ongoing", "completed", "cancelled"]),
 });
 
 export type EventInput = z.infer<typeof eventSchema>;
+
+export const eventRegistrationSchema = z.object({
+  event_id: z.string().uuid(),
+  user_id: z.string().uuid(),
+});
+
+export type EventRegistrationInput = z.infer<typeof eventRegistrationSchema>;
 
 // Challenge Validators
 export const challengeSchema = z.object({
@@ -69,7 +80,7 @@ export const challengeSchema = z.object({
   start_date: z.string().datetime(),
   end_date: z.string().datetime(),
   points_reward: z.number().positive().default(50),
-  difficulty: z.enum(['easy', 'medium', 'hard']),
+  difficulty: z.enum(["easy", "medium", "hard"]),
 });
 
 export type ChallengeInput = z.infer<typeof challengeSchema>;
@@ -87,18 +98,20 @@ export const notificationPreferencesSchema = z.object({
   email_on_message: z.boolean(),
   email_on_mention: z.boolean(),
   email_on_event_reminder: z.boolean(),
-  email_digest_frequency: z.enum(['daily', 'weekly', 'monthly', 'never']),
+  email_digest_frequency: z.enum(["daily", "weekly", "monthly", "never"]),
   push_notifications: z.boolean(),
   in_app_notifications: z.boolean(),
 });
 
-export type NotificationPreferencesInput = z.infer<typeof notificationPreferencesSchema>;
+export type NotificationPreferencesInput = z.infer<
+  typeof notificationPreferencesSchema
+>;
 
 // Resource Validators
 export const resourceSchema = z.object({
   title: z.string().min(5).max(255),
   description: z.string().max(1000).nullable(),
-  resource_type: z.enum(['guide', 'template', 'tool', 'other']),
+  resource_type: z.enum(["guide", "template", "tool", "other"]),
   file_url: z.string().url(),
   circle_name: z.string().max(255).nullable(),
 });
@@ -107,7 +120,7 @@ export type ResourceInput = z.infer<typeof resourceSchema>;
 
 // Moderation Flag Validators
 export const moderationFlagSchema = z.object({
-  content_type: z.enum(['message', 'article', 'comment', 'profile']),
+  content_type: z.enum(["message", "article", "comment", "profile"]),
   content_id: z.string().uuid(),
   reason: z.string().min(10).max(1000),
 });

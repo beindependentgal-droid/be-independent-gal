@@ -4,12 +4,14 @@ export function SectionHeading({
   eyebrow,
   title,
   subtitle,
+  description,
   align = 'center',
   className,
 }: {
   eyebrow?: string
   title: React.ReactNode
   subtitle?: string
+  description?: string
   align?: 'center' | 'left'
   className?: string
 }) {
@@ -41,6 +43,11 @@ export function SectionHeading({
       {subtitle && (
         <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
           {subtitle}
+        </p>
+      )}
+      {description && (
+        <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+          {description}
         </p>
       )}
     </div>

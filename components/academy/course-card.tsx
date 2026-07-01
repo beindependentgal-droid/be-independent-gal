@@ -17,6 +17,7 @@ export type Course = {
   lessons: number
   description: string
   image: string
+  price?: string
   featured?: boolean
 }
 
