@@ -9,8 +9,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import FallbackImage from '@/components/ui/fallback-image'
 
-export const dynamic = 'force-dynamic'
-
 export default function ResetPage() {
   const router = useRouter()
   const { sendPasswordReset } = useAuth()

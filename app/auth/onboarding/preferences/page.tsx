@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase-client'
 
-export const dynamic = 'force-dynamic'
-
 export default function PreferencesOnboardingPage() {
   const router = useRouter()
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)

@@ -9,8 +9,6 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { createClient } from '@/lib/supabase-client'
 
-export const dynamic = 'force-dynamic'
-
 export default function ProfileOnboardingPage() {
   const router = useRouter()
   const { user } = useAuth()
