@@ -38,21 +38,18 @@ export default function AcademyCoursePage({ params }: AcademyCoursePageProps) {
   if (!course) {
     return (
       <main className="bg-background">
-        <div className="mx-auto flex min-h-[70vh] max-w-5xl flex-col justify-center px-4 py-24 sm:px-6 lg:px-8">
-            <div className="rounded-[2rem] border border-slate-200/80 bg-white p-8 shadow-[0_24px_70px_-28px_rgba(15,23,42,0.16)] sm:p-10">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">Coming soon</p>
-            <h1 className="mt-4 text-3xl font-semibold text-secondary sm:text-4xl">
-              This learning path is not available just yet
-            </h1>
+        <div className="mx-auto flex min-h-[60vh] max-w-5xl flex-col justify-center px-4 py-20 sm:px-6 lg:px-8">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-8 shadow-[0_24px_70px_-28px_rgba(15,23,42,0.16)] sm:p-10">
+            <h1 className="text-3xl font-semibold text-secondary sm:text-4xl">Course not found</h1>
             <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">
-              We&apos;re building this experience with care and will be sharing it soon. Please check back soon or explore our current academy courses in the meantime.
+              We couldn’t find a course with that link. Try browsing the Academy or join our waitlist to get notified when new courses are published.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/academy" className="inline-flex rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
-                Back to Academy
+                Browse Academy
               </Link>
               <Link href="/join" className="inline-flex rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-secondary hover:bg-slate-50">
-                Get updates
+                Join waitlist
               </Link>
             </div>
           </div>

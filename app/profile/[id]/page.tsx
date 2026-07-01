@@ -135,7 +135,7 @@ export default function ProfilePage() {
           {/* Main Content - Left */}
           <div className="lg:col-span-2 space-y-8">
             {/* About Section */}
-              {(profile.bio || (profile.user_profile_extended && (profile.user_profile_extended.interests?.length || profile.user_profile_extended.mentoring_areas?.length))) ? (
+            {(profile.bio || (profile.user_profile_extended && (profile.user_profile_extended.interests?.length || profile.user_profile_extended.mentoring_areas?.length))) && (
               <div className="bg-white rounded-2xl border border-gray-200 p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">About</h2>
 

@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft, Loader, Check, AlertCircle } from 'lucide-react'
+import { ChevronLeft, Loader, Check, AlertCircle, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/lib/auth-context'
 import { getAccessToken } from '@/lib/auth-utils'
+import { createClient } from '@/lib/supabase-client'
 
 interface ProfileFormData {
   first_name: string
@@ -43,6 +44,7 @@ export default function EditProfilePage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -110,16 +112,40 @@ export default function EditProfilePage() {
     setError(null)
   }
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const url = e.target.value
-    setFormData((prev) => ({
-      ...prev,
-      avatar_url: url,
-    }))
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
 
-    // Show preview if valid URL
-    if (url.startsWith('http')) {
-      setAvatarPreview(url)
+    try {
+      setIsUploadingImage(true)
+      setError(null)
+
+      const supabase = createClient()
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+      const fileName = `${user?.id || 'user'}-${Date.now()}.${fileExt}`
+      const bucket = 'avatars'
+
+      const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: true,
+      })
+
+      if (uploadError) throw uploadError
+
+      const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(fileName)
+      const publicUrl = publicUrlData?.publicUrl
+
+      if (!publicUrl) throw new Error('Unable to create image URL')
+
+      setFormData((prev) => ({
+        ...prev,
+        avatar_url: publicUrl,
+      }))
+      setAvatarPreview(publicUrl)
+    } catch (err: any) {
+      setError(err?.message || 'Failed to upload profile picture')
+    } finally {
+      setIsUploadingImage(false)
     }
   }
 
@@ -259,22 +285,25 @@ export default function EditProfilePage() {
                 )}
               </div>
 
-              {/* Avatar URL Input */}
+              {/* Avatar Upload Input */}
               <div className="flex-1">
-                <Label htmlFor="avatar_url" className="text-sm font-medium block mb-2">
-                  Avatar URL
+                <Label htmlFor="avatar_file" className="text-sm font-medium block mb-2">
+                  Upload profile picture
                 </Label>
-                <Input
-                  id="avatar_url"
-                  name="avatar_url"
-                  type="url"
-                  value={formData.avatar_url}
-                  onChange={handleAvatarChange}
-                  placeholder="https://example.com/avatar.jpg"
-                  className="h-11 rounded-xl"
-                />
+                <label className="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 text-sm font-medium text-gray-700 transition hover:bg-gray-100">
+                  <Upload className="h-4 w-4" />
+                  {isUploadingImage ? 'Uploading...' : 'Choose image'}
+                  <input
+                    id="avatar_file"
+                    name="avatar_file"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="hidden"
+                  />
+                </label>
                 <p className="text-xs text-gray-500 mt-2">
-                  Paste a link to an image. Recommended size: 500x500px
+                  Upload a clear photo from your device. Recommended size: 500x500px.
                 </p>
               </div>
             </div>

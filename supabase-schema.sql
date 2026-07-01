@@ -1,241 +1,380 @@
--- ============================================================================
--- BE INDEPENDENT GAL (BIG) - PRODUCTION SUPABASE SCHEMA
--- ============================================================================
--- Complete database schema for women's community platform
--- Covers: Profiles, Messaging, Directory, Mentorship, Events, Gamification,
--- Blog, Notifications, Analytics, and Admin functions
--- ============================================================================
+-- Be Independent Gal - single canonical Supabase migration
+-- This is the only migration needed for the current app routes and feature set.
 
--- Enable required extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "unaccent";
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
--- ============================================================================
--- 1. USER PROFILE MANAGEMENT
--- ============================================================================
+-- Ensure core helpers exist
+CREATE OR REPLACE FUNCTION public.update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = timezone('utc'::text, now());
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Extended user profiles with skills and interests
+-- =========================
+-- 1. PROFILE TABLES & USER PREFERENCES
+-- =========================
+
 CREATE TABLE IF NOT EXISTS public.user_profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id UUID UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+  first_name TEXT,
+  last_name TEXT,
   full_name TEXT,
-  avatar_url TEXT,
   bio TEXT,
-  headline TEXT,
-  skills TEXT[] DEFAULT '{}',
-  interests TEXT[] DEFAULT '{}',
-  mentoring_areas TEXT[] DEFAULT '{}',
-  is_mentor BOOLEAN DEFAULT FALSE,
+  avatar_url TEXT,
+  profession TEXT,
+  industry TEXT,
+  business TEXT,
+  city TEXT,
+  phone TEXT,
+  experience TEXT,
+  why_joining TEXT,
+  skills TEXT[] DEFAULT '{}'::TEXT[],
+  interests TEXT[] DEFAULT '{}'::TEXT[],
+  mentoring_areas TEXT[] DEFAULT '{}'::TEXT[],
+  looking_for_mentor BOOLEAN DEFAULT false,
+  available_to_mentor BOOLEAN DEFAULT false,
   location TEXT,
   website TEXT,
-  social_links JSONB DEFAULT '{}',
   total_points INTEGER DEFAULT 0,
   level INTEGER DEFAULT 1,
+  badges_count INTEGER DEFAULT 0,
+  search_vector TSVECTOR,
+  joined_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_user_profiles_is_mentor ON public.user_profiles(is_mentor);
-CREATE INDEX idx_user_profiles_total_points ON public.user_profiles(total_points DESC);
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS user_id UUID;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS first_name TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS last_name TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS full_name TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS bio TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS profession TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS industry TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS business TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS city TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS experience TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS why_joining TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS skills TEXT[] DEFAULT '{}'::TEXT[];
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS interests TEXT[] DEFAULT '{}'::TEXT[];
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS mentoring_areas TEXT[] DEFAULT '{}'::TEXT[];
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS looking_for_mentor BOOLEAN DEFAULT false;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS available_to_mentor BOOLEAN DEFAULT false;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS location TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS website TEXT;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS total_points INTEGER DEFAULT 0;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS level INTEGER DEFAULT 1;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS badges_count INTEGER DEFAULT 0;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS search_vector TSVECTOR;
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS joined_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE public.user_profiles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
 
--- Extended profile details for mentorship and interests
+UPDATE public.user_profiles
+SET user_id = id
+WHERE user_id IS NULL AND id IS NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_user_profiles_user_id_unique ON public.user_profiles(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_profiles_total_points ON public.user_profiles(total_points DESC);
+CREATE INDEX IF NOT EXISTS idx_user_profiles_available_to_mentor ON public.user_profiles(available_to_mentor);
+CREATE INDEX IF NOT EXISTS idx_user_profiles_search ON public.user_profiles USING GIN(search_vector);
+
+DROP TRIGGER IF EXISTS update_user_profiles_updated_at ON public.user_profiles;
+CREATE TRIGGER update_user_profiles_updated_at
+BEFORE UPDATE ON public.user_profiles
+FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+
 CREATE TABLE IF NOT EXISTS public.user_profile_extended (
   user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   bio TEXT,
-  skills TEXT[] DEFAULT '{}',
-  interests TEXT[] DEFAULT '{}',
-  mentoring_areas TEXT[] DEFAULT '{}',
+  skills TEXT[] DEFAULT '{}'::TEXT[],
+  interests TEXT[] DEFAULT '{}'::TEXT[],
+  mentoring_areas TEXT[] DEFAULT '{}'::TEXT[],
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_user_profile_extended_mentoring_areas ON public.user_profile_extended USING GIN(mentoring_areas);
-CREATE INDEX idx_user_profile_extended_skills ON public.user_profile_extended USING GIN(skills);
+CREATE TABLE IF NOT EXISTS public.user_preferences (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+  notifications_enabled BOOLEAN DEFAULT true,
+  email_digest BOOLEAN DEFAULT true,
+  selected_circles TEXT[] DEFAULT '{}'::TEXT[],
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
 
-ALTER TABLE public.user_profile_extended ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Service role can read extended profiles" ON public.user_profile_extended;
-CREATE POLICY "Service role can read extended profiles" ON public.user_profile_extended FOR SELECT
-  USING (auth.role() = 'service_role');
+ALTER TABLE public.user_preferences ADD COLUMN IF NOT EXISTS user_id UUID;
+ALTER TABLE public.user_preferences ADD COLUMN IF NOT EXISTS notifications_enabled BOOLEAN DEFAULT true;
+ALTER TABLE public.user_preferences ADD COLUMN IF NOT EXISTS email_digest BOOLEAN DEFAULT true;
+ALTER TABLE public.user_preferences ADD COLUMN IF NOT EXISTS selected_circles TEXT[] DEFAULT '{}'::TEXT[];
+ALTER TABLE public.user_preferences ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE public.user_preferences ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
 
--- Activity log for gamification
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  first_name TEXT,
+  last_name TEXT,
+  email TEXT,
+  phone TEXT,
+  city TEXT,
+  profession TEXT,
+  business TEXT,
+  bio TEXT,
+  avatar_url TEXT,
+  primary_circle TEXT DEFAULT 'learn',
+  join_reason TEXT,
+  member_level TEXT DEFAULT 'New Member',
+  points INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS first_name TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS last_name TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS city TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS profession TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS business TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS bio TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS primary_circle TEXT DEFAULT 'learn';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS join_reason TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS member_level TEXT DEFAULT 'New Member';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS points INTEGER DEFAULT 0;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+
+CREATE TABLE IF NOT EXISTS public.circles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL UNIQUE,
+  description TEXT,
+  icon TEXT,
+  member_count INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
 CREATE TABLE IF NOT EXISTS public.user_activity (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   activity_type TEXT NOT NULL,
+  action TEXT,
   points_earned INTEGER DEFAULT 0,
-  circle_name TEXT,
-  metadata JSONB DEFAULT '{}',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-CREATE INDEX idx_user_activity_user_id ON public.user_activity(user_id, created_at DESC);
-CREATE INDEX idx_user_activity_type ON public.user_activity(activity_type);
-
--- ============================================================================
--- 2. PRIVATE MESSAGING SYSTEM
--- ============================================================================
-
--- Conversations between users
-CREATE TABLE IF NOT EXISTS public.conversations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user1_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  user2_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  last_message_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  CONSTRAINT different_users CHECK (user1_id != user2_id)
-);
-
--- Unique index to prevent duplicate conversations
-CREATE UNIQUE INDEX idx_conversations_unique_pair 
-  ON public.conversations (LEAST(user1_id, user2_id), GREATEST(user1_id, user2_id));
-
-CREATE INDEX idx_conversations_user1 ON public.conversations(user1_id);
-CREATE INDEX idx_conversations_user2 ON public.conversations(user2_id);
-
--- Individual messages
-CREATE TABLE IF NOT EXISTS public.messages (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  conversation_id UUID NOT NULL REFERENCES public.conversations(id) ON DELETE CASCADE,
-  sender_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  content TEXT NOT NULL,
-  read_at TIMESTAMP WITH TIME ZONE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-CREATE INDEX idx_messages_conversation ON public.messages(conversation_id, created_at DESC);
-CREATE INDEX idx_messages_sender ON public.messages(sender_id);
-
--- Circle dashboard data for community feeds
-CREATE TABLE IF NOT EXISTS public.circle_dashboard (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   circle_id UUID REFERENCES public.circles(id) ON DELETE SET NULL,
-  data JSONB DEFAULT '{}'::jsonb,
+  metadata JSONB DEFAULT '{}'::jsonb,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+ALTER TABLE public.user_activity ADD COLUMN IF NOT EXISTS action TEXT;
+ALTER TABLE public.user_activity ADD COLUMN IF NOT EXISTS circle_id UUID REFERENCES public.circles(id) ON DELETE SET NULL;
+ALTER TABLE public.user_activity ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}'::jsonb;
+
+CREATE INDEX IF NOT EXISTS idx_user_activity_user_id ON public.user_activity(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_user_activity_type ON public.user_activity(activity_type);
+
+-- RLS for profiles and preferences
+ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_profile_extended ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_preferences ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_activity ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public profiles are viewable" ON public.user_profiles;
+CREATE POLICY "Public profiles are viewable" ON public.user_profiles FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.user_profiles;
+CREATE POLICY "Users can update their own profile" ON public.user_profiles FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+DROP POLICY IF EXISTS "Users can view their own profile extended" ON public.user_profile_extended;
+CREATE POLICY "Users can view their own profile extended" ON public.user_profile_extended FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can update their own preferences" ON public.user_preferences;
+CREATE POLICY "Users can update their own preferences" ON public.user_preferences FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can read their own profile record" ON public.profiles;
+CREATE POLICY "Users can read their own profile record" ON public.profiles FOR SELECT USING (auth.uid() = id);
+DROP POLICY IF EXISTS "Users can update their own profile record" ON public.profiles;
+CREATE POLICY "Users can update their own profile record" ON public.profiles FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+DROP POLICY IF EXISTS "Users can view their own activity" ON public.user_activity;
+CREATE POLICY "Users can view their own activity" ON public.user_activity FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Service role can insert activity" ON public.user_activity;
+CREATE POLICY "Service role can insert activity" ON public.user_activity FOR INSERT WITH CHECK (true);
+
+-- =========================
+-- 2. CIRCLES & DIRECTORY
+-- =========================
+
+CREATE TABLE IF NOT EXISTS public.circle_members (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  circle_id UUID NOT NULL REFERENCES public.circles(id) ON DELETE CASCADE,
+  joined_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
+  role TEXT DEFAULT 'member',
+  UNIQUE(user_id, circle_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.user_directory (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+  full_name TEXT,
+  bio TEXT,
+  avatar_url TEXT,
+  location TEXT,
+  skills TEXT[] DEFAULT '{}'::TEXT[],
+  interests TEXT[] DEFAULT '{}'::TEXT[],
+  circles TEXT[] DEFAULT '{}'::TEXT[],
+  is_mentor BOOLEAN DEFAULT false,
+  points INTEGER DEFAULT 0,
+  search_vector TSVECTOR,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_circle_dashboard_circle_id ON public.circle_dashboard(circle_id);
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS user_id UUID;
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS full_name TEXT;
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS bio TEXT;
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS location TEXT;
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS skills TEXT[] DEFAULT '{}'::TEXT[];
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS interests TEXT[] DEFAULT '{}'::TEXT[];
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS circles TEXT[] DEFAULT '{}'::TEXT[];
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS is_mentor BOOLEAN DEFAULT false;
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS points INTEGER DEFAULT 0;
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS search_vector TSVECTOR;
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE public.user_directory ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
 
-ALTER TABLE public.circle_dashboard ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Service role can manage circle dashboards" ON public.circle_dashboard;
-CREATE POLICY "Service role can manage circle dashboards" ON public.circle_dashboard FOR ALL
-  USING (auth.role() = 'service_role')
-  WITH CHECK (auth.role() = 'service_role');
+CREATE INDEX IF NOT EXISTS idx_circle_members_user ON public.circle_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_circle_members_circle ON public.circle_members(circle_id);
+CREATE INDEX IF NOT EXISTS idx_user_directory_search ON public.user_directory USING GIN(search_vector);
+CREATE INDEX IF NOT EXISTS idx_user_directory_is_mentor ON public.user_directory(is_mentor);
 
--- ============================================================================
--- 3. MEMBER DIRECTORY & SEARCH
--- ============================================================================
+CREATE OR REPLACE FUNCTION public.update_user_directory_search_vector()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.search_vector := to_tsvector(
+    'english',
+    coalesce(NEW.full_name, '') || ' ' ||
+    coalesce(NEW.bio, '') || ' ' ||
+    coalesce(array_to_string(NEW.skills, ' '), '') || ' ' ||
+    coalesce(array_to_string(NEW.interests, ' '), '')
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Full-text search index for members
-CREATE TABLE IF NOT EXISTS public.user_directory (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  full_name TEXT,
-  headline TEXT,
-  bio TEXT,
-  skills TEXT[],
-  interests TEXT[],
-  is_mentor BOOLEAN,
-  search_vector tsvector,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  UNIQUE(user_id)
-);
+DROP TRIGGER IF EXISTS update_user_directory_search ON public.user_directory;
+CREATE TRIGGER update_user_directory_search
+BEFORE INSERT OR UPDATE ON public.user_directory
+FOR EACH ROW EXECUTE FUNCTION public.update_user_directory_search_vector();
 
-CREATE INDEX idx_user_directory_search ON public.user_directory USING GIN(search_vector);
-CREATE INDEX idx_user_directory_is_mentor ON public.user_directory(is_mentor);
+ALTER TABLE public.circles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.circle_members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_directory ENABLE ROW LEVEL SECURITY;
 
--- ============================================================================
--- 4. MENTORSHIP SYSTEM
--- ============================================================================
+DROP POLICY IF EXISTS "Circles are publicly readable" ON public.circles;
+CREATE POLICY "Circles are publicly readable" ON public.circles FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Users can view memberships" ON public.circle_members;
+CREATE POLICY "Users can view memberships" ON public.circle_members FOR SELECT USING (auth.role() = 'authenticated');
+DROP POLICY IF EXISTS "Users can insert their own membership" ON public.circle_members;
+CREATE POLICY "Users can insert their own membership" ON public.circle_members FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Everyone can search directory" ON public.user_directory;
+CREATE POLICY "Everyone can search directory" ON public.user_directory FOR SELECT USING (true);
 
--- Mentor-mentee relationships
-CREATE TABLE IF NOT EXISTS public.mentorship (
+INSERT INTO public.circles (name, description, icon)
+SELECT 'Learn', 'Develop knowledge, skills and confidence.', 'book'
+WHERE NOT EXISTS (SELECT 1 FROM public.circles WHERE name = 'Learn');
+
+INSERT INTO public.circles (name, description, icon)
+SELECT 'Connect', 'Build meaningful relationships and networks.', 'users'
+WHERE NOT EXISTS (SELECT 1 FROM public.circles WHERE name = 'Connect');
+
+INSERT INTO public.circles (name, description, icon)
+SELECT 'Earn', 'Discover opportunities and financial growth.', 'wallet'
+WHERE NOT EXISTS (SELECT 1 FROM public.circles WHERE name = 'Earn');
+
+INSERT INTO public.circles (name, description, icon)
+SELECT 'Thrive', 'Achieve holistic well-being and purpose.', 'heart'
+WHERE NOT EXISTS (SELECT 1 FROM public.circles WHERE name = 'Thrive');
+
+-- =========================
+-- 3. MENTORSHIP, EVENTS & GAMIFICATION
+-- =========================
+
+CREATE TABLE IF NOT EXISTS public.mentorship_pairs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   mentor_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   mentee_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'paused')),
+  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'paused', 'ended')),
   started_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   ended_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  CONSTRAINT different_users CHECK (mentor_id != mentee_id)
+  CONSTRAINT mentorship_pairs_different_users CHECK (mentor_id != mentee_id),
+  CONSTRAINT mentorship_pairs_unique_pair UNIQUE(mentor_id, mentee_id)
 );
 
-CREATE INDEX idx_mentorship_mentor ON public.mentorship(mentor_id);
-CREATE INDEX idx_mentorship_mentee ON public.mentorship(mentee_id);
-
--- Mentorship requests
 CREATE TABLE IF NOT EXISTS public.mentorship_requests (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   mentor_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   requester_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
   message TEXT,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   responded_at TIMESTAMP WITH TIME ZONE,
-  CONSTRAINT different_users CHECK (mentor_id != requester_id)
+  CONSTRAINT mentorship_requests_different_users CHECK (mentor_id != requester_id)
 );
 
-CREATE INDEX idx_mentorship_requests_mentor ON public.mentorship_requests(mentor_id, status);
-CREATE INDEX idx_mentorship_requests_requester ON public.mentorship_requests(requester_id);
-
--- Mentorship sessions
 CREATE TABLE IF NOT EXISTS public.mentorship_sessions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  mentorship_id UUID NOT NULL REFERENCES public.mentorship(id) ON DELETE CASCADE,
+  pair_id UUID NOT NULL REFERENCES public.mentorship_pairs(id) ON DELETE CASCADE,
   scheduled_at TIMESTAMP WITH TIME ZONE NOT NULL,
   completed_at TIMESTAMP WITH TIME ZONE,
   notes TEXT,
-  rating INTEGER CHECK (rating >= 1 AND rating <= 5),
-  feedback TEXT,
+  feedback_rating INTEGER CHECK (feedback_rating IS NULL OR (feedback_rating >= 1 AND feedback_rating <= 5)),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_mentorship_sessions_mentorship ON public.mentorship_sessions(mentorship_id);
-
--- ============================================================================
--- 5. EVENTS & REGISTRATION
--- ============================================================================
-
--- Events
 CREATE TABLE IF NOT EXISTS public.events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   description TEXT,
   image_url TEXT,
-  event_type TEXT NOT NULL,
-  circle_name TEXT,
-  organizer_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  start_time TIMESTAMP WITH TIME ZONE NOT NULL,
-  end_time TIMESTAMP WITH TIME ZONE NOT NULL,
   location TEXT,
+  start_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  end_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  organizer_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   capacity INTEGER,
-  registration_url TEXT,
-  status TEXT DEFAULT 'upcoming' CHECK (status IN ('upcoming', 'live', 'completed', 'cancelled')),
+  registered_count INTEGER DEFAULT 0,
+  status TEXT DEFAULT 'upcoming' CHECK (status IN ('upcoming', 'ongoing', 'completed', 'cancelled')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_events_organizer ON public.events(organizer_id);
-CREATE INDEX idx_events_start_time ON public.events(start_time DESC);
-CREATE INDEX idx_events_status ON public.events(status);
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS event_type TEXT DEFAULT 'workshop';
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS circle_name TEXT;
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS circle_id UUID REFERENCES public.circles(id) ON DELETE SET NULL;
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS start_time TIMESTAMP WITH TIME ZONE;
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS end_time TIMESTAMP WITH TIME ZONE;
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS registration_url TEXT;
 
--- Event registrations
+UPDATE public.events
+SET start_time = COALESCE(start_time, start_date),
+    end_time = COALESCE(end_time, end_date)
+WHERE start_time IS NULL OR end_time IS NULL;
+
 CREATE TABLE IF NOT EXISTS public.event_registrations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   event_id UUID NOT NULL REFERENCES public.events(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  status TEXT DEFAULT 'registered' CHECK (status IN ('registered', 'attended', 'cancelled')),
   registered_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  attended_at TIMESTAMP WITH TIME ZONE,
-  feedback TEXT,
-  rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+  attended BOOLEAN DEFAULT false,
+  feedback_rating INTEGER CHECK (feedback_rating IS NULL OR (feedback_rating >= 1 AND feedback_rating <= 5)),
+  feedback_text TEXT,
   UNIQUE(event_id, user_id)
 );
 
-CREATE INDEX idx_event_registrations_event ON public.event_registrations(event_id);
-CREATE INDEX idx_event_registrations_user ON public.event_registrations(user_id);
-
--- Event reminders
 CREATE TABLE IF NOT EXISTS public.event_reminders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   registration_id UUID NOT NULL REFERENCES public.event_registrations(id) ON DELETE CASCADE,
@@ -244,21 +383,20 @@ CREATE TABLE IF NOT EXISTS public.event_reminders (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
--- ============================================================================
--- 6. GAMIFICATION SYSTEM
--- ============================================================================
+ALTER TABLE public.event_registrations ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'registered' CHECK (status IN ('registered', 'attended', 'cancelled'));
+ALTER TABLE public.event_reminders ADD COLUMN IF NOT EXISTS event_registration_id UUID REFERENCES public.event_registrations(id) ON DELETE CASCADE;
+ALTER TABLE public.event_reminders ADD COLUMN IF NOT EXISTS scheduled_for TIMESTAMP WITH TIME ZONE;
 
--- Badge definitions
 CREATE TABLE IF NOT EXISTS public.badges (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL UNIQUE,
   description TEXT,
   icon_url TEXT,
   points_required INTEGER DEFAULT 0,
+  color TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
--- User badges earned
 CREATE TABLE IF NOT EXISTS public.user_badges (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -267,56 +405,108 @@ CREATE TABLE IF NOT EXISTS public.user_badges (
   UNIQUE(user_id, badge_id)
 );
 
-CREATE INDEX idx_user_badges_user ON public.user_badges(user_id);
-
--- Challenges
 CREATE TABLE IF NOT EXISTS public.challenges (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   description TEXT,
-  circle_name TEXT,
-  creator_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  difficulty TEXT CHECK (difficulty IN ('easy', 'medium', 'hard')),
+  points_reward INTEGER DEFAULT 50,
   start_date TIMESTAMP WITH TIME ZONE NOT NULL,
   end_date TIMESTAMP WITH TIME ZONE NOT NULL,
-  points_reward INTEGER DEFAULT 50,
-  difficulty TEXT DEFAULT 'medium' CHECK (difficulty IN ('easy', 'medium', 'hard')),
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'cancelled')),
+  created_by UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_challenges_active ON public.challenges(status, end_date);
-
--- Challenge participants
 CREATE TABLE IF NOT EXISTS public.challenge_participants (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   challenge_id UUID NOT NULL REFERENCES public.challenges(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  joined_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
+  completed BOOLEAN DEFAULT false,
   completed_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   UNIQUE(challenge_id, user_id)
 );
 
-CREATE INDEX idx_challenge_participants_user ON public.challenge_participants(user_id);
-
--- Leaderboards (cached for performance)
 CREATE TABLE IF NOT EXISTS public.leaderboards (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  circle_name TEXT,
-  period TEXT NOT NULL CHECK (period IN ('weekly', 'monthly', 'alltime')),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  total_points INTEGER NOT NULL,
   rank INTEGER,
+  total_points INTEGER DEFAULT 0,
+  period TEXT DEFAULT 'all_time' CHECK (period IN ('weekly', 'monthly', 'all_time')),
+  circle_name TEXT,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  UNIQUE(circle_name, period, user_id)
+  UNIQUE(user_id, period)
 );
 
-CREATE INDEX idx_leaderboards_period_rank ON public.leaderboards(period, rank);
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS registered_count INTEGER DEFAULT 0;
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE public.event_registrations ADD COLUMN IF NOT EXISTS registered_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
+ALTER TABLE public.event_registrations ADD COLUMN IF NOT EXISTS attended BOOLEAN DEFAULT false;
+ALTER TABLE public.event_registrations ADD COLUMN IF NOT EXISTS feedback_rating INTEGER CHECK (feedback_rating IS NULL OR (feedback_rating >= 1 AND feedback_rating <= 5));
+ALTER TABLE public.event_registrations ADD COLUMN IF NOT EXISTS feedback_text TEXT;
+ALTER TABLE public.leaderboards ADD COLUMN IF NOT EXISTS circle_name TEXT;
+ALTER TABLE public.leaderboards ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
 
--- ============================================================================
--- 7. BLOG & KNOWLEDGE BASE
--- ============================================================================
+CREATE INDEX IF NOT EXISTS idx_mentorship_pairs_mentor ON public.mentorship_pairs(mentor_id);
+CREATE INDEX IF NOT EXISTS idx_mentorship_pairs_mentee ON public.mentorship_pairs(mentee_id);
+CREATE INDEX IF NOT EXISTS idx_mentorship_requests_mentor ON public.mentorship_requests(mentor_id);
+CREATE INDEX IF NOT EXISTS idx_mentorship_sessions_pair ON public.mentorship_sessions(pair_id);
+CREATE INDEX IF NOT EXISTS idx_events_organizer ON public.events(organizer_id);
+CREATE INDEX IF NOT EXISTS idx_events_start_date ON public.events(start_date DESC);
+CREATE INDEX IF NOT EXISTS idx_event_registrations_event ON public.event_registrations(event_id);
+CREATE INDEX IF NOT EXISTS idx_user_badges_user ON public.user_badges(user_id);
+CREATE INDEX IF NOT EXISTS idx_challenge_participants_challenge ON public.challenge_participants(challenge_id);
+CREATE INDEX IF NOT EXISTS idx_challenge_participants_user ON public.challenge_participants(user_id);
+CREATE INDEX IF NOT EXISTS idx_leaderboards_rank ON public.leaderboards(rank, period);
+CREATE INDEX IF NOT EXISTS idx_leaderboards_points ON public.leaderboards(total_points DESC);
 
--- Articles
+DROP TRIGGER IF EXISTS update_events_updated_at ON public.events;
+CREATE TRIGGER update_events_updated_at
+BEFORE UPDATE ON public.events
+FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+
+-- RLS for mentorship/events/gamification
+ALTER TABLE public.mentorship_pairs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.mentorship_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.mentorship_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.event_registrations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.badges ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_badges ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.challenges ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.challenge_participants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.leaderboards ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Everyone can view events" ON public.events;
+CREATE POLICY "Everyone can view events" ON public.events FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Organizers can update their events" ON public.events;
+CREATE POLICY "Organizers can update their events" ON public.events FOR UPDATE USING (auth.uid() = organizer_id) WITH CHECK (auth.uid() = organizer_id);
+DROP POLICY IF EXISTS "Users can register for events" ON public.event_registrations;
+CREATE POLICY "Users can register for events" ON public.event_registrations FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Everyone can view badges" ON public.badges;
+CREATE POLICY "Everyone can view badges" ON public.badges FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Everyone can view leaderboards" ON public.leaderboards;
+CREATE POLICY "Everyone can view leaderboards" ON public.leaderboards FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Everyone can view challenges" ON public.challenges;
+CREATE POLICY "Everyone can view challenges" ON public.challenges FOR SELECT USING (true);
+
+INSERT INTO public.badges (name, description, icon_url, color)
+SELECT 'First Step', 'Complete your profile', 'https://api.dicebear.com/7.x/bottts/svg?seed=first', '#FF6B6B'
+WHERE NOT EXISTS (SELECT 1 FROM public.badges WHERE name = 'First Step');
+
+INSERT INTO public.badges (name, description, icon_url, color)
+SELECT 'Community Builder', 'Make 10 connections', 'https://api.dicebear.com/7.x/bottts/svg?seed=builder', '#4ECDC4'
+WHERE NOT EXISTS (SELECT 1 FROM public.badges WHERE name = 'Community Builder');
+
+INSERT INTO public.badges (name, description, icon_url, color)
+SELECT 'Knowledge Sharer', 'Publish an article', 'https://api.dicebear.com/7.x/bottts/svg?seed=sharer', '#FFE66D'
+WHERE NOT EXISTS (SELECT 1 FROM public.badges WHERE name = 'Knowledge Sharer');
+
+-- =========================
+-- 4. ARTICLES, NOTIFICATIONS & ANALYTICS
+-- =========================
+
 CREATE TABLE IF NOT EXISTS public.articles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
@@ -328,18 +518,12 @@ CREATE TABLE IF NOT EXISTS public.articles (
   circle_name TEXT,
   status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
   published_at TIMESTAMP WITH TIME ZONE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   view_count INTEGER DEFAULT 0,
-  search_vector tsvector
+  search_vector TSVECTOR,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_articles_author ON public.articles(author_id);
-CREATE INDEX idx_articles_status ON public.articles(status);
-CREATE INDEX idx_articles_slug ON public.articles(slug);
-CREATE INDEX idx_articles_search ON public.articles USING GIN(search_vector);
-
--- Article tags
 CREATE TABLE IF NOT EXISTS public.article_tags (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   article_id UUID NOT NULL REFERENCES public.articles(id) ON DELETE CASCADE,
@@ -347,25 +531,15 @@ CREATE TABLE IF NOT EXISTS public.article_tags (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_article_tags_article ON public.article_tags(article_id);
-CREATE INDEX idx_article_tags_tag ON public.article_tags(tag);
-
--- Article comments
 CREATE TABLE IF NOT EXISTS public.article_comments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   article_id UUID NOT NULL REFERENCES public.articles(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  parent_comment_id UUID REFERENCES public.article_comments(id) ON DELETE CASCADE,
+  author_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
-  likes INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_article_comments_article ON public.article_comments(article_id);
-CREATE INDEX idx_article_comments_parent ON public.article_comments(parent_comment_id);
-
--- Resources (guides, templates, downloads)
 CREATE TABLE IF NOT EXISTS public.resources (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
@@ -378,291 +552,153 @@ CREATE TABLE IF NOT EXISTS public.resources (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_resources_creator ON public.resources(creator_id);
-
--- ============================================================================
--- 8. NOTIFICATIONS & PREFERENCES
--- ============================================================================
-
--- Notifications
 CREATE TABLE IF NOT EXISTS public.notifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   type TEXT NOT NULL,
   title TEXT NOT NULL,
-  message TEXT NOT NULL,
-  related_user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  related_resource_id UUID,
+  message TEXT,
+  related_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  related_item_id UUID,
+  action_url TEXT,
+  is_read BOOLEAN DEFAULT false,
   read_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_notifications_user ON public.notifications(user_id, read_at, created_at DESC);
-
--- Notification preferences
 CREATE TABLE IF NOT EXISTS public.notification_preferences (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
-  email_digest BOOLEAN DEFAULT TRUE,
-  email_frequency TEXT DEFAULT 'weekly' CHECK (email_frequency IN ('daily', 'weekly', 'monthly', 'never')),
-  in_app_notifications BOOLEAN DEFAULT TRUE,
-  message_notifications BOOLEAN DEFAULT TRUE,
-  event_reminders BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email_on_message BOOLEAN DEFAULT true,
+  email_on_event BOOLEAN DEFAULT true,
+  email_on_mention BOOLEAN DEFAULT true,
+  digest_frequency TEXT DEFAULT 'daily' CHECK (digest_frequency IN ('daily', 'weekly', 'never')),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
--- ============================================================================
--- 9. ANALYTICS
--- ============================================================================
-
--- User daily analytics
-CREATE TABLE IF NOT EXISTS public.user_analytics (
+CREATE TABLE IF NOT EXISTS public.analytics_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  date DATE NOT NULL,
-  messages_sent INTEGER DEFAULT 0,
-  articles_viewed INTEGER DEFAULT 0,
-  events_attended INTEGER DEFAULT 0,
-  points_earned INTEGER DEFAULT 0,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  UNIQUE(user_id, date)
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  event_type TEXT NOT NULL,
+  event_data JSONB DEFAULT '{}'::jsonb,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_user_analytics_date ON public.user_analytics(date DESC);
-
--- Platform daily analytics
 CREATE TABLE IF NOT EXISTS public.platform_analytics (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  date DATE NOT NULL,
+  date DATE NOT NULL UNIQUE,
   active_users INTEGER DEFAULT 0,
   new_users INTEGER DEFAULT 0,
   messages_sent INTEGER DEFAULT 0,
   events_created INTEGER DEFAULT 0,
   articles_published INTEGER DEFAULT 0,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  UNIQUE(date)
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
--- Circle daily analytics
 CREATE TABLE IF NOT EXISTS public.circle_analytics (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  circle_name TEXT NOT NULL,
+  circle_id UUID NOT NULL REFERENCES public.circles(id) ON DELETE CASCADE,
   date DATE NOT NULL,
   active_members INTEGER DEFAULT 0,
   new_members INTEGER DEFAULT 0,
   posts_count INTEGER DEFAULT 0,
   events_count INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  UNIQUE(circle_name, date)
+  UNIQUE(circle_id, date)
 );
 
--- ============================================================================
--- 10. ADMIN & MODERATION
--- ============================================================================
-
--- Admin roles
 CREATE TABLE IF NOT EXISTS public.admin_roles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
-  role TEXT NOT NULL CHECK (role IN ('moderator', 'admin', 'super_admin', 'superadmin')),
-  permissions TEXT[] DEFAULT '{}',
-  granted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+  role TEXT NOT NULL CHECK (role IN ('admin', 'super_admin', 'moderator', 'content_manager')),
+  permissions TEXT[] DEFAULT '{}'::TEXT[],
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
+  created_by UUID REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
--- Audit logs
 CREATE TABLE IF NOT EXISTS public.audit_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   admin_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   action TEXT NOT NULL,
-  resource_type TEXT,
-  resource_id UUID,
-  changes JSONB,
+  table_name TEXT,
+  record_id UUID,
+  changes JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
-CREATE INDEX idx_audit_logs_admin ON public.audit_logs(admin_id);
-CREATE INDEX idx_audit_logs_created ON public.audit_logs(created_at DESC);
-
--- Moderation flags
 CREATE TABLE IF NOT EXISTS public.moderation_flags (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  reported_by_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  reported_user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  reported_by UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   content_type TEXT NOT NULL,
-  content_id UUID,
+  content_id UUID NOT NULL,
   reason TEXT NOT NULL,
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'reviewed', 'resolved', 'dismissed')),
-  reviewed_by_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
-  action_taken TEXT,
+  reviewer_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  resolution_notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+  resolved_at TIMESTAMP WITH TIME ZONE
 );
 
-CREATE INDEX idx_moderation_flags_status ON public.moderation_flags(status);
+CREATE TABLE IF NOT EXISTS public.form_submissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  form_name TEXT NOT NULL,
+  submission JSONB DEFAULT '{}'::jsonb,
+  submitted_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
 
--- ============================================================================
--- ROW LEVEL SECURITY (RLS) POLICIES
--- ============================================================================
+CREATE INDEX IF NOT EXISTS idx_articles_author ON public.articles(author_id);
+CREATE INDEX IF NOT EXISTS idx_articles_status ON public.articles(status);
+CREATE INDEX IF NOT EXISTS idx_articles_search ON public.articles USING GIN(search_vector);
+CREATE INDEX IF NOT EXISTS idx_article_comments_article ON public.article_comments(article_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON public.notifications(user_id, is_read, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_analytics_events_user ON public.analytics_events(user_id);
+CREATE INDEX IF NOT EXISTS idx_platform_analytics_date ON public.platform_analytics(date DESC);
+CREATE INDEX IF NOT EXISTS idx_circle_analytics_circle ON public.circle_analytics(circle_id, date);
+CREATE INDEX IF NOT EXISTS idx_moderation_flags_status ON public.moderation_flags(status);
 
--- Enable RLS on all tables
-ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.user_activity ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.user_directory ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.mentorship ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.mentorship_requests ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.mentorship_sessions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.event_registrations ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.event_reminders ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.badges ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.user_badges ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.challenges ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.challenge_participants ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.leaderboards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.articles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.article_tags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.article_comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.resources ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notification_preferences ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.user_analytics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.analytics_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.platform_analytics ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.circle_analytics ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.admin_roles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.moderation_flags ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.form_submissions ENABLE ROW LEVEL SECURITY;
 
--- User profiles - authenticated users can view all, edit their own
-DROP POLICY IF EXISTS "user_profiles_select" ON public.user_profiles;
-CREATE POLICY "user_profiles_select" ON public.user_profiles
-  FOR SELECT TO authenticated USING (TRUE);
+DROP POLICY IF EXISTS "Everyone can view published articles" ON public.articles;
+CREATE POLICY "Everyone can view published articles" ON public.articles FOR SELECT USING (status = 'published' OR auth.uid() = author_id);
+DROP POLICY IF EXISTS "Authors can create articles" ON public.articles;
+CREATE POLICY "Authors can create articles" ON public.articles FOR INSERT WITH CHECK (auth.uid() = author_id);
+DROP POLICY IF EXISTS "Authors can update their articles" ON public.articles;
+CREATE POLICY "Authors can update their articles" ON public.articles FOR UPDATE USING (auth.uid() = author_id) WITH CHECK (auth.uid() = author_id);
+DROP POLICY IF EXISTS "Users can view their notifications" ON public.notifications;
+CREATE POLICY "Users can view their notifications" ON public.notifications FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can manage their preferences" ON public.notification_preferences;
+CREATE POLICY "Users can manage their preferences" ON public.notification_preferences FOR ALL USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+DROP POLICY IF EXISTS "Service role can insert analytics" ON public.analytics_events;
+CREATE POLICY "Service role can insert analytics" ON public.analytics_events FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Everyone can view public analytics" ON public.platform_analytics;
+CREATE POLICY "Everyone can view public analytics" ON public.platform_analytics FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Service role can manage circle analytics" ON public.circle_analytics;
+CREATE POLICY "Service role can manage circle analytics" ON public.circle_analytics FOR ALL USING (auth.role() = 'service_role') WITH CHECK (auth.role() = 'service_role');
+DROP POLICY IF EXISTS "Service role can manage admin roles" ON public.admin_roles;
+CREATE POLICY "Service role can manage admin roles" ON public.admin_roles FOR ALL USING (auth.role() = 'service_role') WITH CHECK (auth.role() = 'service_role');
+DROP POLICY IF EXISTS "Service role can manage audit logs" ON public.audit_logs;
+CREATE POLICY "Service role can manage audit logs" ON public.audit_logs FOR ALL USING (auth.role() = 'service_role') WITH CHECK (auth.role() = 'service_role');
+DROP POLICY IF EXISTS "Service role can manage moderation flags" ON public.moderation_flags;
+CREATE POLICY "Service role can manage moderation flags" ON public.moderation_flags FOR ALL USING (auth.role() = 'service_role') WITH CHECK (auth.role() = 'service_role');
+DROP POLICY IF EXISTS "Authenticated users can submit forms" ON public.form_submissions;
+CREATE POLICY "Authenticated users can submit forms" ON public.form_submissions FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
-DROP POLICY IF EXISTS "user_profiles_update" ON public.user_profiles;
-CREATE POLICY "user_profiles_update" ON public.user_profiles
-  FOR UPDATE TO authenticated
-  USING (auth.uid() = id)
-  WITH CHECK (auth.uid() = id);
-
--- User activity - authenticated users can insert, view own
-DROP POLICY IF EXISTS "user_activity_insert" ON public.user_activity;
-CREATE POLICY "user_activity_insert" ON public.user_activity
-  FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "user_activity_select" ON public.user_activity;
-CREATE POLICY "user_activity_select" ON public.user_activity
-  FOR SELECT TO authenticated USING (auth.uid() = user_id);
-
--- Conversations - users can view/manage their own
-DROP POLICY IF EXISTS "conversations_select" ON public.conversations;
-CREATE POLICY "conversations_select" ON public.conversations
-  FOR SELECT TO authenticated
-  USING (auth.uid() = user1_id OR auth.uid() = user2_id);
-
-DROP POLICY IF EXISTS "conversations_insert" ON public.conversations;
-CREATE POLICY "conversations_insert" ON public.conversations
-  FOR INSERT TO authenticated
-  WITH CHECK (auth.uid() = user1_id OR auth.uid() = user2_id);
-
--- Messages - participants can view, sender can insert
-DROP POLICY IF EXISTS "messages_select" ON public.messages;
-CREATE POLICY "messages_select" ON public.messages
-  FOR SELECT TO authenticated
-  USING (
-    sender_id = auth.uid() OR
-    conversation_id IN (
-      SELECT id FROM public.conversations
-      WHERE user1_id = auth.uid() OR user2_id = auth.uid()
-    )
-  );
-
-DROP POLICY IF EXISTS "messages_insert" ON public.messages;
-CREATE POLICY "messages_insert" ON public.messages
-  FOR INSERT TO authenticated
-  WITH CHECK (sender_id = auth.uid());
-
--- User directory - public read
-DROP POLICY IF EXISTS "user_directory_select" ON public.user_directory;
-CREATE POLICY "user_directory_select" ON public.user_directory
-  FOR SELECT TO authenticated USING (TRUE);
-
--- Mentorship - authenticated can view related records
-DROP POLICY IF EXISTS "mentorship_select" ON public.mentorship;
-CREATE POLICY "mentorship_select" ON public.mentorship
-  FOR SELECT TO authenticated
-  USING (auth.uid() = mentor_id OR auth.uid() = mentee_id);
-
-DROP POLICY IF EXISTS "mentorship_requests_select" ON public.mentorship_requests;
-CREATE POLICY "mentorship_requests_select" ON public.mentorship_requests
-  FOR SELECT TO authenticated
-  USING (auth.uid() = mentor_id OR auth.uid() = requester_id);
-
-DROP POLICY IF EXISTS "mentorship_requests_insert" ON public.mentorship_requests;
-CREATE POLICY "mentorship_requests_insert" ON public.mentorship_requests
-  FOR INSERT TO authenticated
-  WITH CHECK (auth.uid() = requester_id);
-
--- Events - public read, authenticated can register
-DROP POLICY IF EXISTS "events_select" ON public.events;
-CREATE POLICY "events_select" ON public.events
-  FOR SELECT TO authenticated USING (TRUE);
-
-DROP POLICY IF EXISTS "event_registrations_insert" ON public.event_registrations;
-CREATE POLICY "event_registrations_insert" ON public.event_registrations
-  FOR INSERT TO authenticated
-  WITH CHECK (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "event_registrations_select" ON public.event_registrations;
-CREATE POLICY "event_registrations_select" ON public.event_registrations
-  FOR SELECT TO authenticated
-  USING (auth.uid() = user_id OR event_id IN (SELECT id FROM public.events WHERE organizer_id = auth.uid()));
-
--- Articles - public read published, authenticated can create
-DROP POLICY IF EXISTS "articles_select" ON public.articles;
-CREATE POLICY "articles_select" ON public.articles
-  FOR SELECT USING (status = 'published' OR auth.uid() = author_id);
-
-DROP POLICY IF EXISTS "articles_insert" ON public.articles;
-CREATE POLICY "articles_insert" ON public.articles
-  FOR INSERT TO authenticated
-  WITH CHECK (auth.uid() = author_id);
-
--- Notifications - users see their own
-DROP POLICY IF EXISTS "notifications_select" ON public.notifications;
-CREATE POLICY "notifications_select" ON public.notifications
-  FOR SELECT TO authenticated
-  USING (auth.uid() = user_id);
-
--- Notification preferences - users manage their own
-DROP POLICY IF EXISTS "notification_preferences_select" ON public.notification_preferences;
-CREATE POLICY "notification_preferences_select" ON public.notification_preferences
-  FOR SELECT TO authenticated
-  USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "notification_preferences_upsert" ON public.notification_preferences;
-CREATE POLICY "notification_preferences_upsert" ON public.notification_preferences
-  FOR UPDATE TO authenticated
-  USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user_id);
-
--- ============================================================================
--- INSERT DEFAULT DATA
--- ============================================================================
-
--- Default badges
-INSERT INTO public.badges (name, description, icon_url, points_required) VALUES
-  ('Newcomer', 'Welcome to Be Independent Gal!', '/badges/newcomer.png', 0),
-  ('Active Member', 'Earned 100+ points', '/badges/active.png', 100),
-  ('Mentor', 'Helped other members grow', '/badges/mentor.png', 250)
-ON CONFLICT DO NOTHING;
-
--- ============================================================================
--- GRANT PERMISSIONS
--- ============================================================================
+-- =========================
+-- 5. GRANTS
+-- =========================
 
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
-GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated;
-GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
-GRANT ALL ON ALL FUNCTIONS IN SCHEMA public TO anon, authenticated;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO authenticated;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO service_role;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO authenticated, anon, service_role;

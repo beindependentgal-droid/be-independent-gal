@@ -148,7 +148,7 @@ export default async function EventsPage() {
                               <div className="flex items-center gap-2 text-sm text-gray-600">
                                 <Calendar className="w-4 h-4 text-secondary-" />
                                 <span>
-                                  {new Date(event.start_time).toLocaleDateString(
+                                  {new Date(event.start_time ?? event.start_date ?? event.end_date ?? Date.now()).toLocaleDateString(
                                     'en-US',
                                     {
                                       month: 'short',
@@ -159,7 +159,7 @@ export default async function EventsPage() {
                                 </span>
                                 <span className="text-gray-400">•</span>
                                 <span>
-                                  {new Date(event.start_time).toLocaleTimeString(
+                                  {new Date(event.start_time ?? event.start_date ?? event.end_date ?? Date.now()).toLocaleTimeString(
                                     'en-US',
                                     {
                                       hour: 'numeric',
@@ -258,7 +258,7 @@ export default async function EventsPage() {
                               <div className="flex items-center gap-2 text-sm text-gray-600">
                                 <Calendar className="w-4 h-4 text-secondary-" />
                                 <span>
-                                  {new Date(event.start_time).toLocaleDateString(
+                                  {new Date(event.start_time ?? event.start_date ?? event.end_date ?? Date.now()).toLocaleDateString(
                                     'en-US',
                                     {
                                       month: 'short',
@@ -269,7 +269,7 @@ export default async function EventsPage() {
                                 </span>
                                 <span className="text-gray-400">•</span>
                                 <span>
-                                  {new Date(event.start_time).toLocaleTimeString(
+                                  {new Date(event.start_time ?? event.start_date ?? event.end_date ?? Date.now()).toLocaleTimeString(
                                     'en-US',
                                     {
                                       hour: 'numeric',

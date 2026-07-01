@@ -65,11 +65,14 @@ export async function POST(request: NextRequest) {
     await recordActivity(userId, "event_registered", 10, event.circle_id);
 
     // Create reminder for event
-    const eventTime = new Date(event.start_time);
+    const eventTime = new Date(
+      event.start_time ?? event.start_date ?? Date.now(),
+    );
     const reminderTime = new Date(eventTime.getTime() - 24 * 60 * 60 * 1000); // 24 hours before
 
     await supabase.from("event_reminders").insert({
       event_registration_id: registration.id,
+      reminder_type: "email",
       scheduled_for: reminderTime.toISOString(),
     });
 

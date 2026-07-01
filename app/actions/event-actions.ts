@@ -41,7 +41,7 @@ export async function getUpcomingEvents(limit = 20) {
     .from("events")
     .select("*")
     .in("status", ["upcoming", "ongoing"])
-    .order("start_time", { ascending: true })
+    .order("start_date", { ascending: true, nullsFirst: false })
     .limit(limit);
 
   if (error) {
@@ -65,7 +65,7 @@ export async function getEventsByCircle(circleName: string, limit = 20) {
     .select("*")
     .eq("circle_name", circleName)
     .in("status", ["upcoming", "ongoing"])
-    .order("start_time", { ascending: true })
+    .order("start_date", { ascending: true, nullsFirst: false })
     .limit(limit);
 
   if (error) {
