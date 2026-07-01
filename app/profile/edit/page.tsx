@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft, Loader, Check, AlertCircle, Upload } from 'lucide-react'
+import { ChevronLeft, Loader, Check, AlertCircle, Upload, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -149,6 +149,14 @@ export default function EditProfilePage() {
     }
   }
 
+  const removeAvatar = () => {
+    setFormData((prev) => ({
+      ...prev,
+      avatar_url: '',
+    }))
+    setAvatarPreview(null)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSaving(true)
@@ -239,6 +247,11 @@ export default function EditProfilePage() {
             Back
           </button>
 
+          <div className="mb-6 rounded-2xl border border-primary/20 bg-primary/10 p-4 text-sm text-gray-700">
+            <p className="font-semibold text-gray-900">Upload or update your profile photo and keep your details current.</p>
+            <p className="mt-1">Choose a clear image to add or replace your picture, then update the information below.</p>
+          </div>
+
           <h1 className="text-4xl font-bold text-gray-900">Edit Profile</h1>
           <p className="text-gray-600 mt-2">Update your profile information</p>
         </div>
@@ -288,7 +301,7 @@ export default function EditProfilePage() {
               {/* Avatar Upload Input */}
               <div className="flex-1">
                 <Label htmlFor="avatar_file" className="text-sm font-medium block mb-2">
-                  Upload profile picture
+                  Upload or change profile picture
                 </Label>
                 <label className="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 text-sm font-medium text-gray-700 transition hover:bg-gray-100">
                   <Upload className="h-4 w-4" />
@@ -302,6 +315,14 @@ export default function EditProfilePage() {
                     className="hidden"
                   />
                 </label>
+                <button
+                  type="button"
+                  onClick={removeAvatar}
+                  className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Remove photo
+                </button>
                 <p className="text-xs text-gray-500 mt-2">
                   Upload a clear photo from your device. Recommended size: 500x500px.
                 </p>
