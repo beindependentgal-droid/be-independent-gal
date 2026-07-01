@@ -42,6 +42,13 @@ export function SiteHeader() {
   const avatarLabel = user?.user_metadata?.avatar_url ? null : userName.charAt(0).toUpperCase()
   const profileHref = isAuthenticated ? '/auth/profile' : `/auth/login?redirect=${encodeURIComponent(redirectPath)}`
   const adminHref = '/admin'
+  const userRoleLower = typeof user?.user_metadata?.role === 'string' ? user.user_metadata.role.toLowerCase() : ''
+  const isSuperAdmin = Boolean(
+    isAuthenticated && (
+      user?.email?.toLowerCase() === 'athkhassan@gmail.com' ||
+      ['admin', 'super_admin', 'superadmin'].includes(userRoleLower)
+    ),
+  )
   const isTransparentHero = pathname === '/' && !scrolled
 
   useEffect(() => {
@@ -150,15 +157,17 @@ export function SiteHeader() {
 
           {isAuthenticated ? (
             <>
-              <Link
-                href={adminHref}
-                className={cn(
-                  'rounded-full border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition hover:bg-amber-100',
-                  isTransparentHero ? 'border-white/40 bg-white/10 text-white backdrop-blur-sm' : '',
-                )}
-              >
-                Superadmin
-              </Link>
+              {isSuperAdmin ? (
+                <Link
+                  href={adminHref}
+                  className={cn(
+                    'rounded-full border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition hover:bg-amber-100',
+                    isTransparentHero ? 'border-white/40 bg-white/10 text-white backdrop-blur-sm' : '',
+                  )}
+                >
+                  Superadmin
+                </Link>
+              ) : null}
               <Link
                 href={profileHref}
                 className={cn(
@@ -252,13 +261,15 @@ export function SiteHeader() {
 
               {isAuthenticated ? (
                 <>
-                  <Link
-                    href={adminHref}
-                    onClick={() => setOpen(false)}
-                    className="rounded-full border border-amber-300 bg-amber-50 px-4 py-2 text-center font-semibold text-amber-700 transition-colors hover:bg-amber-100"
-                  >
-                    Superadmin
-                  </Link>
+                  {isSuperAdmin ? (
+                    <Link
+                      href={adminHref}
+                      onClick={() => setOpen(false)}
+                      className="rounded-full border border-amber-300 bg-amber-50 px-4 py-2 text-center font-semibold text-amber-700 transition-colors hover:bg-amber-100"
+                    >
+                      Superadmin
+                    </Link>
+                  ) : null}
                   <Link
                     href={profileHref}
                     onClick={() => setOpen(false)}
