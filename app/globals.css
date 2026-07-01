@@ -58,11 +58,18 @@
   /* Text Colors */
   --foreground: #2d1b4e;
   --foreground-muted: #4b5563;
+  --muted-foreground: #4b5563;
 
   /* UI Elements */
   --border: #e5e7eb;
   --input: #e5e7eb;
   --ring: #2d1b4e;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
+  --muted: #f1f5f9;
+  --muted-foreground: #4b5563;
 
   /* Brand Colors - Deep Purple */
   --primary-50: #f3e8ff;
@@ -289,7 +296,7 @@
     font-family: var(--font-body);
     font-weight: 400;
     line-height: var(--line-body);
-    color: var(--text-color-body);
+    color: var(--foreground);
     min-height: 100vh;
     background: var(--background);
     transition: background-color var(--transition) var(--ease);
