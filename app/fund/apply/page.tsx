@@ -64,7 +64,7 @@ export default function ApplyPage() {
             {/* Section 1: Founder Info */}
             <div className="bg-gray-50 rounded-2xl border border-gray-200 p-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold">
+                <span className="w-8 h-8 rounded-full bg-secondary- text-white flex items-center justify-center font-bold">
                   1
                 </span>
                 About You
@@ -131,7 +131,7 @@ export default function ApplyPage() {
             {/* Section 2: Business Info */}
             <div className="bg-gray-50 rounded-2xl border border-gray-200 p-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold">
+                <span className="w-8 h-8 rounded-full bg-secondary- text-white flex items-center justify-center font-bold">
                   2
                 </span>
                 About Your Business
@@ -235,7 +235,7 @@ export default function ApplyPage() {
             {/* Section 3: Funding Request */}
             <div className="bg-gray-50 rounded-2xl border border-gray-200 p-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold">
+                <span className="w-8 h-8 rounded-full bg-secondary- text-white flex items-center justify-center font-bold">
                   3
                 </span>
                 Funding Request
@@ -297,7 +297,7 @@ export default function ApplyPage() {
             {/* Section 4: Business Vision */}
             <div className="bg-gray-50 rounded-2xl border border-gray-200 p-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold">
+                <span className="w-8 h-8 rounded-full bg-secondary- text-white flex items-center justify-center font-bold">
                   4
                 </span>
                 Tell Us About Your Vision
@@ -354,7 +354,7 @@ export default function ApplyPage() {
                   id="terms"
                   type="checkbox"
                   required
-                  className="w-5 h-5 rounded border-gray-300 text-pink-600 focus:ring-pink-500 cursor-pointer mt-1"
+                  className="w-5 h-5 rounded border-gray-300 text-secondary- focus:ring-pink-500 cursor-pointer mt-1"
                 />
                 <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer">
                   I confirm that all information provided in this application is accurate and complete. *
@@ -366,7 +366,7 @@ export default function ApplyPage() {
                   id="privacy"
                   type="checkbox"
                   required
-                  className="w-5 h-5 rounded border-gray-300 text-pink-600 focus:ring-pink-500 cursor-pointer mt-1"
+                  className="w-5 h-5 rounded border-gray-300 text-secondary- focus:ring-pink-500 cursor-pointer mt-1"
                 />
                 <label htmlFor="privacy" className="text-sm text-gray-700 cursor-pointer">
                   I agree to BIG's privacy policy and terms of service. *
@@ -376,7 +376,7 @@ export default function ApplyPage() {
 
             {/* Submit */}
             <div className="space-y-4">
-              <Button className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 text-lg">
+              <Button className="w-full bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 text-lg">
                 Submit Application
               </Button>
 
@@ -425,7 +425,7 @@ export default function ApplyPage() {
               <details key={idx} className="bg-white rounded-2xl border border-gray-200 p-6 cursor-pointer group">
                 <summary className="flex items-center justify-between font-bold text-gray-900 select-none">
                   {item.q}
-                  <span className="text-pink-500 group-open:rotate-180 transition-transform">+</span>
+                  <span className="text-secondary- group-open:rotate-180 transition-transform">+</span>
                 </summary>
                 <p className="text-gray-600 mt-4 leading-relaxed">{item.a}</p>
               </details>
@@ -443,12 +443,12 @@ export default function ApplyPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="mailto:fund@big.org">
-              <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8">
+              <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
                 Email Us
               </Button>
             </a>
             <a href="https://calendly.com/big/consultation">
-              <Button variant="outline" className="border-2 border-pink-500 text-pink-600 hover:bg-pink-50 font-bold rounded-full h-12 px-8">
+              <Button variant="outline" className="border-2 border-secondary- text-secondary- hover:bg-secondary- font-bold rounded-full h-12 px-8">
                 Schedule a Call
               </Button>
             </a>

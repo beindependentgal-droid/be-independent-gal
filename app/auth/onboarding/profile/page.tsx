@@ -105,7 +105,7 @@ export default function ProfileOnboardingPage() {
         {/* Progress bar */}
         <div className="mb-12">
           <div className="h-1 bg-gray-200 rounded-full">
-            <div className="h-full w-1/3 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div className="h-full w-1/3 bg-secondary- rounded-full transition-all duration-300"></div>
           </div>
         </div>
 
@@ -225,7 +225,7 @@ export default function ProfileOnboardingPage() {
           <Button
             type="submit"
             disabled={loading || !fullName.trim()}
-            className="w-full h-12 rounded-full bg-pink-500 hover:bg-pink-600 disabled:bg-gray-300 text-white font-bold transition-colors"
+            className="w-full h-12 rounded-full bg-secondary- hover:bg-secondary- disabled:bg-gray-300 text-white font-bold transition-colors"
           >
             {loading ? (
               <span className="flex items-center gap-2">

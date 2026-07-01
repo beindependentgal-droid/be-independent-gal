@@ -116,7 +116,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
     return (
       <div className="w-full max-w-md rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <div className="text-center">
-          <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-pink-100 text-3xl">
+          <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-secondary- text-3xl">
             ✉️
           </div>
           <h2 className="text-2xl font-semibold text-slate-900">Check your email</h2>
@@ -158,7 +158,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
   return (
     <form onSubmit={handleSubmit} className="w-full rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <div className="mb-8 text-center">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-pink-100 px-3 py-1 text-sm font-semibold text-pink-700">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-secondary- px-3 py-1 text-sm font-semibold text-secondary-">
           <Sparkles className="h-4 w-4" />
           Join the movement
         </div>
@@ -221,7 +221,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
       ) : null}
 
       <label className="mt-5 flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-        <input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} className="mt-1 h-4 w-4 rounded border-slate-300 text-pink-600 focus:ring-pink-500" />
+        <input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} className="mt-1 h-4 w-4 rounded border-slate-300 text-secondary- focus:ring-pink-500" />
         <span>
           I agree to the BIG community terms and privacy policy.
         </span>
@@ -233,7 +233,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
         </div>
       ) : null}
 
-      <Button type="submit" disabled={loading} className="mt-6 h-12 w-full rounded-full bg-pink-600 font-semibold text-white hover:bg-pink-700">
+      <Button type="submit" disabled={loading} className="mt-6 h-12 w-full rounded-full bg-secondary- font-semibold text-white hover:bg-secondary-">
         {loading ? 'Creating account...' : 'Create account'}
       </Button>
 
@@ -249,7 +249,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
 
       <p className="mt-6 text-center text-sm text-slate-600">
         Already have an account?{' '}
-        <Link href="/auth/login" className="font-semibold text-pink-600 hover:text-pink-700">
+        <Link href="/auth/login" className="font-semibold text-secondary- hover:text-secondary-">
           Sign in
         </Link>
       </p>

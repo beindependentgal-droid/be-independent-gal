@@ -159,7 +159,7 @@ export default function CircleDashboardPage({
           <h1 className="text-3xl font-bold text-gray-900">Circle not found</h1>
           <p className="text-gray-600">The circle you're looking for doesn't exist or has been removed.</p>
           <Link href="/circles">
-            <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8">
+            <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
               Back to Circles
             </Button>
           </Link>
@@ -173,7 +173,7 @@ export default function CircleDashboardPage({
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center space-y-4">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-secondary-"></div>
           <p className="text-gray-600 font-medium">Loading circle dashboard...</p>
         </div>
       </div>
@@ -190,7 +190,7 @@ export default function CircleDashboardPage({
           <p className="text-gray-600">You need to be signed in to view this circle.</p>
           <div className="space-y-3">
             <Link href="/auth/login" className="block">
-              <Button className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12">
+              <Button className="w-full bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12">
                 Sign In
               </Button>
             </Link>
@@ -273,7 +273,7 @@ export default function CircleDashboardPage({
           {/* Metrics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {(dashboardData?.metrics ?? []).map((metric, idx) => (
-              <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-pink-300 hover:shadow-lg transition-all">
+              <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-secondary- hover:shadow-lg transition-all">
                 <p className="text-sm text-gray-600 mb-2">{metric.label}</p>
                 <div className="text-3xl font-bold text-gray-900 mb-1">{metric.value}</div>
                 <p className="text-xs text-gray-500">{metric.detail}</p>

@@ -65,7 +65,7 @@ function ChallengeCard({ challenge }: ChallengeCardProps) {
 
   return (
     <Link href={`/challenges/${challenge.id}`}>
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-pink-300 hover:shadow-xl transition-all h-full flex flex-col">
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all h-full flex flex-col">
         {/* Image */}
         {challenge.image_url && (
           <div className="relative aspect-video overflow-hidden bg-gray-300">
@@ -86,7 +86,7 @@ function ChallengeCard({ challenge }: ChallengeCardProps) {
 
         {/* Content */}
         <div className="p-6 flex flex-col flex-1">
-          <h3 className="text-xl font-bold text-gray-900 mb-2 hover:text-pink-600 transition-colors line-clamp-2">
+          <h3 className="text-xl font-bold text-gray-900 mb-2 hover:text-secondary- transition-colors line-clamp-2">
             {challenge.title}
           </h3>
 
@@ -99,7 +99,7 @@ function ChallengeCard({ challenge }: ChallengeCardProps) {
           {/* Details */}
           <div className="space-y-3 mb-6 flex-1">
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Star className="w-4 h-4 text-pink-500" />
+              <Star className="w-4 h-4 text-secondary-" />
               <span>
                 Difficulty:{' '}
                 <span
@@ -110,11 +110,11 @@ function ChallengeCard({ challenge }: ChallengeCardProps) {
               </span>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Trophy className="w-4 h-4 text-pink-500" />
+              <Trophy className="w-4 h-4 text-secondary-" />
               <span>{challenge.points_reward} Points Reward</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <CalendarDays className="w-4 h-4 text-pink-500" />
+              <CalendarDays className="w-4 h-4 text-secondary-" />
               <span>
                 {daysLeft > 0 ? `${daysLeft} days left` : 'Ended ' + formatDate(challenge.end_date)}
               </span>
@@ -131,7 +131,7 @@ function ChallengeCard({ challenge }: ChallengeCardProps) {
           )}
 
           {/* CTA */}
-          <Button className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-10 flex items-center justify-center gap-2">
+          <Button className="w-full bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-10 flex items-center justify-center gap-2">
             {challenge.status === 'active' ? 'Join Challenge' : 'View Challenge'}
             <ArrowRight className="w-4 h-4" />
           </Button>
@@ -176,7 +176,7 @@ export default async function ChallengesPage() {
                 Check back soon for new opportunities to earn points and grow!
               </p>
               <Link href="/community">
-                <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8">
+                <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
                   Go to Community
                 </Button>
               </Link>
@@ -226,7 +226,7 @@ export default async function ChallengesPage() {
               <div key={idx} className="relative">
                 <div className="bg-gray-50 rounded-2xl border border-gray-200 p-8 h-full text-center">
                   {/* Step number */}
-                  <div className="w-14 h-14 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-2xl mx-auto mb-4">
+                  <div className="w-14 h-14 rounded-full bg-secondary- text-white flex items-center justify-center font-bold text-2xl mx-auto mb-4">
                     {item.num}
                   </div>
 
@@ -238,7 +238,7 @@ export default async function ChallengesPage() {
                 {/* Arrow connector */}
                 {idx < 3 && (
                   <div className="hidden md:flex absolute -right-3 top-1/2 transform -translate-y-1/2 z-10">
-                    <ArrowRight className="w-6 h-6 text-pink-500" />
+                    <ArrowRight className="w-6 h-6 text-secondary-" />
                   </div>
                 )}
               </div>
@@ -257,7 +257,7 @@ export default async function ChallengesPage() {
             See how you stack up against other sisters in the BIG community on our dynamic leaderboard.
           </p>
           <Link href="/leaderboard">
-            <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8">
+            <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
               View Leaderboard
             </Button>
           </Link>

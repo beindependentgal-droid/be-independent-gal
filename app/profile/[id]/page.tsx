@@ -85,7 +85,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-secondary-"></div>
           <p className="text-gray-600 font-medium">Loading profile...</p>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function ProfilePage() {
           <p className="text-gray-600">{error || 'Unable to load profile'}</p>
           <Button
             onClick={() => window.history.back()}
-            className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8"
+            className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8"
           >
             Go Back
           </Button>
@@ -142,7 +142,7 @@ export default function ProfilePage() {
                       {profile.user_profile_extended.interests.map((interest, idx) => (
                         <span
                           key={idx}
-                          className="bg-pink-100 text-pink-700 text-sm font-medium px-4 py-2 rounded-full"
+                          className="bg-secondary- text-secondary- text-sm font-medium px-4 py-2 rounded-full"
                         >
                           {interest}
                         </span>
@@ -183,14 +183,14 @@ export default function ProfilePage() {
             {/* Action Buttons */}
             {!isOwnProfile && (
               <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-3">
-                <Button className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-11 flex items-center justify-center gap-2">
+                <Button className="w-full bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-11 flex items-center justify-center gap-2">
                   <MessageCircle className="w-4 h-4" />
                   Send Message
                 </Button>
 
                 <Button
                   variant="outline"
-                  className="w-full border-2 border-pink-500 text-pink-600 hover:bg-pink-50 font-bold rounded-full h-11 flex items-center justify-center gap-2"
+                  className="w-full border-2 border-secondary- text-secondary- hover:bg-secondary- font-bold rounded-full h-11 flex items-center justify-center gap-2"
                 >
                   <UserPlus className="w-4 h-4" />
                   Request Mentorship
@@ -234,7 +234,7 @@ export default function ProfilePage() {
             {profile.member_level && (
               <div className="bg-white rounded-2xl border border-border p-6 text-center">
                 <p className="text-sm text-gray-600 mb-2">Member Level</p>
-                <p className="text-2xl font-bold text-pink-600 capitalize">{profile.member_level}</p>
+                <p className="text-2xl font-bold text-secondary- capitalize">{profile.member_level}</p>
               </div>
             )}
 

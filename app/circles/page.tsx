@@ -175,7 +175,7 @@ export default function CirclesPage() {
         <div className="max-w-6xl mx-auto px-6 sm:px-12 lg:px-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="text-4xl font-bold text-pink-600 mb-2">11K+</div>
+              <div className="text-4xl font-bold text-secondary- mb-2">11K+</div>
               <p className="text-gray-600">Sisters in circles</p>
             </div>
             <div className="text-center">
@@ -202,7 +202,7 @@ export default function CirclesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
             {circles.map((circle) => (
               <Link key={circle.id} href={`/circles/join/${circle.id}`}>
-                <div className="h-full bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border border-gray-200 hover:border-pink-300">
+                <div className="h-full bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border border-gray-200 hover:border-secondary-">
                   {/* Header with gradient */}
                   <div className={`bg-gradient-to-r ${circle.color} p-8 text-white`}>
                     <div className="text-4xl mb-3">{circle.icon}</div>
@@ -213,7 +213,7 @@ export default function CirclesPage() {
                   {/* Content */}
                   <div className="p-8">
                     <p className="text-gray-600 leading-relaxed mb-6">{circle.description}</p>
-                    <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full w-full h-11">
+                    <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full w-full h-11">
                       Explore Circle →
                     </Button>
                   </div>
@@ -234,7 +234,7 @@ export default function CirclesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
             {features.map((feature, idx) => (
-              <div key={idx} className="p-6 border border-gray-200 rounded-2xl hover:border-pink-300 hover:shadow-lg transition-all">
+              <div key={idx} className="p-6 border border-gray-200 rounded-2xl hover:border-secondary- hover:shadow-lg transition-all">
                 <div className="text-3xl mb-3">{feature.emoji}</div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
                 <p className="text-gray-600 text-sm">{feature.description}</p>
@@ -256,11 +256,11 @@ export default function CirclesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
             {meetups.map((meetup, idx) => (
               <Link key={idx} href="/events"> {/* Assuming a generic events page */}
-                <div className="bg-white rounded-2xl border border-gray-200 hover:border-pink-300 hover:shadow-lg transition-all p-6 cursor-pointer">
+                <div className="bg-white rounded-2xl border border-gray-200 hover:border-secondary- hover:shadow-lg transition-all p-6 cursor-pointer">
                   <div className="flex gap-6">
                     {/* Date */}
-                    <div className="flex-shrink-0 text-center bg-pink-50 rounded-xl p-4 min-w-fit">
-                      <div className="text-2xl font-bold text-pink-600">{meetup.day}</div>
+                    <div className="flex-shrink-0 text-center bg-secondary- rounded-xl p-4 min-w-fit">
+                      <div className="text-2xl font-bold text-secondary-">{meetup.day}</div>
                       <div className="text-sm text-gray-600">{meetup.month}</div>
                     </div>
 
@@ -281,7 +281,7 @@ export default function CirclesPage() {
                         <span className="text-xs font-medium bg-blue-100 text-blue-700 rounded-full px-3 py-1">
                           {meetup.tag}
                         </span>
-                        <Button size="sm" className="bg-pink-500 hover:bg-pink-600 text-white rounded-full h-8 text-xs">
+                        <Button size="sm" className="bg-secondary- hover:bg-secondary- text-white rounded-full h-8 text-xs">
                           Save my spot
                         </Button>
                       </div>
@@ -294,7 +294,7 @@ export default function CirclesPage() {
 
           <div className="text-center mt-12">
             <Link href="/events">
-              <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8">
+              <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
                 View All Events
               </Button>
             </Link>
@@ -375,7 +375,7 @@ export default function CirclesPage() {
               },
             ].map((step, idx) => (
               <div key={idx} className="text-center">
-                <div className="w-12 h-12 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-lg mx-auto mb-4">
+                <div className="w-12 h-12 rounded-full bg-secondary- text-white flex items-center justify-center font-bold text-lg mx-auto mb-4">
                   {step.num}
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">{step.title}</h3>

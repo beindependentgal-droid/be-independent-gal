@@ -51,7 +51,7 @@ export default function LoginScreen({ searchParams }: LoginScreenProps) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-secondary-"></div>
         </div>
       </div>
     )
@@ -89,7 +89,7 @@ export default function LoginScreen({ searchParams }: LoginScreenProps) {
           <div className="text-center space-y-3 pt-4 border-t border-gray-200">
             <p className="text-xs text-gray-500">
               Having trouble signing in?{' '}
-              <a href="/auth/forgot-password" className="text-pink-600 hover:text-pink-700 font-medium">
+              <a href="/auth/forgot-password" className="text-secondary- hover:text-secondary- font-medium">
                 Reset your password
               </a>
             </p>

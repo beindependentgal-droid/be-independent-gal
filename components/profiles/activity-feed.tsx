@@ -34,7 +34,7 @@ const activityColors: Record<string, string> = {
   like: 'bg-red-50 text-red-700',
   challenge: 'bg-yellow-50 text-yellow-700',
   article: 'bg-green-50 text-green-700',
-  message: 'bg-pink-50 text-pink-700',
+  message: 'bg-secondary- text-secondary-',
   event_attended: 'bg-indigo-50 text-indigo-700',
 };
 

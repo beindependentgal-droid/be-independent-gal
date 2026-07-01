@@ -11,7 +11,7 @@ interface CircleEventsProps {
 const typeLabels: Record<Event['type'], { label: string; color: string }> = {
   workshop: { label: 'Workshop', color: 'bg-blue-100 text-blue-700' },
   meetup: { label: 'Meetup', color: 'bg-purple-100 text-purple-700' },
-  webinar: { label: 'Webinar', color: 'bg-pink-100 text-pink-700' },
+  webinar: { label: 'Webinar', color: 'bg-secondary- text-secondary-' },
   retreat: { label: 'Retreat', color: 'bg-green-100 text-green-700' },
 }
 

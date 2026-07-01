@@ -95,7 +95,7 @@ export default function DirectoryClient() {
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
-              <Users className="w-8 h-8 text-pink-600" />
+              <Users className="w-8 h-8 text-secondary-" />
               Member Directory
             </h1>
             <p className="text-gray-600 mt-2">
@@ -154,7 +154,7 @@ export default function DirectoryClient() {
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setMentorOnly(e.target.checked)
                   }
-                  className="h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500 cursor-pointer"
+                  className="h-4 w-4 rounded border-gray-300 text-secondary- focus:ring-pink-500 cursor-pointer"
                 />
                 <label
                   htmlFor="mentor-filter"
@@ -200,7 +200,7 @@ export default function DirectoryClient() {
         {isLoading && (
           <div className="flex items-center justify-center py-24">
             <div className="text-center space-y-4">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-secondary-"></div>
               <p className="text-gray-600 font-medium">Loading members...</p>
             </div>
           </div>
@@ -221,7 +221,7 @@ export default function DirectoryClient() {
             {hasFilters && (
               <Button
                 onClick={clearFilters}
-                className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8"
+                className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8"
               >
                 Clear Filters
               </Button>
@@ -258,7 +258,7 @@ export default function DirectoryClient() {
                 return (
                   <div
                     key={member.id}
-                    className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-pink-300 hover:shadow-lg transition-all"
+                    className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-lg transition-all"
                   >
                     {/* Card Content */}
                     <div className="p-6">
@@ -286,7 +286,7 @@ export default function DirectoryClient() {
 
                       {/* Member Level */}
                       {member.member_level && (
-                        <p className="text-sm text-pink-600 font-semibold text-center mb-3 capitalize">
+                        <p className="text-sm text-secondary- font-semibold text-center mb-3 capitalize">
                           {member.member_level}
                         </p>
                       )}
@@ -317,7 +317,7 @@ export default function DirectoryClient() {
                             {member.skills.slice(0, 3).map((skill, idx) => (
                               <span
                                 key={idx}
-                                className="text-xs bg-pink-100 text-pink-700 rounded-full px-3 py-1 font-medium"
+                                className="text-xs bg-secondary- text-secondary- rounded-full px-3 py-1 font-medium"
                               >
                                 {skill}
                               </span>
@@ -358,7 +358,7 @@ export default function DirectoryClient() {
 
                         <button
                           onClick={() => handleMessageClick(member.id)}
-                          className="w-full px-4 py-2 text-sm font-bold text-white bg-pink-500 hover:bg-pink-600 rounded-full transition-colors"
+                          className="w-full px-4 py-2 text-sm font-bold text-white bg-secondary- hover:bg-secondary- rounded-full transition-colors"
                         >
                           Send Message
                         </button>

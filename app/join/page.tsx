@@ -135,7 +135,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
       className="w-full text-left border-b border-gray-200 py-6 hover:bg-gray-50 px-6 transition-colors group"
     >
       <div className="flex items-center justify-between">
-        <h4 className="text-lg font-bold text-gray-900 group-hover:text-pink-600 transition-colors">
+        <h4 className="text-lg font-bold text-gray-900 group-hover:text-secondary- transition-colors">
           {question}
         </h4>
         <ChevronDown
@@ -176,7 +176,7 @@ export default function JoinPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
             <Link href="/auth/sign-up">
-              <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-14 px-8 flex items-center gap-2 w-full sm:w-auto justify-center">
+              <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-14 px-8 flex items-center gap-2 w-full sm:w-auto justify-center">
                 Become a BIG Member
                 <ArrowRight className="w-5 h-5" />
               </Button>
@@ -185,7 +185,7 @@ export default function JoinPage() {
             <Link href="/circles">
               <Button
                 variant="outline"
-                className="border-2 border-pink-500 text-pink-600 hover:bg-pink-50 font-bold rounded-full h-14 px-8 w-full sm:w-auto"
+                className="border-2 border-secondary- text-secondary- hover:bg-secondary- font-bold rounded-full h-14 px-8 w-full sm:w-auto"
               >
                 Explore the Community
               </Button>
@@ -228,7 +228,7 @@ export default function JoinPage() {
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-pink-300 transition-all"
+                  className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-secondary- transition-all"
                 >
                   <div className={`bg-gradient-to-r ${step.color} p-8 text-white h-32 flex items-center justify-center`}>
                     <Icon className="w-16 h-16" />
@@ -254,9 +254,9 @@ export default function JoinPage() {
             {benefits.map((benefit, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-4 p-4 rounded-lg hover:bg-pink-50 transition-colors"
+                className="flex items-center gap-4 p-4 rounded-lg hover:bg-secondary- transition-colors"
               >
-                <CheckCircle2 className="w-6 h-6 text-pink-500 flex-shrink-0" />
+                <CheckCircle2 className="w-6 h-6 text-secondary- flex-shrink-0" />
                 <span className="font-medium text-gray-800">{benefit}</span>
               </div>
             ))}
@@ -277,7 +277,7 @@ export default function JoinPage() {
             {memberTypes.map((type, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl border border-gray-200 p-8 text-center hover:border-pink-300 hover:shadow-lg transition-all"
+                className="bg-white rounded-2xl border border-gray-200 p-8 text-center hover:border-secondary- hover:shadow-lg transition-all"
               >
                 <div className="text-5xl mb-4">{type.emoji}</div>
                 <h4 className="text-xl font-bold text-gray-900 mb-3">{type.title}</h4>
@@ -303,7 +303,7 @@ export default function JoinPage() {
                 key={idx}
                 className="flex items-start gap-6 p-6 bg-white rounded-2xl border border-border hover:border-primary-400 transition-colors"
               >
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-lg">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-secondary- text-white flex items-center justify-center font-bold text-lg">
                   {idx + 1}
                 </div>
                 <div className="pt-1">
@@ -348,7 +348,7 @@ export default function JoinPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
             <Link href="/auth/sign-up">
-              <Button className="bg-white text-pink-600 hover:bg-gray-100 font-bold rounded-full h-12 px-12 flex items-center gap-2 w-full sm:w-auto justify-center">
+              <Button className="bg-white text-secondary- hover:bg-gray-100 font-bold rounded-full h-12 px-12 flex items-center gap-2 w-full sm:w-auto justify-center">
                 Become a BIG Member
                 <ArrowRight className="w-4 h-4" />
               </Button>

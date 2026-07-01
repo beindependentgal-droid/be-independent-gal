@@ -92,7 +92,7 @@ export default async function ArticlePage({ params }: Props) {
         <div className="max-w-4xl mx-auto text-center">
           <Link
             href="/community"
-            className="inline-flex items-center gap-2 text-pink-600 hover:text-pink-700 font-medium mb-4"
+            className="inline-flex items-center gap-2 text-secondary- hover:text-secondary- font-medium mb-4"
           >
             ← Back to Community
           </Link>
@@ -130,7 +130,7 @@ export default async function ArticlePage({ params }: Props) {
                   className="w-6 h-6 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-6 h-6 rounded-full bg-pink-100 flex items-center justify-center text-xs">
+                <div className="w-6 h-6 rounded-full bg-secondary- flex items-center justify-center text-xs">
                   {article.author_name.charAt(0)}
                 </div>
               )}
@@ -139,7 +139,7 @@ export default async function ArticlePage({ params }: Props) {
 
             {/* Published Date */}
             <div className="flex items-center gap-2">
-              <CalendarDays className="w-4 h-4 text-pink-500" />
+              <CalendarDays className="w-4 h-4 text-secondary-" />
               <span>{new Date(article.published_at).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -149,13 +149,13 @@ export default async function ArticlePage({ params }: Props) {
 
             {/* Views */}
             <div className="flex items-center gap-2">
-              <Eye className="w-4 h-4 text-pink-500" />
+              <Eye className="w-4 h-4 text-secondary-" />
               <span>{article.view_count.toLocaleString()} views</span>
             </div>
 
             {/* Circle */}
             {article.circle_name && (
-              <Link href={`/circles/${article.circle_id}`} className="flex items-center gap-2 text-pink-600 hover:text-pink-700">
+              <Link href={`/circles/${article.circle_id}`} className="flex items-center gap-2 text-secondary- hover:text-secondary-">
                 <MessageCircle className="w-4 h-4" />
                 <span>{article.circle_name} Circle</span>
               </Link>
@@ -186,7 +186,7 @@ export default async function ArticlePage({ params }: Props) {
                 <div className="text-5xl mb-4">💬</div>
                 <p className="text-gray-600 text-lg mb-2">No comments yet.</p>
                 <p className="text-gray-500 text-sm">Be the first to share your thoughts!</p>
-                <Button className="mt-6 bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-11 px-6">
+                <Button className="mt-6 bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-11 px-6">
                   Add a Comment
                 </Button>
               </div>
@@ -207,7 +207,7 @@ export default async function ArticlePage({ params }: Props) {
                         className="w-10 h-10 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-sm font-bold">
+                      <div className="w-10 h-10 rounded-full bg-secondary- flex items-center justify-center text-sm font-bold">
                         {comment.author?.first_name.charAt(0)}
                       </div>
                     )}

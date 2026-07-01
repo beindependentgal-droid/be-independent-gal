@@ -77,7 +77,7 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
   return (
     <form onSubmit={handleSubmit} className="w-full rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <div className="mb-8 text-center">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-pink-100 px-3 py-1 text-sm font-semibold text-pink-700">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-secondary- px-3 py-1 text-sm font-semibold text-secondary-">
           <Sparkles className="h-4 w-4" />
           Welcome back
         </div>
@@ -107,7 +107,7 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
           <Label htmlFor="password" className="text-sm font-medium text-slate-700">
             Password
           </Label>
-          <Link href="/auth/reset" className="text-sm font-semibold text-pink-600 hover:text-pink-700">
+          <Link href="/auth/reset" className="text-sm font-semibold text-secondary- hover:text-secondary-">
             Forgot password?
           </Link>
         </div>
@@ -148,7 +148,7 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
       <Button
         type="submit"
         disabled={loading}
-        className="mt-6 h-12 w-full rounded-full bg-pink-600 font-semibold text-white hover:bg-pink-700"
+        className="mt-6 h-12 w-full rounded-full bg-secondary- font-semibold text-white hover:bg-secondary-"
       >
         {loading ? 'Signing in...' : 'Sign in'}
       </Button>
@@ -171,7 +171,7 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
 
       <p className="mt-6 text-center text-sm text-slate-600">
         New here?{' '}
-        <Link href="/auth/sign-up" className="font-semibold text-pink-600 hover:text-pink-700">
+        <Link href="/auth/sign-up" className="font-semibold text-secondary- hover:text-secondary-">
           Create an account
         </Link>
       </p>

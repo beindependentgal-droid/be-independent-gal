@@ -144,7 +144,7 @@ export default function HomePage() {
           {/* Right - Content */}
           <div className="space-y-6">
             <div>
-              <p className="text-pink-600 font-bold text-sm uppercase tracking-wide mb-3">About BIG</p>
+              <p className="text-secondary- font-bold text-sm uppercase tracking-wide mb-3">About BIG</p>
               <h2 className="text-4xl font-bold text-gray-900 mb-6">
                 A movement of women building independent futures
               </h2>
@@ -161,7 +161,7 @@ export default function HomePage() {
 
             <div className="pt-6">
               <Link href="/about">
-                <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 w-fit">
+                <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 w-fit">
                   Read Our Story
                   <ArrowRight className="w-4 h-4" />
                 </Button>
@@ -185,10 +185,10 @@ export default function HomePage() {
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl p-8 border border-gray-200 hover:border-pink-300 hover:shadow-lg transition-all"
+                  className="bg-white rounded-2xl p-8 border border-gray-200 hover:border-secondary- hover:shadow-lg transition-all"
                 >
-                  <div className="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-pink-600" />
+                  <div className="w-12 h-12 rounded-lg bg-secondary- flex items-center justify-center mb-4">
+                    <Icon className="w-6 h-6 text-secondary-" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{item.description}</p>
@@ -213,10 +213,10 @@ export default function HomePage() {
               return (
                 <div
                   key={idx}
-                  className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200 hover:border-pink-300 hover:shadow-lg transition-all text-center"
+                  className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200 hover:border-secondary- hover:shadow-lg transition-all text-center"
                 >
-                  <div className="w-16 h-16 rounded-full bg-white border-2 border-pink-300 flex items-center justify-center mx-auto mb-4">
-                    <Icon className="w-8 h-8 text-pink-600" />
+                  <div className="w-16 h-16 rounded-full bg-white border-2 border-secondary- flex items-center justify-center mx-auto mb-4">
+                    <Icon className="w-8 h-8 text-secondary-" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-3">{pillar.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{pillar.desc}</p>
@@ -250,7 +250,7 @@ export default function HomePage() {
                     />
                   </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-pink-600 transition-colors">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-secondary- transition-colors">
                     {post.title}
                   </h3>
                   <p className="text-gray-600 leading-relaxed">{post.desc}</p>
@@ -272,7 +272,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
             {academyPrograms.map((program, idx) => (
-              <div key={idx} className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-pink-300 hover:shadow-xl transition-all">
+              <div key={idx} className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all">
                 {/* Image */}
                 <div className="relative aspect-video overflow-hidden">
                   <FallbackImage
@@ -290,7 +290,7 @@ export default function HomePage() {
                   <p className="text-gray-600 leading-relaxed mb-6">{program.desc}</p>
 
                   <Link href="/circles">
-                    <Button variant="outline" className="w-full rounded-full h-10 border-pink-300 text-pink-600 hover:bg-pink-50 font-bold">
+                    <Button variant="outline" className="w-full rounded-full h-10 border-secondary- text-secondary- hover:bg-secondary- font-bold">
                       Learn More
                     </Button>
                   </Link>
@@ -310,7 +310,7 @@ export default function HomePage() {
             together through life&apos;s seasons.
           </p>
           <Link href="/circles">
-            <Button className="bg-white text-pink-600 hover:bg-gray-100 font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
+            <Button className="bg-white text-secondary- hover:bg-gray-100 font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
               Explore Sister Circles
               <ArrowRight className="w-4 h-4" />
             </Button>
@@ -327,7 +327,7 @@ export default function HomePage() {
             themselves and each other.
           </p>
           <Link href="/events">
-            <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
+            <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
               See Upcoming Events
               <ArrowRight className="w-4 h-4" />
             </Button>

@@ -98,9 +98,9 @@ export default function GetInvolvedPage() {
               const Icon = way.icon
               return (
                 <Link key={idx} href={way.href}>
-                  <div className="bg-white rounded-2xl border border-gray-200 p-8 hover:border-pink-300 hover:shadow-lg transition-all h-full flex flex-col">
-                    <div className="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-pink-600" />
+                  <div className="bg-white rounded-2xl border border-gray-200 p-8 hover:border-secondary- hover:shadow-lg transition-all h-full flex flex-col">
+                    <div className="w-12 h-12 rounded-lg bg-secondary- flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-secondary-" />
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 mb-3">
                       {way.title}
@@ -110,7 +110,7 @@ export default function GetInvolvedPage() {
                     </p>
                     <Button
                       size="sm"
-                      className="bg-pink-500 hover:bg-pink-600 text-white rounded-full font-bold h-10"
+                      className="bg-secondary- hover:bg-secondary- text-white rounded-full font-bold h-10"
                     >
                       {way.cta}
                       <ArrowRight className="w-4 h-4 ml-2" />
@@ -149,19 +149,19 @@ export default function GetInvolvedPage() {
                     'Exclusive resources and challenges',
                   ].map((item, idx) => (
                     <li key={idx} className="flex items-center gap-3">
-                      <span className="w-2 h-2 rounded-full bg-pink-500"></span>
+                      <span className="w-2 h-2 rounded-full bg-secondary-"></span>
                       <span className="text-gray-700 font-medium">{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="bg-white rounded-2xl p-8 border border-pink-200">
+              <div className="bg-white rounded-2xl p-8 border border-secondary-">
                 <p className="text-gray-600 mb-6">
                   Ready to join? It only takes a few minutes to get started.
                 </p>
                 <Link href="/auth/sign-up">
-                  <Button className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12">
+                  <Button className="w-full bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12">
                     Create Your Free Account
                   </Button>
                 </Link>
@@ -185,17 +185,17 @@ export default function GetInvolvedPage() {
             {donationTiers.map((tier, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl border border-gray-200 p-8 text-center hover:border-pink-300 hover:shadow-lg transition-all"
+                className="bg-white rounded-2xl border border-gray-200 p-8 text-center hover:border-secondary- hover:shadow-lg transition-all"
               >
                 <div className="text-5xl mb-4">{tier.icon}</div>
-                <p className="text-3xl font-bold text-pink-600 mb-2">
+                <p className="text-3xl font-bold text-secondary- mb-2">
                   {tier.amount}
                 </p>
                 <p className="text-gray-600 text-sm mb-6">{tier.description}</p>
                 <Link href="#donate-form">
                   <Button
                     size="sm"
-                    className="w-full bg-pink-500 hover:bg-pink-600 text-white rounded-full font-bold"
+                    className="w-full bg-secondary- hover:bg-secondary- text-white rounded-full font-bold"
                   >
                     Donate
                   </Button>
@@ -224,7 +224,7 @@ export default function GetInvolvedPage() {
                     <button
                       key={amount}
                       type="button"
-                      className="px-4 py-3 rounded-xl border-2 border-gray-200 text-gray-700 font-bold hover:border-pink-500 hover:text-pink-600 transition-colors"
+                      className="px-4 py-3 rounded-xl border-2 border-gray-200 text-gray-700 font-bold hover:border-secondary- hover:text-secondary- transition-colors"
                     >
                       KES {amount.toLocaleString()}
                     </button>
@@ -233,7 +233,7 @@ export default function GetInvolvedPage() {
                 <input
                   type="number"
                   placeholder="Or enter custom amount"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-secondary- focus:outline-none"
                 />
               </div>
 
@@ -245,7 +245,7 @@ export default function GetInvolvedPage() {
                 <input
                   type="text"
                   placeholder="Your name"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-secondary- focus:outline-none"
                 />
               </div>
 
@@ -257,7 +257,7 @@ export default function GetInvolvedPage() {
                 <input
                   type="email"
                   placeholder="your@email.com"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-secondary- focus:outline-none"
                 />
               </div>
 
@@ -269,12 +269,12 @@ export default function GetInvolvedPage() {
                 <textarea
                   placeholder="Share why you're supporting BIG..."
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none resize-none"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-secondary- focus:outline-none resize-none"
                 />
               </div>
 
               {/* Submit */}
-              <Button className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12">
+              <Button className="w-full bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12">
                 Donate Now
               </Button>
 
@@ -409,7 +409,7 @@ export default function GetInvolvedPage() {
           </p>
           <p className="text-gray-500">
             Questions? Reach out to us at{' '}
-            <a href="mailto:hello@big.org" className="text-pink-600 hover:text-pink-700 font-bold">
+            <a href="mailto:hello@big.org" className="text-secondary- hover:text-secondary- font-bold">
               hello@big.org
             </a>
           </p>

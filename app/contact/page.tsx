@@ -93,8 +93,8 @@ export default function ContactPage() {
                   const Icon = detail.icon
                   const content = (
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-6 h-6 text-pink-600" />
+                      <div className="w-12 h-12 rounded-lg bg-secondary- flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-6 h-6 text-secondary-" />
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">
@@ -112,7 +112,7 @@ export default function ContactPage() {
                       {detail.href ? (
                         <a
                           href={detail.href}
-                          className="hover:text-pink-600 transition-colors"
+                          className="hover:text-secondary- transition-colors"
                         >
                           {content}
                         </a>
@@ -152,10 +152,10 @@ export default function ContactPage() {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl hover:bg-pink-50 border border-gray-200 hover:border-pink-300 transition-all group"
+                    className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl hover:bg-secondary- border border-gray-200 hover:border-secondary- transition-all group"
                   >
                     <span className="text-2xl">{social.icon}</span>
-                    <span className="font-medium text-gray-900 group-hover:text-pink-600 transition-colors">
+                    <span className="font-medium text-gray-900 group-hover:text-secondary- transition-colors">
                       {social.name}
                     </span>
                   </a>
@@ -222,7 +222,7 @@ export default function ContactPage() {
             ].map((dept, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-pink-300 hover:shadow-lg transition-all"
+                className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-secondary- hover:shadow-lg transition-all"
               >
                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                   {dept.title}
@@ -230,7 +230,7 @@ export default function ContactPage() {
                 <p className="text-gray-600 text-sm mb-4">{dept.description}</p>
                 <a
                   href={`mailto:${dept.email}`}
-                  className="inline-flex items-center gap-2 text-pink-600 hover:text-pink-700 font-bold text-sm"
+                  className="inline-flex items-center gap-2 text-secondary- hover:text-secondary- font-bold text-sm"
                 >
                   {dept.email}
                   <Send className="w-4 h-4" />
@@ -252,12 +252,12 @@ export default function ContactPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/fund/faq">
-              <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8">
+              <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
                 BIG Fund FAQ
               </Button>
             </Link>
             <Link href="/circles">
-              <Button variant="outline" className="border-2 border-pink-500 text-pink-600 hover:bg-pink-50 font-bold rounded-full h-12 px-8">
+              <Button variant="outline" className="border-2 border-secondary- text-secondary- hover:bg-secondary- font-bold rounded-full h-12 px-8">
                 Circles FAQ
               </Button>
             </Link>

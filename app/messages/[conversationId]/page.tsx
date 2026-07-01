@@ -127,7 +127,7 @@ export default function ConversationPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-secondary-"></div>
           <p className="text-gray-600 font-medium">Loading conversation...</p>
         </div>
       </div>
@@ -143,7 +143,7 @@ export default function ConversationPage() {
           <p className="text-gray-600">{error}</p>
           <button
             onClick={() => router.push('/messages')}
-            className="px-6 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg font-medium transition-colors"
+            className="px-6 py-2 bg-secondary- hover:bg-secondary- text-white rounded-lg font-medium transition-colors"
           >
             Back to Messages
           </button>

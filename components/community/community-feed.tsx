@@ -292,7 +292,7 @@ export default function CommunityFeed() {
               </div>
               <div className="mt-4 grid gap-2 text-xs text-slate-600">
                 <span className="inline-flex rounded-full bg-violet-50 px-3 py-2 text-violet-700">🏅 Founding Member</span>
-                <span className="inline-flex rounded-full bg-pink-50 px-3 py-2 text-pink-700">🎓 Academy Graduate</span>
+                <span className="inline-flex rounded-full bg-secondary- px-3 py-2 text-secondary-">🎓 Academy Graduate</span>
                 <span className="inline-flex rounded-full bg-amber-50 px-3 py-2 text-amber-700">💼 Entrepreneur</span>
               </div>
             </div>

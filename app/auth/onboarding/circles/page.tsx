@@ -120,7 +120,7 @@ export default function CirclesOnboardingPage() {
         {/* Progress bar */}
         <div className="mb-12">
           <div className="h-1 bg-gray-200 rounded-full">
-            <div className="h-full w-full bg-pink-500 rounded-full"></div>
+            <div className="h-full w-full bg-secondary- rounded-full"></div>
           </div>
         </div>
 
@@ -155,7 +155,7 @@ export default function CirclesOnboardingPage() {
                     <div
                       className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                         selectedCircles.includes(circle.id)
-                          ? 'bg-pink-500 border-pink-500'
+                          ? 'bg-secondary- border-secondary-'
                           : 'border-gray-300'
                       }`}
                     >
@@ -189,7 +189,7 @@ export default function CirclesOnboardingPage() {
           <Button
             type="submit"
             disabled={loading || selectedCircles.length === 0}
-            className="w-full h-12 rounded-full bg-pink-500 hover:bg-pink-600 disabled:bg-gray-300 text-white font-bold transition-colors"
+            className="w-full h-12 rounded-full bg-secondary- hover:bg-secondary- disabled:bg-gray-300 text-white font-bold transition-colors"
           >
             {loading ? (
               <span className="flex items-center gap-2">

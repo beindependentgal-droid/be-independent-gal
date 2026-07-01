@@ -189,7 +189,7 @@ export default function ResetPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 rounded-full bg-pink-500 hover:bg-pink-600 text-white font-bold transition-colors"
+                className="w-full h-12 rounded-full bg-secondary- hover:bg-secondary- text-white font-bold transition-colors"
               >
                 {loading ? 'Sending...' : 'Send Reset Link'}
               </Button>
@@ -198,7 +198,7 @@ export default function ResetPage() {
               <div className="text-center pt-4 border-t">
                 <p className="text-sm text-gray-600">
                   Remember your password?{' '}
-                  <Link href="/auth/login" className="text-pink-600 hover:text-pink-700 font-bold">
+                  <Link href="/auth/login" className="text-secondary- hover:text-secondary- font-bold">
                     Sign In
                   </Link>
                 </p>
@@ -228,26 +228,26 @@ export default function ResetPage() {
           </p>
           <div className="space-y-3 pt-6">
             <div className="flex items-center gap-3 text-left">
-              <div className="flex-shrink-0 w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
-                <span className="text-pink-600 font-bold">1</span>
+              <div className="flex-shrink-0 w-8 h-8 bg-secondary- rounded-full flex items-center justify-center">
+                <span className="text-secondary- font-bold">1</span>
               </div>
               <span className="text-gray-700">Enter your email address</span>
             </div>
             <div className="flex items-center gap-3 text-left">
-              <div className="flex-shrink-0 w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
-                <span className="text-pink-600 font-bold">2</span>
+              <div className="flex-shrink-0 w-8 h-8 bg-secondary- rounded-full flex items-center justify-center">
+                <span className="text-secondary- font-bold">2</span>
               </div>
               <span className="text-gray-700">Check your email for a reset link</span>
             </div>
             <div className="flex items-center gap-3 text-left">
-              <div className="flex-shrink-0 w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
-                <span className="text-pink-600 font-bold">3</span>
+              <div className="flex-shrink-0 w-8 h-8 bg-secondary- rounded-full flex items-center justify-center">
+                <span className="text-secondary- font-bold">3</span>
               </div>
               <span className="text-gray-700">Click the link and create a new password</span>
             </div>
             <div className="flex items-center gap-3 text-left">
-              <div className="flex-shrink-0 w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
-                <span className="text-pink-600 font-bold">4</span>
+              <div className="flex-shrink-0 w-8 h-8 bg-secondary- rounded-full flex items-center justify-center">
+                <span className="text-secondary- font-bold">4</span>
               </div>
               <span className="text-gray-700">Sign in and continue</span>
             </div>

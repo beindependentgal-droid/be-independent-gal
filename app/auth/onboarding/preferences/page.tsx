@@ -72,7 +72,7 @@ export default function PreferencesOnboardingPage() {
         {/* Progress bar */}
         <div className="mb-12">
           <div className="h-1 bg-gray-200 rounded-full">
-            <div className="h-full w-2/3 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div className="h-full w-2/3 bg-secondary- rounded-full transition-all duration-300"></div>
           </div>
         </div>
 
@@ -94,7 +94,7 @@ export default function PreferencesOnboardingPage() {
                   <div
                     className={`peer h-6 w-11 rounded-full border-2 transition-all ${
                       notificationsEnabled
-                        ? 'border-pink-500 bg-pink-500'
+                        ? 'border-secondary- bg-secondary-'
                         : 'border-gray-300 bg-gray-200'
                     }`}
                   ></div>
@@ -143,7 +143,7 @@ export default function PreferencesOnboardingPage() {
                   <div
                     className={`peer h-6 w-11 rounded-full border-2 transition-all ${
                       emailDigest
-                        ? 'border-pink-500 bg-pink-500'
+                        ? 'border-secondary- bg-secondary-'
                         : 'border-gray-300 bg-gray-200'
                     }`}
                   ></div>
@@ -212,7 +212,7 @@ export default function PreferencesOnboardingPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="flex-1 h-12 rounded-full bg-pink-500 hover:bg-pink-600 text-white font-bold transition-colors"
+              className="flex-1 h-12 rounded-full bg-secondary- hover:bg-secondary- text-white font-bold transition-colors"
             >
               {loading ? (
                 <span className="flex items-center gap-2">

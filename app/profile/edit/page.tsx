@@ -355,7 +355,7 @@ export default function EditProfilePage() {
                 placeholder="Tell us about yourself, your interests, and what you're passionate about..."
                 maxLength={500}
                 rows={5}
-                className="rounded-xl border border-gray-200 p-4 resize-none focus:outline-none focus:border-pink-500"
+                className="rounded-xl border border-gray-200 p-4 resize-none focus:outline-none focus:border-secondary-"
               />
               <p className="text-xs text-gray-500">
                 Share a bit about yourself to help other members connect with you
@@ -438,7 +438,7 @@ export default function EditProfilePage() {
             <Button
               type="submit"
               disabled={isSaving}
-              className="px-8 py-3 bg-pink-500 hover:bg-pink-600 disabled:bg-gray-400 text-white font-bold rounded-full h-auto flex items-center gap-2"
+              className="px-8 py-3 bg-secondary- hover:bg-secondary- disabled:bg-gray-400 text-white font-bold rounded-full h-auto flex items-center gap-2"
             >
               {isSaving && <Loader className="w-4 h-4 animate-spin" />}
               {isSaving ? 'Saving...' : 'Save Changes'}

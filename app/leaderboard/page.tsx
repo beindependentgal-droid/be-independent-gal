@@ -88,7 +88,7 @@ export default function LeaderboardPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-secondary-"></div>
           <p className="text-gray-600 font-medium">Loading...</p>
         </div>
       </div>
@@ -121,8 +121,8 @@ export default function LeaderboardPage() {
               onClick={() => setPeriod(p)}
               className={`px-6 py-3 rounded-full font-bold transition-all ${
                 period === p
-                  ? 'bg-pink-500 text-white shadow-lg'
-                  : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-pink-300'
+                  ? 'bg-secondary- text-white shadow-lg'
+                  : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-secondary-'
               }`}
             >
               {p === 'all_time' ? '🏆 All Time' : p === 'month' ? '📅 This Month' : '⚡ This Week'}
@@ -172,7 +172,7 @@ export default function LeaderboardPage() {
               Start earning points by engaging in the community!
             </p>
             <Link href="/community">
-              <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8">
+              <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
                 Go to Community
               </Button>
             </Link>
@@ -261,7 +261,7 @@ export default function LeaderboardPage() {
                       href={`/profile/${entry.user.id}`}
                       className="block"
                     >
-                      <div className="px-8 py-6 hover:bg-pink-50 transition-colors flex items-center gap-6">
+                      <div className="px-8 py-6 hover:bg-secondary- transition-colors flex items-center gap-6">
                         {/* Rank */}
                         <div className="flex-shrink-0 w-12 text-center">
                           <p className="text-2xl font-bold text-gray-400">
@@ -288,7 +288,7 @@ export default function LeaderboardPage() {
 
                         {/* Info */}
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-bold text-gray-900 hover:text-pink-600">
+                          <h4 className="font-bold text-gray-900 hover:text-secondary-">
                             {entry.user.first_name} {entry.user.last_name}
                           </h4>
                           {entry.user.member_level && (
@@ -300,7 +300,7 @@ export default function LeaderboardPage() {
 
                         {/* Points */}
                         <div className="flex-shrink-0 text-right">
-                          <p className="text-2xl font-bold text-pink-600">
+                          <p className="text-2xl font-bold text-secondary-">
                             ⭐ {entry.total_points}
                           </p>
                           <p className="text-xs text-gray-500">points</p>
@@ -363,13 +363,13 @@ export default function LeaderboardPage() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200 hover:border-pink-300 transition-colors text-center"
+                className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200 hover:border-secondary- transition-colors text-center"
               >
                 <div className="text-4xl mb-4">{item.icon}</div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                   {item.title}
                 </h3>
-                <p className="text-pink-600 font-bold text-lg mb-3">
+                <p className="text-secondary- font-bold text-lg mb-3">
                   {item.points}
                 </p>
                 <p className="text-gray-600 text-sm">{item.desc}</p>

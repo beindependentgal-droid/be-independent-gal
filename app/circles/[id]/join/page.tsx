@@ -143,7 +143,7 @@ export default async function CircleJoinPage({
             The circle you're looking for doesn't exist or has been removed.
           </p>
           <Link href="/circles">
-            <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8">
+            <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
               Back to Circles
             </Button>
           </Link>
@@ -302,7 +302,7 @@ export default async function CircleJoinPage({
             ].map((testimonial, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl p-6 border border-gray-200 hover:border-pink-300 hover:shadow-lg transition-all"
+                className="bg-white rounded-2xl p-6 border border-gray-200 hover:border-secondary- hover:shadow-lg transition-all"
               >
                 <div className="flex gap-1 mb-3">
                   {[1, 2, 3, 4, 5].map((i) => (

@@ -238,7 +238,7 @@ export function GoogleForm() {
       <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-5">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-pink-100 px-3 py-1 text-sm font-semibold text-pink-700">
+            <div className="inline-flex items-center gap-2 rounded-full bg-secondary- px-3 py-1 text-sm font-semibold text-secondary-">
               <Sparkles className="h-4 w-4" />
               Multi-step experience
             </div>
@@ -257,7 +257,7 @@ export function GoogleForm() {
 
         <div className="mt-6">
           <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-            <div className="h-full rounded-full bg-pink-600 transition-all" style={{ width: `${progressPercent}%` }} />
+            <div className="h-full rounded-full bg-secondary- transition-all" style={{ width: `${progressPercent}%` }} />
           </div>
           <div className="mt-3 flex items-center justify-between text-sm text-slate-500">
             <span>{stepLabels[step]}</span>
@@ -349,7 +349,7 @@ export function GoogleForm() {
                         key={interest}
                         type="button"
                         onClick={() => toggleInterest(interest)}
-                        className={`rounded-full border px-3 py-2 text-sm font-medium transition ${selected ? 'border-pink-600 bg-pink-600 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-pink-300 hover:text-pink-600'}`}
+                        className={`rounded-full border px-3 py-2 text-sm font-medium transition ${selected ? 'border-secondary- bg-secondary- text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-secondary- hover:text-secondary-'}`}
                       >
                         {interest}
                       </button>
@@ -370,13 +370,13 @@ export function GoogleForm() {
                     { value: 'sms', label: 'SMS' },
                     { value: 'both', label: 'Both' },
                   ].map((option) => (
-                    <label key={option.value} className={`flex cursor-pointer items-center gap-3 rounded-2xl border p-4 ${values.contactMethod === option.value ? 'border-pink-600 bg-pink-50' : 'border-slate-200 bg-white'}`}>
+                    <label key={option.value} className={`flex cursor-pointer items-center gap-3 rounded-2xl border p-4 ${values.contactMethod === option.value ? 'border-secondary- bg-secondary-' : 'border-slate-200 bg-white'}`}>
                       <input
                         type="radio"
                         name="contactMethod"
                         checked={values.contactMethod === option.value}
                         onChange={() => updateField('contactMethod', option.value as ContactMethod)}
-                        className="h-4 w-4 border-slate-300 text-pink-600 focus:ring-pink-500"
+                        className="h-4 w-4 border-slate-300 text-secondary- focus:ring-pink-500"
                       />
                       <span className="text-sm font-medium text-slate-700">{option.label}</span>
                     </label>
@@ -389,7 +389,7 @@ export function GoogleForm() {
                   type="checkbox"
                   checked={values.updates}
                   onChange={(event) => updateField('updates', event.target.checked)}
-                  className="mt-1 h-4 w-4 rounded border-slate-300 text-pink-600 focus:ring-pink-500"
+                  className="mt-1 h-4 w-4 rounded border-slate-300 text-secondary- focus:ring-pink-500"
                 />
                 <span className="text-sm leading-7 text-slate-600">
                   Yes, keep me updated with events, learning opportunities, and community invitations.
@@ -398,7 +398,7 @@ export function GoogleForm() {
 
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                 <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <FileText className="h-4 w-4 text-pink-600" />
+                  <FileText className="h-4 w-4 text-secondary-" />
                   Review your answers
                 </div>
                 <div className="mt-3 space-y-2 text-sm leading-7 text-slate-600">
@@ -428,12 +428,12 @@ export function GoogleForm() {
             </Button>
           ) : null}
           {step < stepLabels.length - 1 ? (
-            <Button type="button" onClick={handleNext} className="rounded-full bg-pink-600 px-6 hover:bg-pink-700">
+            <Button type="button" onClick={handleNext} className="rounded-full bg-secondary- px-6 hover:bg-secondary-">
               Next
               <ArrowRight className="h-4 w-4" />
             </Button>
           ) : (
-            <Button type="submit" className="rounded-full bg-pink-600 px-6 hover:bg-pink-700" disabled={isSubmitting}>
+            <Button type="submit" className="rounded-full bg-secondary- px-6 hover:bg-secondary-" disabled={isSubmitting}>
               {isSubmitting ? (
                 <span className="inline-flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />

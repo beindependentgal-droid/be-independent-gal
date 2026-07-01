@@ -104,7 +104,7 @@ export default function MessagesPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-secondary-"></div>
           <p className="text-gray-600 font-medium">Loading...</p>
         </div>
       </div>
@@ -127,7 +127,7 @@ export default function MessagesPage() {
             </div>
 
             <Link href="/members">
-              <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8 flex items-center gap-2">
+              <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8 flex items-center gap-2">
                 <Plus className="w-4 h-4" />
                 New Message
               </Button>
@@ -197,7 +197,7 @@ export default function MessagesPage() {
               Start a new conversation by finding someone in the member directory and sending them a message.
             </p>
             <Link href="/members">
-              <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8">
+              <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
                 Go to Member Directory
               </Button>
             </Link>

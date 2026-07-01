@@ -299,7 +299,7 @@ export default function SignUpWizard() {
       {/* Progress bar */}
       <div className="h-1 bg-gray-200">
         <div
-          className="h-full bg-pink-500 transition-all duration-300"
+          className="h-full bg-secondary- transition-all duration-300"
           style={{ width: `${progressPercent}%` }}
         ></div>
       </div>
@@ -456,7 +456,7 @@ export default function SignUpWizard() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-12 rounded-full bg-pink-500 hover:bg-pink-600 text-white font-bold"
+              className="w-full h-12 rounded-full bg-secondary- hover:bg-secondary- text-white font-bold"
             >
               {loading ? 'Creating...' : 'Continue'}
             </Button>
@@ -593,7 +593,7 @@ export default function SignUpWizard() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="flex-1 h-12 rounded-full bg-pink-500 hover:bg-pink-600 text-white font-bold"
+                className="flex-1 h-12 rounded-full bg-secondary- hover:bg-secondary- text-white font-bold"
               >
                 {loading ? 'Saving...' : 'Continue'}
               </Button>
@@ -617,8 +617,8 @@ export default function SignUpWizard() {
                   disabled={loading}
                   className={`p-4 border-2 rounded-2xl text-left transition-all ${
                     selectedCircles.includes(circle.id)
-                      ? 'border-pink-500 bg-pink-50'
-                      : 'border-gray-200 hover:border-pink-300'
+                      ? 'border-secondary- bg-secondary-'
+                      : 'border-gray-200 hover:border-secondary-'
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -628,7 +628,7 @@ export default function SignUpWizard() {
                       <p className="text-sm text-gray-600 mt-1">{circle.description}</p>
                     </div>
                     {selectedCircles.includes(circle.id) && (
-                      <span className="text-pink-500 text-xl">✓</span>
+                      <span className="text-secondary- text-xl">✓</span>
                     )}
                   </div>
                 </button>
@@ -656,7 +656,7 @@ export default function SignUpWizard() {
               <Button
                 onClick={handleStep3}
                 disabled={loading}
-                className="flex-1 h-12 rounded-full bg-pink-500 hover:bg-pink-600 text-white font-bold"
+                className="flex-1 h-12 rounded-full bg-secondary- hover:bg-secondary- text-white font-bold"
               >
                 {loading ? 'Finishing...' : 'Finish Setup'}
               </Button>
@@ -685,7 +685,7 @@ export default function SignUpWizard() {
 
             <Button
               onClick={handleComplete}
-              className="w-full h-12 rounded-full bg-pink-500 hover:bg-pink-600 text-white font-bold"
+              className="w-full h-12 rounded-full bg-secondary- hover:bg-secondary- text-white font-bold"
             >
               Enter the Community
             </Button>

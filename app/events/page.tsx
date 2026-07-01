@@ -72,7 +72,7 @@ export default async function EventsPage() {
                 Check back soon for exciting community events!
               </p>
               <Link href="/events/create">
-                <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8">
+                <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
                   Create an Event
                 </Button>
               </Link>
@@ -99,7 +99,7 @@ export default async function EventsPage() {
                     <h3 className="text-2xl font-bold text-gray-900">
                       {circle} Circle Events
                     </h3>
-                    <Badge className="ml-auto bg-pink-100 text-pink-700 font-bold">
+                    <Badge className="ml-auto bg-secondary- text-secondary- font-bold">
                       {eventsByCircle[circle].length} events
                     </Badge>
                   </div>
@@ -107,7 +107,7 @@ export default async function EventsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {eventsByCircle[circle].map((event) => (
                       <div key={event.id} className="block">
-                        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-pink-300 hover:shadow-xl transition-all h-full flex flex-col">
+                        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all h-full flex flex-col">
                           {/* Event Image */}
                           {event.image_url && (
                             <div className="relative aspect-video overflow-hidden bg-gray-300">
@@ -121,7 +121,7 @@ export default async function EventsPage() {
 
                               {/* Event Type Badge */}
                               <div className="absolute top-4 right-4">
-                                <Badge className="bg-pink-500 text-white font-bold">
+                                <Badge className="bg-secondary- text-white font-bold">
                                   {event.event_type}
                                 </Badge>
                               </div>
@@ -131,7 +131,7 @@ export default async function EventsPage() {
                           {/* Content */}
                           <div className="p-6 flex flex-col flex-1">
                             {/* Title */}
-                            <h4 className="text-xl font-bold text-gray-900 mb-2 hover:text-pink-600 transition-colors">
+                            <h4 className="text-xl font-bold text-gray-900 mb-2 hover:text-secondary- transition-colors">
                               {event.title}
                             </h4>
 
@@ -146,7 +146,7 @@ export default async function EventsPage() {
                             <div className="space-y-2 mb-4 flex-1">
                               {/* Date */}
                               <div className="flex items-center gap-2 text-sm text-gray-600">
-                                <Calendar className="w-4 h-4 text-pink-500" />
+                                <Calendar className="w-4 h-4 text-secondary-" />
                                 <span>
                                   {new Date(event.start_time).toLocaleDateString(
                                     'en-US',
@@ -173,7 +173,7 @@ export default async function EventsPage() {
                               {/* Location */}
                               {event.location && (
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                                  <MapPin className="w-4 h-4 text-pink-500" />
+                                  <MapPin className="w-4 h-4 text-secondary-" />
                                   <span>{event.location}</span>
                                 </div>
                               )}
@@ -181,7 +181,7 @@ export default async function EventsPage() {
                               {/* Circle */}
                               {event.circle_name && (
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                                  <Users className="w-4 h-4 text-pink-500" />
+                                  <Users className="w-4 h-4 text-secondary-" />
                                   <span>{event.circle_name}</span>
                                 </div>
                               )}
@@ -191,7 +191,7 @@ export default async function EventsPage() {
                             <Button asChild className="w-full rounded-full px-0 py-0 text-white font-bold">
                               <Link
                                 href={`/events/${event.id}`}
-                                className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-pink-500 px-4 text-white hover:bg-pink-600"
+                                className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-secondary- px-4 text-white hover:bg-secondary-"
                               >
                                 View Details
                                 <ArrowRight className="w-4 h-4" />
@@ -215,7 +215,7 @@ export default async function EventsPage() {
                     <h3 className="text-2xl font-bold text-gray-900">
                       Other Events
                     </h3>
-                    <Badge className="ml-auto bg-pink-100 text-pink-700 font-bold">
+                    <Badge className="ml-auto bg-secondary- text-secondary- font-bold">
                       {eventsByCircle['Other'].length} events
                     </Badge>
                   </div>
@@ -223,7 +223,7 @@ export default async function EventsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {eventsByCircle['Other'].map((event) => (
                       <div key={event.id} className="block">
-                        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-pink-300 hover:shadow-xl transition-all h-full flex flex-col">
+                        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all h-full flex flex-col">
                           {/* Event Image */}
                           {event.image_url && (
                             <div className="relative aspect-video overflow-hidden bg-gray-300">
@@ -236,7 +236,7 @@ export default async function EventsPage() {
                               />
 
                               <div className="absolute top-4 right-4">
-                                <Badge className="bg-pink-500 text-white font-bold">
+                                <Badge className="bg-secondary- text-white font-bold">
                                   {event.event_type}
                                 </Badge>
                               </div>
@@ -244,7 +244,7 @@ export default async function EventsPage() {
                           )}
 
                           <div className="p-6 flex flex-col flex-1">
-                            <h4 className="text-xl font-bold text-gray-900 mb-2 hover:text-pink-600 transition-colors">
+                            <h4 className="text-xl font-bold text-gray-900 mb-2 hover:text-secondary- transition-colors">
                               {event.title}
                             </h4>
 
@@ -256,7 +256,7 @@ export default async function EventsPage() {
 
                             <div className="space-y-2 mb-4 flex-1">
                               <div className="flex items-center gap-2 text-sm text-gray-600">
-                                <Calendar className="w-4 h-4 text-pink-500" />
+                                <Calendar className="w-4 h-4 text-secondary-" />
                                 <span>
                                   {new Date(event.start_time).toLocaleDateString(
                                     'en-US',
@@ -282,7 +282,7 @@ export default async function EventsPage() {
 
                               {event.location && (
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                                  <MapPin className="w-4 h-4 text-pink-500" />
+                                  <MapPin className="w-4 h-4 text-secondary-" />
                                   <span>{event.location}</span>
                                 </div>
                               )}
@@ -291,7 +291,7 @@ export default async function EventsPage() {
                             <Button asChild className="w-full rounded-full px-0 py-0 text-white font-bold">
                               <Link
                                 href={`/events/${event.id}`}
-                                className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-pink-500 px-4 text-white hover:bg-pink-600"
+                                className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-secondary- px-4 text-white hover:bg-secondary-"
                               >
                                 View Details
                                 <ArrowRight className="w-4 h-4" />
@@ -320,7 +320,7 @@ export default async function EventsPage() {
             knowledge, organize meetups, and bring sisters together.
           </p>
           <Link href="/events/create">
-            <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8">
+            <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
               Create an Event
             </Button>
           </Link>

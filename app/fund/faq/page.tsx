@@ -157,7 +157,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <details className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-pink-300 transition-colors cursor-pointer group">
+    <details className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- transition-colors cursor-pointer group">
       <summary
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-between w-full p-6 font-bold text-gray-900 select-none hover:bg-gray-50 transition-colors"
@@ -213,7 +213,7 @@ export default function FAQPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="mailto:fund@big.org">
-              <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 w-full sm:w-auto justify-center">
+              <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 w-full sm:w-auto justify-center">
                 <Mail className="w-4 h-4" />
                 Email Us
               </Button>
@@ -222,7 +222,7 @@ export default function FAQPage() {
             <a href="https://calendly.com/big/fund-consultation">
               <Button
                 variant="outline"
-                className="border-2 border-pink-500 text-pink-600 hover:bg-pink-50 font-bold rounded-full h-12 px-8 flex items-center gap-2 w-full sm:w-auto justify-center"
+                className="border-2 border-secondary- text-secondary- hover:bg-secondary- font-bold rounded-full h-12 px-8 flex items-center gap-2 w-full sm:w-auto justify-center"
               >
                 <Calendar className="w-4 h-4" />
                 Schedule a Call
@@ -235,7 +235,7 @@ export default function FAQPage() {
             <div className="space-y-2 text-left">
               <p className="text-gray-700">
                 <span className="font-bold">Email:</span>{' '}
-                <a href="mailto:fund@big.org" className="text-pink-600 hover:text-pink-700">
+                <a href="mailto:fund@big.org" className="text-secondary- hover:text-secondary-">
                   fund@big.org
                 </a>
               </p>
@@ -265,7 +265,7 @@ export default function FAQPage() {
                 <p className="text-gray-600 text-sm mb-6">
                   Start your application in minutes
                 </p>
-                <span className="inline-block text-pink-600 font-bold">Get Started →</span>
+                <span className="inline-block text-secondary- font-bold">Get Started →</span>
               </div>
             </Link>
 

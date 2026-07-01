@@ -68,7 +68,7 @@ export default async function BlogPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
               {articles.map((article) => (
                 <Link key={article.id} href={`/blog/${article.slug}`}>
-                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-pink-300 hover:shadow-xl transition-all h-full flex flex-col">
+                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all h-full flex flex-col">
                     {/* Featured Image */}
                     {article.featured_image_url && (
                       <div className="relative aspect-video overflow-hidden bg-gray-300">
@@ -89,7 +89,7 @@ export default async function BlogPage() {
                           {article.circle_name}
                         </Badge>
                       )}
-                      <h3 className="text-xl font-bold text-gray-900 mb-2 hover:text-pink-600 transition-colors line-clamp-2">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2 hover:text-secondary- transition-colors line-clamp-2">
                         {article.title}
                       </h3>
 

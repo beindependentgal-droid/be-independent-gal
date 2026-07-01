@@ -116,7 +116,7 @@ export default function ProgramsPage() {
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-pink-300 hover:shadow-xl transition-all"
+                  className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all"
                 >
                   {/* Header with gradient */}
                   <div className={`bg-gradient-to-r ${program.color} p-8 text-white`}>
@@ -136,7 +136,7 @@ export default function ProgramsPage() {
                       <ul className="space-y-2">
                         {program.features.map((feature, i) => (
                           <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
-                            <span className="w-2 h-2 rounded-full bg-pink-500"></span>
+                            <span className="w-2 h-2 rounded-full bg-secondary-"></span>
                             {feature}
                           </li>
                         ))}
@@ -145,7 +145,7 @@ export default function ProgramsPage() {
 
                     {/* CTA */}
                     <Link href="/circles">
-                      <Button className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-11">
+                      <Button className="w-full bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-11">
                         Learn More
                       </Button>
                     </Link>
@@ -201,7 +201,7 @@ export default function ProgramsPage() {
                 {/* Arrow connector */}
                 {idx < 3 && (
                   <div className="hidden md:flex absolute -right-3 top-1/2 transform -translate-y-1/2 z-10">
-                    <ArrowRight className="w-6 h-6 text-pink-500" />
+                    <ArrowRight className="w-6 h-6 text-secondary-" />
                   </div>
                 )}
               </div>
@@ -222,7 +222,7 @@ export default function ProgramsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
             {events.map((event, idx) => (
               <Link key={idx} href={`/events/${idx}`}>
-                <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-pink-300 hover:shadow-xl transition-all h-full flex flex-col">
+                <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all h-full flex flex-col">
                   {/* Image */}
                   <div className="relative aspect-video overflow-hidden">
                     <FallbackImage
@@ -235,7 +235,7 @@ export default function ProgramsPage() {
 
                     {/* Tag */}
                     <div className="absolute top-4 right-4">
-                      <span className="bg-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                      <span className="bg-secondary- text-white text-xs font-bold px-3 py-1 rounded-full">
                         {event.tag}
                       </span>
                     </div>
@@ -246,18 +246,18 @@ export default function ProgramsPage() {
                     {/* Date & Location */}
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <Calendar className="w-4 h-4 text-pink-500" />
+                        <Calendar className="w-4 h-4 text-secondary-" />
                         <span>{event.date}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <MapPin className="w-4 h-4 text-pink-500" />
+                        <MapPin className="w-4 h-4 text-secondary-" />
                         <span>{event.location}</span>
                       </div>
                     </div>
 
                     {/* Title & Description */}
                     <div className="flex-1 mb-4">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2 hover:text-pink-600 transition-colors">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2 hover:text-secondary- transition-colors">
                         {event.title}
                       </h3>
                       <p className="text-gray-600 text-sm leading-relaxed">{event.desc}</p>
@@ -269,7 +269,7 @@ export default function ProgramsPage() {
                         <p className="text-xs text-gray-500">{event.attendees}+ attending</p>
                         <Button
                           size="sm"
-                          className="bg-pink-500 hover:bg-pink-600 text-white rounded-full h-9 px-6 font-bold"
+                          className="bg-secondary- hover:bg-secondary- text-white rounded-full h-9 px-6 font-bold"
                         >
                           Register
                         </Button>
@@ -284,7 +284,7 @@ export default function ProgramsPage() {
           {/* View all events button */}
           <div className="text-center mt-12">
             <Link href="/events">
-              <Button className="bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
+              <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
                 View All Events
                 <ArrowRight className="w-4 h-4" />
               </Button>
@@ -323,11 +323,11 @@ export default function ProgramsPage() {
             ].map((item, idx) => (
               <details
                 key={idx}
-                className="bg-white rounded-xl border border-gray-200 p-6 hover:border-pink-300 transition-colors group cursor-pointer"
+                className="bg-white rounded-xl border border-gray-200 p-6 hover:border-secondary- transition-colors group cursor-pointer"
               >
                 <summary className="flex items-center justify-between font-bold text-gray-900 select-none">
                   {item.q}
-                  <span className="text-pink-500 group-open:rotate-180 transition-transform">+</span>
+                  <span className="text-secondary- group-open:rotate-180 transition-transform">+</span>
                 </summary>
                 <p className="text-gray-600 mt-4 leading-relaxed">{item.a}</p>
               </details>

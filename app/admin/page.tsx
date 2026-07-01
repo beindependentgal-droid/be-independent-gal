@@ -162,7 +162,7 @@ export default function AdminDashboardPage() {
       <main className="min-h-screen bg-slate-50 px-6 py-16">
         <div className="mx-auto max-w-7xl">
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-pink-500">Admin</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary-">Admin</p>
             <h1 className="mt-3 text-3xl font-semibold text-slate-900">Loading dashboard…</h1>
           </div>
         </div>
@@ -187,14 +187,14 @@ export default function AdminDashboardPage() {
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-pink-500">Admin dashboard</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-secondary-">Admin dashboard</p>
               <h1 className="mt-3 text-3xl font-semibold text-slate-900">Community operations at a glance</h1>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
                 Monitor member growth, moderation actions, and recent platform activity from one place.
               </p>
             </div>
             <Link href="/community">
-              <Button className="rounded-full bg-pink-500 px-5 py-3 text-sm font-semibold text-white hover:bg-pink-600">
+              <Button className="rounded-full bg-secondary- px-5 py-3 text-sm font-semibold text-white hover:bg-secondary-">
                 Open community
               </Button>
             </Link>
@@ -213,7 +213,7 @@ export default function AdminDashboardPage() {
               <div key={item.label} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-slate-600">{item.label}</p>
-                  <div className="rounded-2xl bg-pink-50 p-2 text-pink-500">
+                  <div className="rounded-2xl bg-secondary- p-2 text-secondary-">
                     <Icon className="h-5 w-5" />
                   </div>
                 </div>
@@ -312,7 +312,7 @@ export default function AdminDashboardPage() {
                       <p className="font-medium text-slate-800">{submission.full_name}</p>
                       <p className="text-sm text-slate-500">{submission.email}</p>
                     </div>
-                    <span className="rounded-full bg-pink-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-pink-700">
+                    <span className="rounded-full bg-secondary- px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-secondary-">
                       {submission.role}
                     </span>
                   </div>
@@ -334,7 +334,7 @@ export default function AdminDashboardPage() {
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-slate-900">Recent members</h2>
-            <Link href="/directory" className="inline-flex items-center gap-2 text-sm font-semibold text-pink-500">
+            <Link href="/directory" className="inline-flex items-center gap-2 text-sm font-semibold text-secondary-">
               View directory <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -378,7 +378,7 @@ export default function AdminDashboardPage() {
                             type="button"
                             size="sm"
                             variant="outline"
-                            className="border-pink-200 bg-white text-pink-600 hover:bg-pink-50"
+                            className="border-secondary- bg-white text-secondary- hover:bg-secondary-"
                             onClick={() => void handleMemberUpdate(member.id, nextLevel)}
                             disabled={isBusy}
                           >
