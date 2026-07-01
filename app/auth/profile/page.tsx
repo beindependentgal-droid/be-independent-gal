@@ -37,8 +37,49 @@ export default function ProfilePage() {
     created_at: string
   }>>([])
 
-  const getStringValue = (value: unknown) => (typeof value === 'string' ? value : '')
+  const getStringValue = (value: unknown) => (typeof value === 'string' ? value : typeof value === 'number' ? String(value) : '')
   const getNumberValue = (value: unknown) => (typeof value === 'number' ? value : 0)
+
+  const applyProfileData = (data: Record<string, unknown>, source: 'user_profiles' | 'profiles') => {
+    if (source === 'profiles') {
+      setFullName(`${getStringValue(data.first_name)} ${getStringValue(data.last_name)}`.trim())
+      setBio(getStringValue(data.bio))
+      setAvatarUrl(getStringValue(data.avatar_url))
+      setProfession(getStringValue(data.profession))
+      setIndustry('')
+      setBusiness(getStringValue(data.business))
+      setCity(getStringValue(data.city))
+      setPhone(getStringValue(data.phone))
+      setExperience('')
+      setWhyJoining(getStringValue(data.join_reason))
+      setPoints(getNumberValue(data.points))
+      setPrimaryCircle(getStringValue(data.primary_circle))
+      setLevel(getStringValue(data.member_level))
+      setJoinedAt(getStringValue(data.created_at))
+      setSkills([])
+      setInterests([])
+      setMentoringAreas([])
+      return
+    }
+
+    setFullName(getStringValue(data.full_name))
+    setBio(getStringValue(data.bio))
+    setAvatarUrl(getStringValue(data.avatar_url))
+    setProfession(getStringValue(data.profession))
+    setIndustry(getStringValue(data.industry))
+    setBusiness(getStringValue(data.business))
+    setCity(getStringValue(data.city))
+    setPhone(getStringValue(data.phone))
+    setExperience(getStringValue(data.experience))
+    setWhyJoining(getStringValue(data.why_joining))
+    setLevel(getStringValue(data.level))
+    setPoints(getNumberValue(data.points))
+    setPrimaryCircle(getStringValue(data.circle))
+    setJoinedAt(getStringValue(data.joined_at))
+    setSkills(Array.isArray(data.skills) ? data.skills.filter(Boolean).map(String) : [])
+    setInterests(Array.isArray(data.interests) ? data.interests.filter(Boolean).map(String) : [])
+    setMentoringAreas(Array.isArray(data.mentoring_areas) ? data.mentoring_areas.filter(Boolean).map(String) : [])
+  }
 
   useEffect(() => {
     const supabase = createClient()
@@ -79,7 +120,7 @@ export default function ProfilePage() {
       const fetchProfiles = async () => {
         return supabase
           .from('profiles')
-          .select('first_name,last_name,bio,avatar_url,profession,business,city,phone,points,member_level,primary_circle,created_at')
+          .select('first_name,last_name,bio,avatar_url,profession,business,city,phone,points,member_level,primary_circle,join_reason,created_at')
           .eq('id', user.id)
           .maybeSingle()
       }
@@ -118,20 +159,7 @@ export default function ProfilePage() {
             return
           }
           if (data) {
-            setFullName(`${getStringValue(data.first_name)} ${getStringValue(data.last_name)}`.trim())
-            setBio(getStringValue(data.bio))
-            setAvatarUrl(getStringValue(data.avatar_url))
-            setProfession(getStringValue(data.profession))
-            setIndustry('')
-            setBusiness(getStringValue(data.business))
-            setCity(getStringValue(data.city))
-            setPhone(getStringValue(data.phone))
-            setExperience('')
-            setWhyJoining(getStringValue(data.join_reason))
-            setPoints(getNumberValue(data.points))
-            setPrimaryCircle(getStringValue(data.primary_circle))
-            setLevel(getStringValue(data.member_level))
-            setJoinedAt(getStringValue(data.created_at))
+            applyProfileData(data as Record<string, unknown>, 'profiles')
           }
           return
         }
@@ -142,23 +170,7 @@ export default function ProfilePage() {
           return
         }
         if (data) {
-          setFullName(getStringValue(data.full_name))
-          setBio(getStringValue(data.bio))
-          setAvatarUrl(getStringValue(data.avatar_url))
-          setProfession(getStringValue(data.profession))
-          setIndustry(getStringValue(data.industry))
-          setBusiness(getStringValue(data.business))
-          setCity(getStringValue(data.city))
-          setPhone(getStringValue(data.phone))
-          setExperience(getStringValue(data.experience))
-          setWhyJoining(getStringValue(data.join_reason))
-          setLevel(getStringValue(data.level))
-          setPoints(getNumberValue(data.points))
-          setPrimaryCircle(getStringValue(data.circle))
-          setJoinedAt(getStringValue(data.joined_at))
-          setSkills(Array.isArray(data.skills) ? data.skills.filter(Boolean).map(String) : [])
-          setInterests(Array.isArray(data.interests) ? data.interests.filter(Boolean).map(String) : [])
-          setMentoringAreas(Array.isArray(data.mentoring_areas) ? data.mentoring_areas.filter(Boolean).map(String) : [])
+          applyProfileData(data as Record<string, unknown>, 'user_profiles')
         }
       } catch (err) {
         console.error('Profile fetch error:', err instanceof Error ? err.message : JSON.stringify(err, null, 2), err)
@@ -537,7 +549,7 @@ export default function ProfilePage() {
                     <div className="mt-6 grid gap-4 sm:grid-cols-2">
                       <div className="rounded-3xl bg-slate-50 p-5">
                         <p className="text-sm text-slate-500">Bio</p>
-                        <p className="mt-2 text-slate-700">{bio || 'Helping women build confidence through fashion, modelling and entrepreneurship.'}</p>
+                        <p className="mt-2 text-slate-700">{bio || (profession ? `Working in ${profession}` : 'No bio added yet.')}</p>
                       </div>
                       <div className="rounded-3xl bg-slate-50 p-5">
                         <p className="text-sm text-slate-500">Profession</p>
