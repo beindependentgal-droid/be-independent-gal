@@ -180,73 +180,70 @@ export default function ProfilePage() {
   }
 
   const displayName = fullName || user.user_metadata?.full_name || user.email || 'Member'
-  const avatarSrc = avatarUrl || user.user_metadata?.avatar_url
-  const joinedAtLabel = joinedAt ? new Date(joinedAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'June 2026'
-  const profileSummary = bio || 'No profile summary provided yet.'
-  const profileStrength = Math.min(100, Math.max(60, Math.round([
-    fullName,
-    profession,
-    industry,
-    business,
-    city,
-    bio,
-    experience,
-  ].filter(Boolean).length / 7 * 100)))
+  const avatarSrc = avatarUrl || user.user_metadata?.avatar_url || ''
+  const joinedAtLabel = joinedAt
+    ? new Date(joinedAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    : ''
+  const profileSummary = bio || ''
+  const profileStrength = (() => {
+    const count = [fullName, profession, industry, business, city, bio, experience].filter(Boolean).length
+    const pct = Math.round((count / 7) * 100)
+    return Number.isFinite(pct) ? Math.max(0, Math.min(100, pct)) : 0
+  })()
+
   const bigStats = [
-    { icon: '⭐', label: 'Points', value: points.toString() },
-    { icon: '🤝', label: 'Circle', value: primaryCircle || 'None' },
-    { icon: '📍', label: 'Location', value: city || 'Unknown' },
-    { icon: '💼', label: 'Role', value: profession || 'Member' },
+    { icon: '⭐', label: 'Points', value: typeof points === 'number' ? String(points) : '' },
+    { icon: '🤝', label: 'Circle', value: primaryCircle || '' },
+    { icon: '📍', label: 'Location', value: city || '' },
+    { icon: '💼', label: 'Role', value: profession || '' },
   ]
+
   const achievements = [
-    level ? `${level} member` : 'Active member',
-    primaryCircle ? `${primaryCircle} Circle contributor` : 'Community contributor',
-    profession ? `${profession} specialist` : 'Profile completed',
-    industry ? `${industry} innovator` : 'Skill builder',
-    business ? `${business} founder` : 'Entrepreneur',
-    city ? `${city} local` : 'Global networker',
+    level ? `${level} member` : null,
+    primaryCircle ? `${primaryCircle} Circle contributor` : null,
+    profession ? `${profession} specialist` : null,
+    industry ? `${industry} innovator` : null,
+    business ? `${business} founder` : null,
+    city ? `${city} local` : null,
     whyJoining ? `Seeking ${whyJoining}` : null,
-  ]
-    .filter(Boolean)
-    .slice(0, 8)
+  ].filter(Boolean).slice(0, 8)
+
   const galleryItems = [
     {
-      title: business || 'Community Story',
-      caption: profession ? `${profession} spotlight` : 'Member highlights',
-      category: primaryCircle ? `${primaryCircle} Circle` : 'Community',
+      title: business || '',
+      caption: profession ? `${profession} spotlight` : '',
+      category: primaryCircle || '',
       tone: 'from-indigo-500 to-violet-500',
     },
     {
-      title: experience || 'Experience Showcase',
-      caption: industry ? `${industry} projects and milestones` : 'Personal journey and growth',
-      category: industry || 'Creative',
+      title: experience || '',
+      caption: industry ? `${industry} projects and milestones` : '',
+      category: industry || '',
       tone: 'from-emerald-500 to-teal-500',
     },
     {
-      title: city ? `${city} Connections` : 'Local Network',
-      caption: city ? `Events and collaborations in ${city}` : 'Community connections',
-      category: primaryCircle || 'Moments',
+      title: city ? `${city} Connections` : '',
+      caption: city ? `Events and collaborations in ${city}` : '',
+      category: primaryCircle || '',
       tone: 'from-amber-500 to-orange-500',
     },
-  ]
+  ].filter((g) => (g.title || g.caption))
+
   const events = [
-    `${primaryCircle || 'Learn'} Circle meet-up`,
-    `${level || 'Member'} goal planning session`,
-    `${business || 'Community'} collaboration hour`,
-    `${city || 'Local'} networking event`,
-  ]
+    primaryCircle ? `${primaryCircle} Circle meet-up` : null,
+    level ? `${level} goal planning session` : null,
+    business ? `${business} collaboration hour` : null,
+    city ? `${city} networking event` : null,
+  ].filter(Boolean)
+
   const recommendations = [
-    {
-      name: primaryCircle ? `${primaryCircle} Circle peer` : level ? `${level} peer` : 'Community member',
-      quote: `${displayName} brings strong ${profession || 'leadership'} and ${industry || 'community'} insight.`,
-      stars: 5,
-    },
-    {
-      name: business ? `${business} partner` : profession ? `${profession} mentor` : 'Circle mentor',
-      quote: `${displayName} is actively building ${primaryCircle || 'community'} connections and collaboration.`,
-      stars: 5,
-    },
-  ]
+    ...(displayName
+      ? [
+          ...(primaryCircle ? [{ name: `${primaryCircle} Circle peer`, quote: `${displayName} brings strong ${profession || ''} and ${industry || ''} insight.`, stars: 5 }] : []),
+        ]
+      : []),
+    ...(business ? [{ name: `${business} partner`, quote: `${displayName || 'This member'} is actively building ${primaryCircle || ''} connections.`, stars: 5 }] : []),
+  ].filter(Boolean)
   const profileTabs = [
     { id: 'posts', label: 'Posts' },
     { id: 'about', label: 'About' },
@@ -414,20 +411,30 @@ export default function ProfilePage() {
                       </div>
                       <p className="mt-3 text-lg font-semibold text-slate-100">{profession || 'Member'}</p>
                       <p className="mt-2 text-sm text-slate-300">{city || 'Location not set'}</p>
-                      <p className="mt-4 text-sm leading-7 text-slate-300">{profileSummary}</p>
-                      <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
-                        <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1">Member since {joinedAtLabel}</span>
-                        <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1">{primaryCircle || 'Learn'} Circle</span>
-                      </div>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                                {profileTags.length > 0 ? (
-                          profileTags.map((tag) => (
+                      {profileSummary ? (
+                        <p className="mt-4 text-sm leading-7 text-slate-300">{profileSummary}</p>
+                      ) : (
+                        <p className="mt-4 text-sm leading-7 text-slate-400 italic">No bio yet — <a href="/auth/onboarding/profile" className="underline">Add a bio</a></p>
+                      )}
+                        <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
+                          {joinedAtLabel ? (
+                            <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1">Member since {joinedAtLabel}</span>
+                          ) : (
+                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-slate-300">Member since —</span>
+                          )}
+                          {primaryCircle ? (
+                            <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1">{primaryCircle} Circle</span>
+                          ) : (
+                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-slate-300">No primary circle</span>
+                          )}
+                        </div>
+                      {profileTags.length > 0 && (
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {profileTags.map((tag) => (
                             <span key={tag} className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">{tag}</span>
-                          ))
-                        ) : (
-                          <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">No tags yet</span>
-                        )}
-                      </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
 

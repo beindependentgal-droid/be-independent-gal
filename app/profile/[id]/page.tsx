@@ -117,7 +117,7 @@ export default function ProfilePage() {
     )
   }
 
-  const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
+  const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Member'
   const isOwnProfile = currentUser?.id === profileId
 
   return (
@@ -135,18 +135,22 @@ export default function ProfilePage() {
           {/* Main Content - Left */}
           <div className="lg:col-span-2 space-y-8">
             {/* About Section */}
-            {(profile.bio || profile.user_profile_extended?.interests || profile.user_profile_extended?.mentoring_areas) && (
+              {(profile.bio || (profile.user_profile_extended && (profile.user_profile_extended.interests?.length || profile.user_profile_extended.mentoring_areas?.length))) ? (
               <div className="bg-white rounded-2xl border border-gray-200 p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">About</h2>
 
-                {profile.bio && (
+                {profile.bio ? (
                   <div className="mb-6">
                     <p className="text-gray-600 leading-relaxed">{profile.bio}</p>
+                  </div>
+                ) : (
+                  <div className="mb-6">
+                    <p className="text-gray-500 italic">No bio yet.</p>
                   </div>
                 )}
 
                 {/* Interests */}
-                {profile.user_profile_extended?.interests && profile.user_profile_extended.interests.length > 0 && (
+                {profile.user_profile_extended?.interests && profile.user_profile_extended.interests.length > 0 ? (
                   <div className="mb-6">
                     <h3 className="font-bold text-gray-900 mb-3">Interests</h3>
                     <div className="flex flex-wrap gap-2">
@@ -160,25 +164,34 @@ export default function ProfilePage() {
                       ))}
                     </div>
                   </div>
+                ) : (
+                  <div className="mb-6">
+                    <h3 className="font-bold text-gray-900 mb-3">Interests</h3>
+                    <p className="text-gray-500 italic">No interests listed.</p>
+                  </div>
                 )}
 
                 {/* Mentoring Areas */}
-                {profile.user_profile_extended?.mentoring_areas &&
-                  profile.user_profile_extended.mentoring_areas.length > 0 && (
-                    <div>
-                      <h3 className="font-bold text-gray-900 mb-3">Mentoring In</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {profile.user_profile_extended.mentoring_areas.map((area, idx) => (
-                          <span
-                            key={idx}
-                            className="bg-purple-100 text-purple-700 text-sm font-medium px-4 py-2 rounded-full"
-                          >
-                            🎓 {area}
-                          </span>
-                        ))}
-                      </div>
+                {profile.user_profile_extended?.mentoring_areas && profile.user_profile_extended.mentoring_areas.length > 0 ? (
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-3">Mentoring In</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.user_profile_extended.mentoring_areas.map((area, idx) => (
+                        <span
+                          key={idx}
+                          className="bg-purple-100 text-purple-700 text-sm font-medium px-4 py-2 rounded-full"
+                        >
+                          🎓 {area}
+                        </span>
+                      ))}
                     </div>
-                  )}
+                  </div>
+                ) : (
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-3">Mentoring In</h3>
+                    <p className="text-gray-500 italic">No mentoring areas listed.</p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -212,32 +225,32 @@ export default function ProfilePage() {
             {/* Stats Cards */}
             <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
               {/* Member Since */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Calendar className="w-4 h-4" />
-                  <span className="text-sm font-medium">Member Since</span>
+              {profile.created_at && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <Calendar className="w-4 h-4" />
+                    <span className="text-sm font-medium">Member Since</span>
+                  </div>
+                  <p className="text-lg font-bold text-gray-900">
+                    {new Date(profile.created_at).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                    })}
+                  </p>
                 </div>
-                <p className="text-lg font-bold text-gray-900">
-                  {profile.created_at
-                    ? new Date(profile.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                      })
-                    : 'June 2024'}
-                </p>
-              </div>
+              )}
 
               <div className="border-t border-gray-200 pt-4">
                 {/* Total Points */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Award className="w-4 h-4" />
-                    <span className="text-sm font-medium">Total Points</span>
+                {profile.points !== undefined && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Award className="w-4 h-4" />
+                      <span className="text-sm font-medium">Total Points</span>
+                    </div>
+                    <p className="text-lg font-bold text-gray-900">⭐ {profile.points}</p>
                   </div>
-                  <p className="text-lg font-bold text-gray-900">
-                    ⭐ {profile.points || 0}
-                  </p>
-                </div>
+                )}
               </div>
             </div>
 
