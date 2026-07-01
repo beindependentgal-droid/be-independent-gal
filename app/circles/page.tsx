@@ -18,9 +18,8 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg'],
   },
 }
-     { emoji: '🌸', rank: 'Active Sister', color: 'from-primary/10 to-primary/5' },
-     { emoji: '⭐', rank: 'Community Champion', color: 'from-yellow-100 to-yellow-50' },
-     { emoji: '👑', rank: 'Circle Leader', color: 'from-primary/10 to-primary/5' },
+const meetups = [
+  {
     day: '12',
     month: 'Jul',
     title: 'Sisterhood Brunch & Networking',

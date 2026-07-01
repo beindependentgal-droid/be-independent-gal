@@ -4,6 +4,8 @@ import { useMemo, useState } from "react"
 import Link from "next/link"
 import { Activity, ShieldCheck, Users, AlertTriangle, ArrowRight, CheckCircle2, XCircle, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useAuth } from '@/lib/auth-context'
+import { getAccessToken } from '@/lib/auth-utils'
 
 interface PlatformAnalyticsItem {
   date: string
@@ -47,6 +49,7 @@ interface FormSubmission {
 }
 
 export default function AdminDashboardPage() {
+  const { isAuthenticated, loading: authLoading } = useAuth()
   const [analytics, setAnalytics] = useState<PlatformAnalyticsItem[]>([])
   const [flaggedContent, setFlaggedContent] = useState<FlaggedContent[]>([])
   const [users, setUsers] = useState<AdminUser[]>([])
