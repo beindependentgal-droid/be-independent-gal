@@ -100,14 +100,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (provider !== 'google') throw new Error('Only Google provider is supported');
 
     const safeRedirect = redirectTo?.startsWith('/') ? redirectTo : '/community';
-    const baseCallbackUrl = process.env.NEXT_PUBLIC_AUTH_REDIRECT_URL || `${window.location.origin}/auth/callback`;
-    const callbackUrl = new URL(baseCallbackUrl);
-    callbackUrl.searchParams.set('next', safeRedirect);
+    const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeRedirect)}`;
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: callbackUrl.toString(),
+        redirectTo: callbackUrl,
         flowType: 'pkce',
         queryParams: {
           access_type: 'offline',

@@ -134,8 +134,8 @@ export default function RootLayout({
           </div>
         </AuthProvider>
 
-        {/* Analytics - Production only */}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        {/* Analytics - Vercel deployments only */}
+        {process.env.NODE_ENV === 'production' && process.env.VERCEL === '1' && <Analytics />}
       </body>
     </html>
   )

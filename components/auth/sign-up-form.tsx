@@ -92,8 +92,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
     setError('')
     setLoading(true)
     try {
-      const nextPath = `/auth/sign-up?redirect=${encodeURIComponent(redirect)}&from=google`
-      await signInWithProvider('google', nextPath)
+      await signInWithProvider('google', redirect)
     } catch (err: any) {
       setError(err?.message || 'Google sign-in failed. Please try again.')
       setLoading(false)
