@@ -18,9 +18,9 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg'],
   },
 }
-
-const meetups = [
-  {
+     { emoji: '🌸', rank: 'Active Sister', color: 'from-primary/10 to-primary/5' },
+     { emoji: '⭐', rank: 'Community Champion', color: 'from-yellow-100 to-yellow-50' },
+     { emoji: '👑', rank: 'Circle Leader', color: 'from-primary/10 to-primary/5' },
     day: '12',
     month: 'Jul',
     title: 'Sisterhood Brunch & Networking',
@@ -95,7 +95,7 @@ const circles = [
     description:
       'Build relationships, mentorship, networks, and meaningful connections. Find your tribe and cultivate friendships that matter.',
     memberCount: 3124,
-    color: 'from-purple-600 to-purple-800',
+    color: 'from-primary to-primary',
   },
   {
     id: 'earn',
@@ -152,9 +152,9 @@ const features = [
 
 const ranks = [
   { emoji: '🌱', rank: 'New Member', color: 'from-green-100 to-green-50' },
-  { emoji: '🌸', rank: 'Active Sister', color: 'from-pink-110 to-pink-50' },
+  { emoji: '🌸', rank: 'Active Sister', color: 'from-primary/10 to-primary/5' },
   { emoji: '⭐', rank: 'Community Champion', color: 'from-yellow-100 to-yellow-50' },
-  { emoji: '👑', rank: 'Circle Leader', color: 'from-purple-100 to-purple-50' },
+  { emoji: '👑', rank: 'Circle Leader', color: 'from-primary/10 to-primary/5' },
   { emoji: '🏆', rank: 'BIG Ambassador', color: 'from-orange-100 to-orange-50' },
 ]
 
@@ -322,7 +322,7 @@ export default function CirclesPage() {
 
                 {/* Author */}
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center overflow-hidden">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
                     <FallbackImage
                       src={story.image}
                       alt={story.name}

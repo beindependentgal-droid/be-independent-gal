@@ -89,20 +89,30 @@ export default function AcademyPage() {
               <CourseCard key={course.slug} course={course} />
             ))}
           </div>
-          <div id="featured-courses" className="mt-12">
-            <CourseCard course={courses[0]} />
-          </div>
-          <div className="mt-12 flex justify-center">
-            <Button
-              asChild
-              size="lg"
-              className="rounded-full bg-primary px-8 font-semibold text-primary-foreground hover:bg-primary/90"
-            >
-              <Link href="/get-involved#join">
-                Join to unlock all courses{' '}
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </Button>
+          <div className="mt-12 grid gap-6 rounded-[2rem] border border-border bg-white p-8 shadow-sm lg:grid-cols-[1.5fr_auto]">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                Want more?
+              </p>
+              <h3 className="mt-3 text-3xl font-bold text-secondary">
+                Browse the full academy catalog
+              </h3>
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                BIG Academy includes practical courses across finance, career, entrepreneurship, digital skills, and wellbeing — all designed to help you move from curiosity to confidence.
+              </p>
+            </div>
+            <div className="flex items-center justify-center lg:justify-end">
+              <Button
+                asChild
+                size="lg"
+                className="rounded-full bg-primary px-8 font-semibold text-primary-foreground hover:bg-primary/90"
+              >
+                <Link href="#academy-course-explorer">
+                  Browse all courses{' '}
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>

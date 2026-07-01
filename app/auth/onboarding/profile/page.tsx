@@ -114,7 +114,7 @@ export default function ProfileOnboardingPage() {
           {/* Avatar section */}
           <div className="flex flex-col items-center gap-6">
             {/* Avatar preview */}
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center overflow-hidden border-2 border-gray-200">
+            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border-2 border-gray-200">
               {avatarPreview ? (
                 <img
                   src={avatarPreview}

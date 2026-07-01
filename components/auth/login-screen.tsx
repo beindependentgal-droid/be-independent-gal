@@ -65,7 +65,7 @@ export default function LoginScreen({ searchParams }: LoginScreenProps) {
           {/* Logo */}
           <div className="flex justify-center">
             <Image
-              src="/images/big-logo.svg"
+              src="/images/big.svg"
               alt="BIG Logo"
               width={48}
               height={48}
@@ -98,7 +98,7 @@ export default function LoginScreen({ searchParams }: LoginScreenProps) {
       </div>
 
       {/* Right side - Hero Image */}
-      <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-br from-pink-50 to-purple-50 p-12">
+      <div className="hidden lg:flex flex-col justify-center items-center bg-white p-12">
         <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl">
           <Image
             src="/images/hero-women.jpg"

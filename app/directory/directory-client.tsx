@@ -273,7 +273,7 @@ export default function DirectoryClient() {
                             className="w-20 h-20 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center text-2xl font-bold text-pink-600">
+                          <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-bold text-primary">
                             {member.first_name.charAt(0)}
                           </div>
                         )}

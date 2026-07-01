@@ -98,7 +98,7 @@ export default function LeaderboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-pink-600 to-purple-600 text-white py-16 px-6 sm:px-12 lg:px-16">
+      <div className="bg-primary text-white py-16 px-6 sm:px-12 lg:px-16">
         <div className="max-w-6xl mx-auto text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Trophy className="w-8 h-8" />
@@ -248,7 +248,7 @@ export default function LeaderboardPage() {
             {/* Rest of Leaderboard */}
             {leaderboard.length > 3 && (
               <div className="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-pink-100 to-purple-100 px-8 py-6 border-b-2 border-gray-200">
+                <div className="bg-primary/10 px-8 py-6 border-b-2 border-gray-200">
                   <h2 className="text-2xl font-bold text-gray-900">
                     Rankings 4-{leaderboard.length}
                   </h2>
@@ -280,7 +280,7 @@ export default function LeaderboardPage() {
                               className="w-12 h-12 rounded-full object-cover"
                             />
                           ) : (
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center font-bold">
+                            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center font-bold">
                               {entry.user.first_name.charAt(0)}
                             </div>
                           )}

@@ -1,9 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRight, Clock, BookOpen, BarChart } from 'lucide-react'
 import { getCourseBySlug, getAllCourseSlugs } from '@/lib/academy-courses'
-import { Button } from '@/components/ui/button'
 import { PageHero } from '@/components/page-hero'
 import { SectionHeading } from '@/components/section-heading'
 import { AuthGatedButton } from '@/components/auth/auth-gated-button'
@@ -41,7 +39,7 @@ export default function AcademyCoursePage({ params }: AcademyCoursePageProps) {
     return (
       <main className="bg-background">
         <div className="mx-auto flex min-h-[70vh] max-w-5xl flex-col justify-center px-4 py-24 sm:px-6 lg:px-8">
-          <div className="rounded-[2rem] border border-slate-200/80 bg-gradient-to-br from-white via-[#fbf8ff] to-[#f8fafc] p-8 shadow-[0_24px_70px_-28px_rgba(15,23,42,0.16)] sm:p-10">
+            <div className="rounded-[2rem] border border-slate-200/80 bg-white p-8 shadow-[0_24px_70px_-28px_rgba(15,23,42,0.16)] sm:p-10">
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">Coming soon</p>
             <h1 className="mt-4 text-3xl font-semibold text-secondary sm:text-4xl">
               This learning path is not available just yet
@@ -88,19 +86,25 @@ export default function AcademyCoursePage({ params }: AcademyCoursePageProps) {
                 <p className="text-sm text-muted-foreground">Lessons</p>
               </div>
               <div className="rounded-3xl bg-secondary/5 p-6 text-center">
-                <p className="text-3xl font-bold text-secondary">Free</p>
+                <p className="text-3xl font-bold text-secondary">{course.price ?? 'Free'}</p>
                 <p className="text-sm text-muted-foreground">Enrollment</p>
               </div>
             </div>
             <div className="space-y-4">
               <SectionHeading eyebrow="What you’ll learn" title="Course outcomes" />
               <ul className="space-y-3 text-sm leading-relaxed text-muted-foreground">
-                {(course.outcomes ?? []).map((outcome) => (
-                  <li key={outcome} className="flex items-start gap-3">
-                    <span className="mt-1 inline-flex h-2 w-2 rounded-full bg-primary" />
-                    <span>{outcome}</span>
+                {(course.outcomes ?? []).length > 0 ? (
+                  course.outcomes.map((outcome) => (
+                    <li key={outcome} className="flex items-start gap-3">
+                      <span className="mt-1 inline-flex h-2 w-2 rounded-full bg-primary" />
+                      <span>{outcome}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-sm leading-relaxed text-muted-foreground">
+                    This course includes practical lessons, examples, and tools to help you move forward with confidence.
                   </li>
-                ))}
+                )}
               </ul>
             </div>
           </div>
@@ -127,10 +131,18 @@ export default function AcademyCoursePage({ params }: AcademyCoursePageProps) {
                   ? `Ideal for ${course.idealFor.toLowerCase()}.`
                   : 'Join the course instantly and access the learning path designed for women who want more financial independence, career momentum, or a stronger business foundation.'}
               </p>
+              <div className="mt-4 inline-flex flex-wrap gap-2">
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary">
+                  {course.level}
+                </span>
+                <span className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-secondary">
+                  {course.track}
+                </span>
+              </div>
               <AuthGatedButton
                 size="lg"
                 className="mt-6 w-full rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground hover:bg-primary/90"
-                redirectPath="/join"
+                redirectPath={`/academy/${course.slug}`}
               >
                 Join this course
               </AuthGatedButton>

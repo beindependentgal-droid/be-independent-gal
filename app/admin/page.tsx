@@ -1,11 +1,8 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { Activity, ShieldCheck, Users, AlertTriangle, ArrowRight, CheckCircle2, XCircle, Sparkles } from "lucide-react"
-import { useAuth } from "@/lib/auth-context"
-import { getAccessToken } from "@/lib/auth-utils"
 import { Button } from "@/components/ui/button"
 
 interface PlatformAnalyticsItem {
@@ -14,14 +11,6 @@ interface PlatformAnalyticsItem {
   active_users: number
   posts: number
   events: number
-}
-
-interface AuditLog {
-  id: string
-  action: string
-  resource_type: string
-  created_at: string
-  admin?: { first_name?: string; last_name?: string }
 }
 
 interface FlaggedContent {
@@ -44,27 +33,27 @@ interface AdminUser {
   created_at?: string
 }
 
+interface FormSubmission {
+  id: string
+  full_name: string
+  email: string
+  role: string
+  experience: string
+  goals: string
+  interests: string[]
+  contact_method: string
+  updates: boolean
+  created_at: string
+}
+
 export default function AdminDashboardPage() {
-  const router = useRouter()
-  const { user, isAuthenticated, loading: authLoading } = useAuth()
   const [analytics, setAnalytics] = useState<PlatformAnalyticsItem[]>([])
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([])
   const [flaggedContent, setFlaggedContent] = useState<FlaggedContent[]>([])
   const [users, setUsers] = useState<AdminUser[]>([])
+  const [submissions, setSubmissions] = useState<FormSubmission[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [processingAction, setProcessingAction] = useState<{ id: string; type: "flag" | "member" } | null>(null)
-
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.replace("/auth/login")
-      return
-    }
-
-    if (!authLoading && isAuthenticated) {
-      void loadDashboard()
-    }
-  }, [authLoading, isAuthenticated, router])
 
   const loadDashboard = async () => {
     try {
@@ -73,22 +62,24 @@ export default function AdminDashboardPage() {
       const token = await getAccessToken()
       const headers = token ? { Authorization: `Bearer ${token}` } : {}
 
-      const [analyticsRes, usersRes] = await Promise.all([
+      const [analyticsRes, usersRes, formsRes] = await Promise.all([
         fetch("/api/analytics/dashboard", { headers }),
         fetch("/api/admin/users?limit=8", { headers }),
+        fetch("/api/admin/forms", { headers }),
       ])
 
-      if (!analyticsRes.ok || !usersRes.ok) {
+      if (!analyticsRes.ok || !usersRes.ok || !formsRes.ok) {
         throw new Error("Unable to load admin data")
       }
 
       const analyticsPayload = await analyticsRes.json()
       const usersPayload = await usersRes.json()
+      const formsPayload = await formsRes.json()
 
       setAnalytics(analyticsPayload.platformAnalytics ?? [])
-      setAuditLogs(analyticsPayload.auditLogs ?? [])
       setFlaggedContent(analyticsPayload.flaggedContent ?? [])
       setUsers(usersPayload.users ?? [])
+      setSubmissions(formsPayload.submissions ?? [])
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load admin dashboard")
     } finally {
@@ -299,6 +290,41 @@ export default function AdminDashboardPage() {
                 })
               )}
             </div>
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-slate-900">Recent form submissions</h2>
+            <span className="text-sm text-slate-500">Community interest intake</span>
+          </div>
+          <div className="mt-6 space-y-3">
+            {submissions.length === 0 ? (
+              <p className="text-sm text-slate-500">No form submissions yet.</p>
+            ) : (
+              submissions.slice(0, 6).map((submission) => (
+                <div key={submission.id} className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="font-medium text-slate-800">{submission.full_name}</p>
+                      <p className="text-sm text-slate-500">{submission.email}</p>
+                    </div>
+                    <span className="rounded-full bg-pink-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-pink-700">
+                      {submission.role}
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm leading-7 text-slate-600">{submission.goals}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {submission.interests.slice(0, 4).map((interest) => (
+                      <span key={interest} className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs text-slate-600">
+                        {interest}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-xs text-slate-500">Submitted {new Date(submission.created_at).toLocaleDateString()}</p>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

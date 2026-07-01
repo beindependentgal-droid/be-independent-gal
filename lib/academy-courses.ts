@@ -1,10 +1,5 @@
 import {
   type LucideIcon,
-  Wallet,
-  Briefcase,
-  Lightbulb,
-  Laptop,
-  Heart,
   PlayCircle,
   Users,
   Compass,
@@ -20,6 +15,7 @@ export type AcademyCourse = {
   lessons: number;
   description: string;
   image: string;
+  price?: string;
   featured?: boolean;
   idealFor?: string;
   outcomes?: string[];
@@ -104,7 +100,7 @@ export const academyStats = [
   { value: "30+", label: "Courses & growing" },
   { value: "5", label: "Learning tracks" },
   { value: "2,400+", label: "Women learning" },
-  { value: "100%", label: "Free to start" },
+  { value: "Free & paid options", label: "Flexible pricing" },
 ];
 
 export const academyCourses: AcademyCourse[] = [
@@ -136,6 +132,7 @@ export const academyCourses: AcademyCourse[] = [
     description:
       "Validate your idea, find your first customers, and make your first sales without big capital.",
     image: "/images/event.png",
+    price: "$49",
     featured: true,
     idealFor: "Women ready to turn an idea into income",
     outcomes: [
@@ -154,6 +151,7 @@ export const academyCourses: AcademyCourse[] = [
     description:
       "Craft a standout CV, tell your story with confidence, and negotiate the offer you deserve.",
     image: "/images/mentorship.png",
+    price: "$39",
     idealFor: "Women preparing for career moves or promotions",
     outcomes: [
       "Write a CV that highlights your value clearly",
@@ -205,6 +203,7 @@ export const academyCourses: AcademyCourse[] = [
     description:
       "Systems, pricing, team, and marketing strategies to take your business to the next level.",
     image: "/images/hero-women.png",
+    price: "$79",
     idealFor: "Women already running a business and ready to grow",
     outcomes: [
       "Improve pricing and profit strategy",

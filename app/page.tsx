@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import {
   ArrowRight,
@@ -132,12 +131,12 @@ export default function HomePage() {
           <div className="relative">
             <div className="aspect-square rounded-3xl overflow-hidden shadow-2xl">
               <FallbackImage
-                src="/images/about-big.jpg"
+                src="/images/together.jpg"
                 alt="Be Independent Gal Community"
                 width={600}
                 height={600}
                 className="w-full h-full object-cover"
-                fallbackSrc="/images/about-placeholder.jpg"
+                fallbackSrc="/images/placeholder.jpg"
               />
             </div>
           </div>
@@ -152,8 +151,7 @@ export default function HomePage() {
             </div>
 
             <p className="text-lg text-gray-600 leading-relaxed">
-              BIG is a premium women's community created to inspire ambitious women to learn, lead, and build futures
-              rooted in confidence, connection, and opportunity.
+                BIG is a premium women&apos;s community created to inspire ambitious women to learn, lead, and build futures
             </p>
 
             <p className="text-lg text-gray-600 leading-relaxed">
@@ -179,11 +177,10 @@ export default function HomePage() {
           <SectionHeading
             title="What We Serve"
             subtitle="Practical support for every woman in the BIG community"
-            description="From learning to belonging, we've got you covered"
+            description="From learning to belonging, we&apos;ve got you covered"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            {trustItems.map((item, idx) => {
+          {trustItems.map((item, idx) => {
               const Icon = item.icon
               return (
                 <div
@@ -199,7 +196,6 @@ export default function HomePage() {
               )
             })}
           </div>
-        </div>
       </section>
 
       {/* The Four Pillars */}
@@ -311,7 +307,7 @@ export default function HomePage() {
           <h2 className="text-4xl font-bold">Sister Circles</h2>
           <p className="text-xl text-white/90 leading-relaxed">
             Sister Circles offer women a brave, gentle, and powerful space to be fully seen, share honestly, and grow
-            together through life's seasons.
+            together through life&apos;s seasons.
           </p>
           <Link href="/circles">
             <Button className="bg-white text-pink-600 hover:bg-gray-100 font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
@@ -352,16 +348,16 @@ export default function HomePage() {
             {stories.map((story, idx) => (
               <div
                 key={idx}
-                className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-12 border border-pink-200 relative"
+                className="bg-white rounded-2xl p-12 border border-border relative"
               >
-                <div className="absolute top-6 left-6 text-5xl opacity-20">"</div>
+                <div className="absolute top-6 left-6 text-5xl opacity-20">&quot;</div>
 
                 <p className="text-xl text-gray-800 italic leading-relaxed mb-8 relative z-10">
                   {story.quote}
                 </p>
 
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-300 to-purple-300 flex items-center justify-center text-white font-bold">
+                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold">
                     {story.name.charAt(0)}
                   </div>
                   <div>
@@ -380,7 +376,7 @@ export default function HomePage() {
         description="Become part of a community of ambitious women building independent, purpose-driven futures together."
         cta1={{ text: 'Join BIG Today', href: '/auth/sign-up' }}
         cta2={{ text: 'Learn More', href: '/about' }}
-        background="bg-gradient-to-r from-pink-600 to-purple-600"
+        background="bg-primary"
       />
     </>
   )

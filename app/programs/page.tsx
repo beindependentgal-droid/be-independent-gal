@@ -32,7 +32,7 @@ const programs = [
     icon: Users,
     title: 'Mentorship Circles',
     desc: 'Be paired with experienced women who guide you through your personal and professional journey.',
-    color: 'from-purple-600 to-purple-800',
+    color: 'from-primary to-primary',
     features: ['1-on-1 mentorship', 'Group guidance', 'Accountability partners'],
   },
   {
@@ -191,7 +191,7 @@ export default function ProgramsPage() {
             ].map((step, idx) => (
               <div key={idx} className="relative">
                 <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center font-bold text-lg mx-auto mb-4">
+                  <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg mx-auto mb-4">
                     {step.num}
                   </div>
                   <h4 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h4>
@@ -365,7 +365,7 @@ export default function ProgramsPage() {
             ].map((testimonial, idx) => (
               <div
                 key={idx}
-                className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-8 border border-pink-200"
+                className="bg-white rounded-2xl p-8 border border-border"
               >
                 <div className="flex gap-1 mb-4">
                   {[1, 2, 3, 4, 5].map((i) => (

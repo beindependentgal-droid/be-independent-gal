@@ -21,7 +21,7 @@ const journeySteps = [
     title: 'Learn',
     description:
       'Gain practical skills through the BIG Academy, workshops, mentorship, and live sessions designed to help you grow personally and professionally.',
-    color: 'from-purple-600 to-purple-800',
+    color: 'from-primary to-primary',
   },
   {
     icon: Users,
@@ -154,7 +154,7 @@ export default function JoinPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-pink-50 to-purple-50 py-20 px-6 sm:px-12 lg:px-16">
+      <section className="bg-white py-20 px-6 sm:px-12 lg:px-16">
         <div className="max-w-6xl mx-auto text-center space-y-6">
           <div className="text-5xl mb-4">✨</div>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight">
@@ -203,7 +203,7 @@ export default function JoinPage() {
             description="At BIG, we believe that independence isn't achieved alone. It's built through knowledge, relationships, opportunities, and the courage to keep growing."
           />
 
-          <div className="mt-12 bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-12 border border-pink-200">
+          <div className="mt-12 bg-white rounded-3xl p-12 border border-border">
             <p className="text-xl text-gray-800 leading-relaxed">
               When you become a member, you're joining women who <span className="font-bold">inspire one another</span>,{' '}
               <span className="font-bold">celebrate each other's wins</span>, and{' '}
@@ -301,7 +301,7 @@ export default function JoinPage() {
             {journeyStages.map((stage, idx) => (
               <div
                 key={idx}
-                className="flex items-start gap-6 p-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl border border-pink-200 hover:border-pink-400 transition-colors"
+                className="flex items-start gap-6 p-6 bg-white rounded-2xl border border-border hover:border-primary-400 transition-colors"
               >
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-lg">
                   {idx + 1}
@@ -333,7 +333,7 @@ export default function JoinPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-gradient-to-r from-pink-600 to-purple-600 text-white py-20 px-6 sm:px-12 lg:px-16">
+      <section className="bg-primary text-white py-20 px-6 sm:px-12 lg:px-16">
         <div className="max-w-6xl mx-auto text-center space-y-8">
           <h2 className="text-4xl sm:text-5xl font-bold">Ready to Begin?</h2>
 

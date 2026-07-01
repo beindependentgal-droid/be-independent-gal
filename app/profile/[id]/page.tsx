@@ -232,7 +232,7 @@ export default function ProfilePage() {
 
             {/* Member Level Badge */}
             {profile.member_level && (
-              <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl border border-pink-200 p-6 text-center">
+              <div className="bg-white rounded-2xl border border-border p-6 text-center">
                 <p className="text-sm text-gray-600 mb-2">Member Level</p>
                 <p className="text-2xl font-bold text-pink-600 capitalize">{profile.member_level}</p>
               </div>

@@ -47,7 +47,7 @@ const circleInfo: Record<
     description:
       'Find your tribe, cultivate genuine friendships, and expand your network with women who understand your journey.',
     icon: Users,
-    color: 'from-purple-600 to-purple-800',
+    color: 'from-primary to-primary',
     benefits: [
       'Monthly sisterhood meetups',
       'One-on-one mentorship matching',

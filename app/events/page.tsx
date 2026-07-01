@@ -1,5 +1,4 @@
 import { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Calendar, MapPin, Users, ArrowRight } from 'lucide-react'
 import { getUpcomingEvents } from '@/app/actions/event-actions'
@@ -86,7 +85,7 @@ export default async function EventsPage() {
               {sortedCircles.map((circle) => (
                 <div key={circle}>
                   <div className="flex items-center gap-3 mb-8">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                       <span className="text-xl">
                         {circle === 'Learn'
                           ? '📚'
@@ -107,11 +106,7 @@ export default async function EventsPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {eventsByCircle[circle].map((event) => (
-                      <Link
-                        key={event.id}
-                        href={`/events/${event.id}`}
-                        className="block"
-                      >
+                      <div key={event.id} className="block">
                         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-pink-300 hover:shadow-xl transition-all h-full flex flex-col">
                           {/* Event Image */}
                           {event.image_url && (
@@ -193,13 +188,18 @@ export default async function EventsPage() {
                             </div>
 
                             {/* CTA Button */}
-                            <Button className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-10 flex items-center justify-center gap-2">
-                              View Details
-                              <ArrowRight className="w-4 h-4" />
+                            <Button asChild className="w-full rounded-full px-0 py-0 text-white font-bold">
+                              <Link
+                                href={`/events/${event.id}`}
+                                className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-pink-500 px-4 text-white hover:bg-pink-600"
+                              >
+                                View Details
+                                <ArrowRight className="w-4 h-4" />
+                              </Link>
                             </Button>
                           </div>
                         </div>
-                      </Link>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -209,7 +209,7 @@ export default async function EventsPage() {
               {eventsByCircle['Other'] && (
                 <div>
                   <div className="flex items-center gap-3 mb-8">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                       <span className="text-xl">✨</span>
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900">
@@ -222,11 +222,7 @@ export default async function EventsPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {eventsByCircle['Other'].map((event) => (
-                      <Link
-                        key={event.id}
-                        href={`/events/${event.id}`}
-                        className="block"
-                      >
+                      <div key={event.id} className="block">
                         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-pink-300 hover:shadow-xl transition-all h-full flex flex-col">
                           {/* Event Image */}
                           {event.image_url && (
@@ -292,13 +288,18 @@ export default async function EventsPage() {
                               )}
                             </div>
 
-                            <Button className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-full h-10 flex items-center justify-center gap-2">
-                              View Details
-                              <ArrowRight className="w-4 h-4" />
+                            <Button asChild className="w-full rounded-full px-0 py-0 text-white font-bold">
+                              <Link
+                                href={`/events/${event.id}`}
+                                className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-pink-500 px-4 text-white hover:bg-pink-600"
+                              >
+                                View Details
+                                <ArrowRight className="w-4 h-4" />
+                              </Link>
                             </Button>
                           </div>
                         </div>
-                      </Link>
+                      </div>
                     ))}
                   </div>
                 </div>

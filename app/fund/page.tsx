@@ -26,7 +26,7 @@ const fundTypes = [
       'Non-dilutive funding for business ideas, education, and personal development. No repayment required.',
     amount: 'Up to KES 500,000',
     eligibility: 'Community members with 3+ months activity',
-    color: 'from-purple-600 to-purple-800',
+    color: 'from-primary to-primary',
   },
   {
     icon: Zap,
@@ -138,7 +138,7 @@ export default function FundPage() {
       />
 
       {/* Stats Section */}
-      <section className="py-16 bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 sm:px-12 lg:px-16">
+      <section className="py-16 bg-primary text-white px-6 sm:px-12 lg:px-16">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, idx) => (
@@ -360,7 +360,7 @@ export default function FundPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 sm:px-12 lg:px-16">
+      <section className="py-20 bg-primary text-white px-6 sm:px-12 lg:px-16">
         <div className="max-w-6xl mx-auto text-center space-y-8">
           <h2 className="text-4xl font-bold">Ready to Get Funded?</h2>
 

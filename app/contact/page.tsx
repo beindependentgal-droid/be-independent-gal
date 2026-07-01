@@ -126,7 +126,7 @@ export default function ContactPage() {
             </div>
 
             {/* Office Hours */}
-            <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl border border-pink-200 p-8">
+            <div className="bg-white rounded-2xl border border-border p-8">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
                 Office Hours
               </h3>

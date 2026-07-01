@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
+import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -43,9 +43,10 @@ export default function ResetPage() {
       setMessageType('success')
       setMessage('If an account exists, a reset email has been sent. Check your inbox.')
       setEmailSent(true)
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to send reset email. Please try again.'
       setMessageType('error')
-      setMessage(err.message || 'Failed to send reset email. Please try again.')
+      setMessage(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -58,22 +59,22 @@ export default function ResetPage() {
         <div className="mx-auto w-full max-w-sm space-y-8">
           {/* Logo */}
           <div className="flex justify-center">
-            <a href="/">
+            <Link href="/">
               <FallbackImage
-                src="/images/big-logo.svg"
+                src="/images/big.svg"
                 alt="BIG Logo"
                 width={48}
                 height={48}
                 fallbackSrc="/images/big-logo-placeholder.svg"
                 className="h-12 w-12"
               />
-            </a>
+            </Link>
           </div>
 
           {/* Header */}
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-bold text-gray-900">Reset Password</h1>
-            <p className="text-gray-600">Enter your email and we'll send you a reset link</p>
+<p className="text-gray-600">Enter your email and we&apos;ll send you a reset link</p>
           </div>
 
           {emailSent ? (
@@ -83,12 +84,12 @@ export default function ResetPage() {
 
               <h2 className="text-2xl font-bold">Check Your Email</h2>
               <p className="text-gray-600">
-                We've sent a password reset link to <span className="font-semibold">{email}</span>
+                We&apos;ve sent a password reset link to <span className="font-semibold">{email}</span>
               </p>
 
               {/* Instructions */}
               <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 space-y-3 my-6 text-left">
-                <p className="font-semibold text-blue-900">What's next?</p>
+                <p className="font-semibold text-blue-900">What&apos;s next?</p>
                 <ol className="space-y-2 text-sm text-blue-900">
                   <li className="flex gap-3">
                     <span className="font-bold">1.</span>
@@ -141,7 +142,7 @@ export default function ResetPage() {
 
               {/* Help text */}
               <div className="text-center space-y-2 pt-6 border-t">
-                <p className="text-xs text-gray-500">Didn't receive the email?</p>
+                <p className="text-xs text-gray-500">Didn&apos;t receive the email?</p>
                 <p className="text-xs text-gray-500">Check your spam folder or wait a few minutes and try again.</p>
               </div>
             </div>
@@ -181,7 +182,7 @@ export default function ResetPage() {
               {/* Info box */}
               <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-sm text-blue-900">
                 <p className="font-medium mb-2">Password Reset Link</p>
-                <p>We'll send you a secure link to reset your password. The link will expire in 1 hour.</p>
+                <p>We&apos;ll send you a secure link to reset your password. The link will expire in 1 hour.</p>
               </div>
 
               {/* Submit button */}
@@ -197,9 +198,9 @@ export default function ResetPage() {
               <div className="text-center pt-4 border-t">
                 <p className="text-sm text-gray-600">
                   Remember your password?{' '}
-                  <a href="/auth/login" className="text-pink-600 hover:text-pink-700 font-bold">
+                  <Link href="/auth/login" className="text-pink-600 hover:text-pink-700 font-bold">
                     Sign In
-                  </a>
+                  </Link>
                 </p>
               </div>
             </form>
@@ -208,7 +209,7 @@ export default function ResetPage() {
       </div>
 
       {/* Right side - Hero Image */}
-      <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-br from-pink-50 to-purple-50 p-12">
+      <div className="hidden lg:flex flex-col justify-center items-center bg-white p-12">
         <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl">
           <FallbackImage
             src="/images/hero-women.jpg"
@@ -223,10 +224,8 @@ export default function ResetPage() {
         <div className="mt-12 text-center space-y-4 max-w-md">
           <h2 className="text-2xl font-bold text-gray-900">Forgot Your Password? 🔐</h2>
           <p className="text-gray-600">
-            Don't worry, it happens to everyone! We'll help you reset it in just a few steps.
+            Don&apos;t worry, it happens to everyone! We&apos;ll help you reset it in just a few steps.
           </p>
-
-          {/* Steps */}
           <div className="space-y-3 pt-6">
             <div className="flex items-center gap-3 text-left">
               <div className="flex-shrink-0 w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">

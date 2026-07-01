@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
+import Link from 'next/link'
+import { Eye, EyeOff, Sparkles } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,16 +16,12 @@ interface LoginFormProps {
 export default function LoginForm({ redirect = '/community', googleReturn = false }: LoginFormProps) {
   const { signIn, signInWithProvider } = useAuth()
 
-  // Form state
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-
-  // UI state
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // Validation
   const validate = () => {
     if (!email.trim()) {
       setError('Please enter your email')
@@ -40,9 +38,8 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
     return true
   }
 
-  // Handle email/password sign in
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault()
     setError('')
 
     if (!validate()) return
@@ -50,8 +47,7 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
     setLoading(true)
     try {
       await signIn(email, password)
-      // Don't redirect here - let LoginScreen handle it
-    } catch (err: any) {
+    } catch (err: unknown) {
       const message = String(err?.message || '').toLowerCase()
 
       if (message.includes('invalid') || message.includes('wrong') || message.includes('credentials')) {
@@ -61,132 +57,123 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
       } else if (message.includes('not found')) {
         setError('No account found with this email. Please sign up first.')
       } else {
-        setError(err?.message || 'Sign in failed. Please try again.')
+        setError(err instanceof Error ? err.message : 'Sign in failed. Please try again.')
       }
       setLoading(false)
     }
   }
 
-  // Handle Google sign in
   const handleGoogleSignIn = async () => {
     setError('')
     setLoading(true)
     try {
       await signInWithProvider('google', redirect)
-    } catch (err: any) {
-      setError(err?.message || 'Google sign-in failed. Please try again.')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Google sign-in failed. Please try again.')
       setLoading(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full space-y-6">
-      {/* Header */}
-      <div className="text-center space-y-2 mb-8">
-        <h2 className="text-2xl font-bold">Welcome Back</h2>
-        <p className="text-gray-600">Sign in to your BIG account</p>
+    <form onSubmit={handleSubmit} className="w-full rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="mb-8 text-center">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-pink-100 px-3 py-1 text-sm font-semibold text-pink-700">
+          <Sparkles className="h-4 w-4" />
+          Welcome back
+        </div>
+        <h2 className="text-2xl font-semibold text-slate-900">Sign in to BIG</h2>
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          Continue your journey with learning, connection, and opportunity.
+        </p>
       </div>
 
-      {/* Email field */}
       <div className="space-y-2">
-        <Label htmlFor="email" className="text-sm font-medium">
-          Email Address
+        <Label htmlFor="email" className="text-sm font-medium text-slate-700">
+          Email address
         </Label>
         <Input
           id="email"
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(event) => setEmail(event.target.value)}
           placeholder="you@example.com"
           disabled={loading}
-          className="h-12 rounded-2xl px-4 border border-gray-200"
+          className="h-12 rounded-2xl border border-slate-200 px-4"
         />
       </div>
 
-      {/* Password field */}
-      <div className="space-y-2">
+      <div className="mt-5 space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="password" className="text-sm font-medium">
+          <Label htmlFor="password" className="text-sm font-medium text-slate-700">
             Password
           </Label>
-          <a
-            href="/auth/forgot-password"
-            className="text-sm text-pink-600 hover:text-pink-700 font-medium"
-          >
+          <Link href="/auth/reset" className="text-sm font-semibold text-pink-600 hover:text-pink-700">
             Forgot password?
-          </a>
+          </Link>
         </div>
         <div className="relative">
           <Input
             id="password"
             type={showPassword ? 'text' : 'password'}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(event) => setPassword(event.target.value)}
             placeholder="••••••••"
             disabled={loading}
-            className="h-12 rounded-2xl px-4 pr-24 border border-gray-200"
+            className="h-12 rounded-2xl border border-slate-200 px-4 pr-12"
           />
           <button
             type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-600 hover:text-gray-900"
+            onClick={() => setShowPassword((current) => !current)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
           >
-            {showPassword ? 'Hide' : 'Show'}
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
       </div>
 
-      {/* Google return notice */}
-      {googleReturn && (
-        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-sm text-blue-900">
-          <p className="font-medium mb-1">Finishing Google Sign In</p>
-          <p>Complete the form below to sign in to your BIG account.</p>
+      {googleReturn ? (
+        <div className="mt-5 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
+          <p className="font-semibold">Finishing Google sign in</p>
+          <p className="mt-1">Complete the form below to access your BIG account.</p>
         </div>
-      )}
+      ) : null}
 
-      {/* Error message */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-sm text-red-900">
+      {error ? (
+        <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
           {error}
         </div>
-      )}
+      ) : null}
 
-      {/* Submit button */}
       <Button
         type="submit"
         disabled={loading}
-        className="w-full h-12 rounded-full bg-pink-500 hover:bg-pink-600 text-white font-bold transition-colors"
+        className="mt-6 h-12 w-full rounded-full bg-pink-600 font-semibold text-white hover:bg-pink-700"
       >
-        {loading ? 'Signing In...' : 'Sign In'}
+        {loading ? 'Signing in...' : 'Sign in'}
       </Button>
 
-      {/* Divider */}
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-200"></div>
-        </div>
-        <div className="relative flex justify-center">
-          <span className="px-2 bg-white text-sm text-gray-500">OR</span>
-        </div>
+      <div className="my-6 flex items-center gap-3">
+        <div className="h-px flex-1 bg-slate-200" />
+        <span className="text-sm text-slate-500">or</span>
+        <div className="h-px flex-1 bg-slate-200" />
       </div>
 
-      {/* Google button */}
       <Button
         type="button"
         onClick={handleGoogleSignIn}
         disabled={loading}
         variant="outline"
-        className="w-full h-12 rounded-full border border-gray-300 font-semibold hover:bg-gray-50"
+        className="h-12 w-full rounded-full border-slate-300 font-semibold text-slate-700 hover:bg-slate-50"
       >
-        {loading ? 'Signing In...' : '✓ Continue with Google'}
+        {loading ? 'Signing in...' : 'Continue with Google'}
       </Button>
 
-      {/* Sign up link */}
-      <p className="text-center text-sm text-gray-600">
-        Don't have an account?{' '}
-        <a href="/auth/sign-up" className="text-pink-600 hover:text-pink-700 font-bold">
-          Sign Up
-        </a>
+      <p className="mt-6 text-center text-sm text-slate-600">
+        New here?{' '}
+        <Link href="/auth/sign-up" className="font-semibold text-pink-600 hover:text-pink-700">
+          Create an account
+        </Link>
       </p>
     </form>
   )

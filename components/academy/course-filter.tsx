@@ -43,7 +43,11 @@ export function AcademyCourseFilter({ courses, initialTrack = 'All' }: { courses
   }, [courses, level, search, track])
 
   useEffect(() => {
-    setTrack(initialTrack)
+    const handle = requestAnimationFrame(() => {
+      setTrack(initialTrack)
+    })
+
+    return () => cancelAnimationFrame(handle)
   }, [initialTrack])
 
   const resetFilters = () => {
@@ -76,6 +80,16 @@ export function AcademyCourseFilter({ courses, initialTrack = 'All' }: { courses
                 className="pl-10"
                 aria-label="Search courses"
               />
+              {search ? (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              ) : null}
             </div>
             <Button
               type="button"
@@ -166,7 +180,7 @@ export function AcademyCourseFilter({ courses, initialTrack = 'All' }: { courses
         <Dialog.Portal>
           <Dialog.Backdrop className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
           <Dialog.Viewport className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-            <Dialog.Popup className="w-full max-w-4xl overflow-hidden rounded-3xl border border-border bg-background shadow-2xl shadow-black/20">
+            <Dialog.Popup className="w-full max-w-[min(100vw-2rem,40rem)] overflow-hidden rounded-3xl border border-border bg-background shadow-2xl shadow-black/20 sm:max-w-3xl lg:max-w-4xl">
               <div className="flex flex-col gap-6 p-6 sm:p-8">
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -202,19 +216,19 @@ export function AcademyCourseFilter({ courses, initialTrack = 'All' }: { courses
 
                     <div className="rounded-3xl border border-border bg-card p-6">
                       <div className="grid gap-3 text-sm text-muted-foreground">
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                           <span className="font-semibold text-foreground">Track</span>
                           <span className="text-right text-foreground">{selectedCourse?.track}</span>
                         </div>
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                           <span className="font-semibold text-foreground">Level</span>
                           <span className="text-right text-foreground">{selectedCourse?.level}</span>
                         </div>
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                           <span className="font-semibold text-foreground">Duration</span>
                           <span className="text-right text-foreground">{selectedCourse?.duration}</span>
                         </div>
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                           <span className="font-semibold text-foreground">Lessons</span>
                           <span className="text-right text-foreground">{selectedCourse?.lessons}</span>
                         </div>

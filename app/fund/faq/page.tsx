@@ -202,7 +202,7 @@ export default function FAQPage() {
       </section>
 
       {/* Still Have Questions */}
-      <section className="py-20 bg-gradient-to-r from-pink-50 to-purple-50 px-6 sm:px-12 lg:px-16">
+      <section className="py-20 bg-primary text-white px-6 sm:px-12 lg:px-16">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <div>
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Still have questions?</h2>
@@ -259,7 +259,7 @@ export default function FAQPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Link href="/fund/apply">
-              <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl border-2 border-pink-300 p-8 text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
+              <div className="rounded-2xl bg-white border-2 border-border p-8 text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
                 <div className="text-4xl mb-4">📝</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Apply for Funding</h3>
                 <p className="text-gray-600 text-sm mb-6">
@@ -270,7 +270,7 @@ export default function FAQPage() {
             </Link>
 
             <Link href="/fund">
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl border-2 border-purple-300 p-8 text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
+              <div className="rounded-2xl bg-white border-2 border-border p-8 text-center hover:shadow-lg transition-shadow cursor-pointer h-full">
                 <div className="text-4xl mb-4">💡</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Learn About BIG Fund</h3>
                 <p className="text-gray-600 text-sm mb-6">

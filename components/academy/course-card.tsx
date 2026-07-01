@@ -59,7 +59,7 @@ export function CourseCard({ course, selected, onOpenDetails }: CourseCardProps)
         selected && 'border-primary/70 ring-2 ring-primary/20 shadow-[0_24px_70px_-24px_rgba(91,33,182,0.35)]',
       )}
     >
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-fuchsia-500 to-accent" />
+      <div className="absolute inset-x-0 top-0 h-1 bg-primary" />
       <div className="relative aspect-[16/10] overflow-hidden">
         <Image
           src={course.image || '/placeholder.jpg'}
@@ -81,7 +81,11 @@ export function CourseCard({ course, selected, onOpenDetails }: CourseCardProps)
       <div className="flex flex-1 flex-col p-5 sm:p-6">
         <h3 className="font-heading text-lg font-bold leading-snug text-secondary text-balance">
           {course.slug ? (
-            <Link href={`/academy/${course.slug}`} className="hover:text-primary">
+            <Link
+              href={`/academy/${course.slug}`}
+              className="hover:text-primary"
+              onClick={(event) => event.stopPropagation()}
+            >
               {course.title}
             </Link>
           ) : (
@@ -102,34 +106,46 @@ export function CourseCard({ course, selected, onOpenDetails }: CourseCardProps)
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/5 px-2.5 py-1">
             <BookOpen className="h-4 w-4 text-accent" /> {course.lessons} lessons
           </span>
+          {course.price ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-1 text-accent">
+              {course.price}
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-primary">
+              Free
+            </span>
+          )}
         </div>
 
         <div
-          className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/80 pt-4"
-          onClickCapture={(event) => event.stopPropagation()}
+          className="mt-5 space-y-3 border-t border-slate-200/80 pt-4"
+          onClick={(event) => event.stopPropagation()}
+          onKeyDown={(event) => event.stopPropagation()}
         >
-          <div className="text-sm font-semibold text-primary">
-            <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs">↗</span>
-            Next step: explore
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="text-sm font-semibold text-primary">
+              <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs">↗</span>
+              Next step: explore
+            </div>
+            {onOpenDetails ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold sm:w-auto"
+                onClick={(event) => {
+                  event.stopPropagation()
+                  onOpenDetails?.(course)
+                }}
+              >
+                <Info className="h-4 w-4" />
+                View details
+              </Button>
+            ) : null}
           </div>
-          {onOpenDetails ? (
-            <Button
-              type="button"
-              variant="outline"
-              className="justify-start gap-2 rounded-full px-4 py-2 text-sm font-semibold"
-              onClick={(event) => {
-                event.stopPropagation()
-                onOpenDetails?.(course)
-              }}
-            >
-              <Info className="h-4 w-4" />
-              View details
-            </Button>
-          ) : null}
 
           <AuthGatedButton
             variant="ghost"
-            className="justify-start gap-1 px-0 font-semibold text-primary hover:bg-transparent hover:text-primary/80"
+            className="w-full justify-center gap-1 px-0 font-semibold text-primary hover:bg-transparent hover:text-primary/80 sm:w-auto sm:justify-start"
             redirectPath={`/academy/${course.slug}`}
           >
             Enroll free <ArrowRight className="h-4 w-4" />

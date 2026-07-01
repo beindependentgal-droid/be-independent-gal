@@ -72,11 +72,11 @@ export function AcademyLearningTracks({ tracks, courses }: AcademyLearningTracks
                     }
                   }}
                   className={cn(
-                    'group relative flex cursor-pointer flex-col overflow-hidden rounded-[1.75rem] border border-slate-200/80 bg-gradient-to-br from-white via-white to-[#f8f5ff] p-6 text-left shadow-[0_20px_50px_-24px_rgba(15,23,42,0.16)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/60 hover:shadow-[0_24px_70px_-24px_rgba(91,33,182,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40',
+                    'group relative flex cursor-pointer flex-col overflow-hidden rounded-[1.75rem] border border-slate-200/80 bg-white p-6 text-left shadow-[0_20px_50px_-24px_rgba(15,23,42,0.16)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/60 hover:shadow-[0_24px_70px_-24px_rgba(91,33,182,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40',
                     isActive && 'border-primary/70 bg-primary/5 shadow-[0_24px_70px_-24px_rgba(91,33,182,0.32)]',
                   )}
                 >
-                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-fuchsia-500 to-accent" />
+                  <div className="absolute inset-x-0 top-0 h-1 bg-primary" />
                   <div className="flex items-center justify-between gap-3">
                     <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                       <TrackIcon className="h-5 w-5" />
@@ -117,7 +117,7 @@ export function AcademyLearningTracks({ tracks, courses }: AcademyLearningTracks
             })}
           </div>
 
-          <div className="rounded-[1.75rem] border border-slate-200/80 bg-gradient-to-br from-white via-[#fbf8ff] to-[#f8fafc] p-6 shadow-[0_20px_50px_-24px_rgba(15,23,42,0.16)]">
+          <div className="rounded-[1.75rem] border border-slate-200/80 bg-white p-6 shadow-[0_20px_50px_-24px_rgba(15,23,42,0.16)]">
             <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.24em] text-primary">
               <Sparkles className="h-4 w-4" />
               Suggested next step
@@ -153,11 +153,23 @@ export function AcademyLearningTracks({ tracks, courses }: AcademyLearningTracks
               )}
             </div>
 
-            <Button asChild className="mt-6 rounded-full bg-gradient-to-r from-primary to-fuchsia-500 px-5 font-semibold text-primary-foreground shadow-[0_20px_40px_-20px_rgba(91,33,182,0.45)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(91,33,182,0.55)]">
-              <Link href="#academy-course-explorer">
-                Explore the full academy <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </Button>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <Button asChild className="rounded-full bg-primary px-5 font-semibold text-primary-foreground shadow-[0_20px_40px_-20px_rgba(91,33,182,0.45)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-18px_rgba(91,33,182,0.55)]">
+                <Link href="#academy-course-explorer">
+                  Explore the full academy <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
+              {selectedTrack ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-full px-5 py-2 text-sm font-semibold"
+                  onClick={() => setSelectedTrack(null)}
+                >
+                  Show all tracks
+                </Button>
+              ) : null}
+            </div>
           </div>
         </div>
 

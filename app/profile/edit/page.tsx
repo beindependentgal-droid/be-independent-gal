@@ -230,7 +230,7 @@ export default function EditProfilePage() {
             <Label className="text-lg font-bold">Profile Picture</Label>
             <div className="flex gap-6 items-start">
               {/* Avatar Preview */}
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center overflow-hidden flex-shrink-0 border-2 border-gray-200">
+              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden flex-shrink-0 border-2 border-gray-200">
                 {avatarPreview ? (
                   <img
                     src={avatarPreview}

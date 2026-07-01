@@ -9,7 +9,7 @@ interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
   isAuthenticated: boolean;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, metadata?: { first_name?: string; last_name?: string }) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithProvider: (provider: 'google', redirectTo?: string) => Promise<void>;
   sendPasswordReset: (email: string) => Promise<void>;
@@ -66,10 +66,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [supabase]);
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, metadata?: { first_name?: string; last_name?: string }) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: metadata ? { data: metadata } : undefined,
     });
 
     if (error) throw error;

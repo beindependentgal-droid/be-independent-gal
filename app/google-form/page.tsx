@@ -14,10 +14,10 @@ export default function GoogleFormPage() {
             Be Independent Gal
           </p>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-            Fresh form experience, ready to use
+            A richer form experience, built for growth
           </h1>
           <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">
-            This page gives you a polished, Google Forms-style intake experience for collecting community interest, goals, and preferences in one place.
+            This updated flow includes step-by-step navigation, draft autosave, personalized topic picks, and a review screen to make every response easier to complete and manage.
           </p>
         </div>
 

@@ -133,7 +133,7 @@ export default function GetInvolvedPage() {
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-3xl border-2 border-pink-200 p-12">
+          <div className="bg-white rounded-3xl border-2 border-border p-12">
             <div className="space-y-6">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">
@@ -380,7 +380,7 @@ export default function GetInvolvedPage() {
       </section>
 
       {/* Newsletter */}
-      <section className="py-20 bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 sm:px-12 lg:px-16">
+      <section className="py-20 bg-primary text-white px-6 sm:px-12 lg:px-16">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <div>
             <h2 className="text-4xl font-bold mb-3">Stay in the Loop</h2>
