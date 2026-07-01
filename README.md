@@ -163,3 +163,4 @@ npx tsc --noEmit
 If you want, I can add a small Node seeding script to automate inserting `data/circle-dashboard.json` into Supabase — tell me and I’ll add it.
 # be-independent-gal
 # be-independent-gal
+# be-independent-gal
