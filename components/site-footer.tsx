@@ -26,9 +26,9 @@ const footerNav = [
 ]
 
 const socials = [
-  { href: '#', label: 'Instagram', icon: InstagramIcon },
-  { href: '#', label: 'Facebook', icon: FacebookIcon },
-  { href: '#', label: 'LinkedIn', icon: LinkedinIcon },
+  { href: 'https://instagram.com/beindependentgal', label: 'Instagram', icon: InstagramIcon },
+  { href: 'https://facebook.com/beindependentgal', label: 'Facebook', icon: FacebookIcon },
+  { href: 'https://linkedin.com/company/beindependentgal', label: 'LinkedIn', icon: LinkedinIcon },
 ]
 
 export function SiteFooter() {
@@ -61,8 +61,10 @@ export function SiteFooter() {
                 <a
                   key={s.label}
                   href={s.href}
+                  target="_blank"
+                  rel="noreferrer noopener"
                   aria-label={s.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-primary"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-secondary-foreground transition-colors hover:bg-primary"
                 >
                   <s.icon className="h-4 w-4" />
                 </a>
@@ -113,10 +115,10 @@ export function SiteFooter() {
               <MapPin className="h-4 w-4 text-accent" /> Nairobi, Kenya
             </span>
             <a
-              href="mailto:hello@beindependentgal.org"
+              href="mailto:hello@beindependentgal.com"
               className="inline-flex items-center gap-1.5 transition-colors hover:text-secondary-foreground"
             >
-              <Mail className="h-4 w-4 text-accent" /> hello@beindependentgal.org
+              <Mail className="h-4 w-4 text-accent" /> hello@beindependentgal.com
             </a>
           </div>
         </div>
