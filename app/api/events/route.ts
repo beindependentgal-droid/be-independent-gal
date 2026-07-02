@@ -15,7 +15,12 @@ export async function GET(request: NextRequest) {
   const { pageSize, offset } = getPaginationParams(request);
 
   try {
-    let query = supabase.from("events").select("*", { count: "exact" });
+    let query = supabase
+      .from("events")
+      .select(
+        "id, title, description, start_time, location, image_url, capacity, status",
+        { count: "exact" },
+      );
 
     if (upcoming) {
       query = query.in("status", ["upcoming", "ongoing"]);

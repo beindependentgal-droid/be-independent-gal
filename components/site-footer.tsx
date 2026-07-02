@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import Image from 'next/image'
 import { Mail, MapPin } from 'lucide-react'
 import { NewsletterForm } from '@/components/newsletter-form'
 import { InstagramIcon, FacebookIcon, LinkedinIcon } from '@/components/social-icons'
@@ -38,10 +41,12 @@ export function SiteFooter() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3">
-              <img
+              <Image
                 src="/images/big-logo.jpeg"
                 alt="Be Independent Gal logo"
-                className="h-14 w-14 rounded-full object-cover shadow-sm"
+                width={56}
+                height={56}
+                className="rounded-full object-cover shadow-sm"
               />
               <div>
                 <span className="font-heading text-2xl font-extrabold uppercase tracking-tight">

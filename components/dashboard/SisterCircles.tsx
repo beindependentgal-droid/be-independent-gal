@@ -1,42 +1,41 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { CirclesSkeleton } from '@/components/ui/skeleton-loaders'
+import { useDashboardLoader } from '@/lib/hooks/use-dashboard-loader'
 
 export default function SisterCircles() {
-  const [circles, setCircles] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const { data, loading } = useDashboardLoader()
+  const circles = data?.circles || []
 
-  useEffect(() => {
-    let mounted = true
-    ;(async () => {
-      try {
-        const res = await fetch('/api/circles')
-        if (!res.ok) throw new Error('Failed to load circles')
-        const payload = await res.json()
-        if (mounted) setCircles(Array.isArray(payload.circles) ? payload.circles.slice(0, 5) : [])
-      } catch (e) { if (mounted) setCircles([]) } finally { if (mounted) setLoading(false) }
-    })()
-    return () => { mounted = false }
-  }, [])
+  if (loading) return <CirclesSkeleton />
 
   return (
     <div className="rounded-xl bg-white p-4 shadow-sm border">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold">Sister circles</p>
-        <a href="/circles" className="text-sm text-slate-600">Discover</a>
+        <Link href="/circles" className="text-sm text-slate-600 hover:text-slate-900">
+          Discover
+        </Link>
       </div>
       <div className="mt-3 space-y-3">
-        {loading && <p className="text-sm text-slate-500">Loading circles…</p>}
-        {!loading && circles.length === 0 && (
-          <p className="text-sm text-slate-500">You are not in any circles yet. <a href="/circles" className="text-secondary">Discover circles</a></p>
+        {circles.length === 0 && (
+          <p className="text-sm text-slate-500">
+            You are not in any circles yet.{' '}
+            <Link href="/circles" className="text-secondary font-medium hover:underline">
+              Discover circles
+            </Link>
+          </p>
         )}
-        {circles.map((c) => (
+        {circles.map((c: any) => (
           <div key={c.id} className="flex items-center justify-between">
             <div>
               <p className="font-medium">{c.name}</p>
-              <p className="text-sm text-slate-600">Next: {c.next_meeting ?? 'No upcoming meetings'}</p>
+              <p className="text-sm text-slate-600">{c.description || 'Circle'}</p>
             </div>
-            <a href={`/circles/${c.id}/dashboard`} className="text-sm text-secondary">Open</a>
+            <Link href={`/circles/${c.id}/dashboard`} className="text-sm text-secondary hover:underline">
+              Open
+            </Link>
           </div>
         ))}
       </div>

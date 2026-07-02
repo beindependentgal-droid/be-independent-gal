@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import DetailActions from '@/components/opportunities/detail-actions'
 
 type Props = { params: { id: string } }
@@ -22,7 +23,12 @@ export default async function OpportunityDetail({ params }: Props) {
           <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
             {item.cover_image ? (
               <div className="relative h-72 w-full bg-slate-100">
-                <img src={item.cover_image} alt={item.title} className="h-full w-full object-cover" />
+                <Image
+                  src={item.cover_image}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-transparent" />
               </div>
             ) : null}

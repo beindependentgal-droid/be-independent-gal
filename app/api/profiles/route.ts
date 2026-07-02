@@ -17,7 +17,9 @@ export async function GET(request: NextRequest) {
   try {
     const { data, error } = await supabase
       .from("user_profiles")
-      .select("*")
+      .select(
+        "id, first_name, last_name, email, avatar_url, bio, skills, interests, member_level, created_at",
+      )
       .eq("id", userId)
       .single();
 
@@ -64,7 +66,9 @@ export async function PUT(request: NextRequest) {
     // Fetch and return updated profile
     const { data } = await supabase
       .from("user_profiles")
-      .select("*")
+      .select(
+        "id, first_name, last_name, email, avatar_url, bio, skills, interests, member_level, created_at",
+      )
       .eq("id", userId)
       .single();
 

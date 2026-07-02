@@ -20,7 +20,12 @@ export async function GET(request: NextRequest) {
   const { pageSize, offset } = getPaginationParams(request);
 
   try {
-    let query = supabase.from("opportunities").select("*", { count: "exact" });
+    let query = supabase
+      .from("opportunities")
+      .select(
+        "id, title, description, cover_image, category, featured, created_at, deadline, remote, status, country",
+        { count: "exact" },
+      );
 
     if (search) {
       query = query.ilike("title", `%${search}%`);

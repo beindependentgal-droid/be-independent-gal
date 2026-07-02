@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useState } from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 export function Logo({
@@ -11,8 +11,6 @@ export function Logo({
   onLight?: boolean
   showText?: boolean
 }) {
-  const [imageSrc, setImageSrc] = useState('/images/biglogo.png')
-
   return (
     <Link
       href="/"
@@ -21,11 +19,13 @@ export function Logo({
     >
       <span className="relative inline-flex items-center justify-center">
         <span className="absolute -inset-0.5 rounded-full bg-secondary/80 blur opacity-80" />
-        <img
-          src={imageSrc}
-          onError={() => setImageSrc('/images/big-logo.jpeg')}
+        <Image
+          src="/images/biglogo.png"
           alt="Be Independent Gal"
-          className="relative h-10 w-10 rounded-full object-cover"
+          width={40}
+          height={40}
+          className="relative rounded-full object-cover"
+          priority
         />
       </span>
       {showText ? (
