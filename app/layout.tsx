@@ -129,6 +129,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="BIG" />
         <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/images/bigFavicon.png" sizes="512x512" type="image/png" />
+        <link rel="shortcut icon" href="/images/bigFavicon.png" />
+        <link rel="apple-touch-icon" href="/images/bigFavicon.png" sizes="512x512" />
       </head>
 
       <body className={`${outfit.variable} ${inter.variable} font-inter antialiased bg-background text-foreground`}>
