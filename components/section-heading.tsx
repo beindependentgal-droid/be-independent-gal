@@ -18,7 +18,7 @@ export function SectionHeading({
   return (
     <div
       className={cn(
-        'max-w-2xl',
+        'max-w-[44rem]',
         align === 'center' ? 'mx-auto text-center' : 'text-left',
         className,
       )}
@@ -30,23 +30,23 @@ export function SectionHeading({
             align === 'center' ? 'justify-center' : 'justify-start',
           )}
         >
-          <span className="h-px w-6 bg-accent" />
-          <span className="font-heading text-xs font-bold uppercase tracking-[0.2em] text-primary">
+          <span className="h-px w-8 bg-slate-200" />
+          <span className="font-heading text-[11px] font-medium uppercase tracking-[0.28em] text-[#5B21B6]">
             {eyebrow}
           </span>
-          <span className="h-px w-6 bg-accent" />
+          <span className="h-px w-8 bg-slate-200" />
         </div>
       )}
-      <h2 className="mt-4 text-3xl font-heading font-bold uppercase tracking-tight text-secondary sm:text-4xl md:text-5xl">
+      <h2 className="mt-4 text-[1.9rem] font-semibold leading-[1.1] tracking-[-0.02em] text-slate-900 sm:text-[2.3rem] lg:text-[2.7rem]">
         {title}
       </h2>
       {subtitle && (
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+        <p className="mx-auto mt-5 max-w-[42rem] text-[0.95rem] leading-7 text-slate-600 sm:text-base">
           {subtitle}
         </p>
       )}
       {description && (
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+        <p className="mx-auto mt-5 max-w-[42rem] text-[0.95rem] leading-7 text-slate-600 sm:text-base">
           {description}
         </p>
       )}

@@ -21,7 +21,7 @@ const circleInfo: Record<string, {
     icon: BookOpen,
     highlights: ['Monthly workshops', 'Learning challenges', 'Academy resources'],
     outcomes: ['Sharpen your skills', 'Stay accountable to your goals', 'Learn alongside women who get it'],
-    image: '/images/circle-learn.jpg',
+    image: '/images/bs.jpg',
   },
   connect: {
     title: 'Connect Circle',
@@ -31,7 +31,7 @@ const circleInfo: Record<string, {
     icon: Users,
     highlights: ['Peer circles', 'Mentoring', 'Community meetups'],
     outcomes: ['Grow your network', 'Find accountability partners', 'Meet mentors and collaborators'],
-    image: '/images/circle-connect.jpg',
+    image: '/images/sister.jpg',
   },
   earn: {
     title: 'Earn Circle',
@@ -41,7 +41,7 @@ const circleInfo: Record<string, {
     icon: TrendingUp,
     highlights: ['Business support', 'Career tools', 'Financial literacy'],
     outcomes: ['Grow your income', 'Learn from women-led businesses', 'Build momentum with real opportunities'],
-    image: '/images/circle-earn.jpg',
+    image: '/images/member-1.png',
   },
   thrive: {
     title: 'Thrive Circle',
@@ -51,7 +51,7 @@ const circleInfo: Record<string, {
     icon: Heart,
     highlights: ['Wellness challenges', 'Self-care tools', 'Leadership support'],
     outcomes: ['Feel grounded', 'Create healthier routines', 'Lead with more confidence'],
-    image: '/images/circle-thrive.jpg',
+    image: '/images/together.jpg',
   },
 }
 

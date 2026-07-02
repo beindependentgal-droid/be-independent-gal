@@ -44,7 +44,7 @@ export default async function BlogPage() {
         subtitle="Stories, insights, and wisdom from independent women"
         description="Dive into inspiring articles, expert advice, and real-life experiences shared by our community members and thought leaders."
         cta1={{ text: 'View All Articles', href: '#articles' }}
-        imageSrc="/images/hero-women.jpg"
+        imageSrc="/images/hero-women.png"
       />
 
       {/* Main Blog Articles */}
@@ -79,7 +79,7 @@ export default async function BlogPage() {
                           alt={article.title}
                           fill
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                          fallbackSrc="/images/hero-women.jpg"
+                          fallbackSrc="/images/hero-women.png"
                         />
                       </div>
                     )}

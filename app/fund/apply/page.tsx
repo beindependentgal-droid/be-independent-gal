@@ -27,7 +27,7 @@ export default function ApplyPage() {
         description="Get the funding you need to take your business to the next level. Our simple application process connects women entrepreneurs with capital, mentorship, and community support."
         cta1={{ text: 'Start Application', href: '#application' }}
         cta2={{ text: 'Learn More', href: '#faq' }}
-        imageSrc="/images/fund-hero.jpg"
+        imageSrc="/images/sister.jpg"
       />
 
       {/* Application Info */}

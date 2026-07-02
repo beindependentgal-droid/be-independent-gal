@@ -73,17 +73,17 @@ const pillars = [
 
 const communityPosts = [
   {
-    image: '/images/community.png',
+    image: '/images/bswomen.jpg',
     title: 'Real conversations, real support',
     desc: 'Women showing up for one another in circles shaped by honesty and care.',
   },
   {
-    image: '/images/mentorship.png',
+    image: '/images/sister.jpg',
     title: 'Mentorship that moves things',
     desc: 'Experienced women guiding the next generation with clarity and heart.',
   },
   {
-    image: '/images/event.png',
+    image: '/images/together.jpg',
     title: 'Moments that spark momentum',
     desc: 'Events that turn ideas into community, confidence, and opportunity.',
   },
@@ -91,17 +91,17 @@ const communityPosts = [
 
 const academyPrograms = [
   {
-    image: '/images/mentorship.png',
+    image: '/images/bswomen.jpg',
     title: 'BIG Academy',
     desc: 'A curated learning experience that combines practical, high-impact training with community support.',
   },
   {
-    image: '/images/community.png',
+    image: '/images/sister.jpg',
     title: 'Sister Circles',
     desc: 'Small, intentional circles that help women process, grow, and stay accountable.',
   },
   {
-    image: '/images/event.png',
+    image: '/images/retr.jpg',
     title: 'Events & Retreats',
     desc: 'Immersive experiences designed to restore, connect, and unlock new possibilities.',
   },
@@ -130,14 +130,14 @@ export default function HomePage() {
           {/* Left - Image */}
           <div className="relative">
             <div className="relative overflow-hidden rounded-3xl shadow-2xl">
-              <div className="aspect-[4/3] sm:aspect-square">
+              <div className="aspect-4/3 sm:aspect-square">
                 <FallbackImage
-                  src="/images/together.jpg"
+                  src="/images/bswomen.jpg"
                   alt="Be Independent Gal Community"
                   width={900}
                   height={900}
                   className="h-full w-full object-cover"
-                  fallbackSrc="/images/hero-women3.jpg"
+                  fallbackSrc="/images/sister.jpg"
                 />
               </div>
             </div>
@@ -219,7 +219,7 @@ export default function HomePage() {
               return (
                 <div
                   key={idx}
-                  className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200 hover:border-secondary hover:shadow-lg transition-all text-center"
+                  className="bg-linear-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200 hover:border-secondary hover:shadow-lg transition-all text-center"
                 >
                   <div className="w-16 h-16 rounded-full bg-white border-2 border-secondary flex items-center justify-center mx-auto mb-4">
                     <Icon className="w-8 h-8 text-secondary" />

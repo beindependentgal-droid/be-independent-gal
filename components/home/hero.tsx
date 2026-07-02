@@ -8,15 +8,15 @@ import { Button } from '@/components/ui/button'
 
 const slides = [
   {
-    image: '/images/hero-women.jpg',
+    image: '/images/bswomen.jpg',
     alt: 'Women learning and connecting in a BIG community space',
   },
   {
-    image: '/images/hero-women2.jpg',
+    image: '/images/sister.jpg',
     alt: 'Women supporting one another in an uplifting event setting',
   },
   {
-    image: '/images/hero-women3.jpg',
+    image: '/images/we.jpg',
     alt: 'Women building confidence and community together',
   },
 ]

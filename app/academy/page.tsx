@@ -144,8 +144,8 @@ export default function AcademyPage() {
               </Button>
             </div>
             <div className="relative h-64 w-full lg:h-full lg:min-h-[22rem]">
-              <Image
-                src="/images/mentorship.png"
+                <Image
+                  src="/images/bswomen.jpg"
                 alt="A mentor advising a younger woman over coffee"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"

@@ -81,7 +81,7 @@ export default function GetInvolvedPage() {
         description="Whether you want to join, donate, volunteer, or partner—there's a way for you to be part of the BIG movement."
         cta1={{ text: 'Become a Member', href: '/auth/sign-up' }}
         cta2={{ text: 'Learn More', href: '#ways' }}
-        imageSrc="/images/get-involved-hero.jpg"
+        imageSrc="/images/together.jpg"
       />
 
       {/* Ways to Get Involved */}
@@ -297,7 +297,7 @@ export default function GetInvolvedPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-12">
             {/* Volunteer */}
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl border-2 border-blue-200 p-12">
+            <div className="bg-linear-to-br from-blue-50 to-blue-100 rounded-3xl border-2 border-blue-200 p-12">
               <h3 className="text-3xl font-bold text-gray-900 mb-4">Volunteer</h3>
               <p className="text-gray-700 leading-relaxed mb-8">
                 Mentors, facilitators, and event volunteers keep our community thriving. Share your skills and time to
@@ -337,7 +337,7 @@ export default function GetInvolvedPage() {
             </div>
 
             {/* Partner */}
-            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl border-2 border-green-200 p-12">
+            <div className="bg-linear-to-br from-green-50 to-green-100 rounded-3xl border-2 border-green-200 p-12">
               <h3 className="text-3xl font-bold text-gray-900 mb-4">Partner With Us</h3>
               <p className="text-gray-700 leading-relaxed mb-8">
                 We collaborate with organizations, brands, and institutions that share our vision. Together we can reach

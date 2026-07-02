@@ -69,7 +69,7 @@ const events = [
     attendees: 500,
   },
   {
-    image: '/images/community.png',
+    image: '/images/together.jpg',
     date: 'Apr 19, 2026',
     location: 'Online',
     title: 'Financial Freedom Workshop',
@@ -78,7 +78,7 @@ const events = [
     attendees: 200,
   },
   {
-    image: '/images/mentorship.png',
+    image: '/images/bswomen.jpg',
     date: 'May 24, 2026',
     location: 'Nakuru, Kenya',
     title: 'Mentorship Mixer',

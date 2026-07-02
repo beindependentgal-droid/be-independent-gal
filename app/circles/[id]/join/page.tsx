@@ -40,7 +40,7 @@ const circleInfo: Record<
       'Skill-building challenges',
       'Networking with learners',
     ],
-    image: '/images/circle-learn.jpg',
+    image: '/images/bs.jpg',
   },
   connect: {
     title: 'Connect Circle',
@@ -57,7 +57,7 @@ const circleInfo: Record<
       'Discussion groups',
       'Accountability partners',
     ],
-    image: '/images/circle-connect.jpg',
+    image: '/images/sister.jpg',
   },
   earn: {
     title: 'Earn Circle',
@@ -74,7 +74,7 @@ const circleInfo: Record<
       'Investment club access',
       'Career advancement resources',
     ],
-    image: '/images/circle-earn.jpg',
+    image: '/images/member-1.png',
   },
   thrive: {
     title: 'Thrive Circle',
@@ -91,7 +91,7 @@ const circleInfo: Record<
       'Purpose-finding workshops',
       'Self-care community',
     ],
-    image: '/images/circle-thrive.jpg',
+    image: '/images/together.jpg',
   },
 }
 
@@ -112,7 +112,7 @@ export async function generateMetadata({
     openGraph: {
       title: `Join ${circle?.title || 'Sister Circle'}`,
       description: circle?.subtitle,
-      images: [circle?.image || '/images/og-default.jpg'],
+      images: [circle?.image || '/images/hero-placeholder.svg'],
     },
   }
 }
@@ -196,7 +196,7 @@ export default async function CircleJoinPage({
                 alt={circle.title}
                 fill
                 className="object-cover"
-                fallbackSrc="/images/circles.png"
+                fallbackSrc="/images/sister.jpg"
               />
             </div>
 

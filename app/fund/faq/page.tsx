@@ -189,7 +189,7 @@ export default function FAQPage() {
         description="Everything you need to know about BIG Fund, eligibility, the application process, and funding options."
         cta1={{ text: 'Apply Now', href: '/fund/apply' }}
         cta2={{ text: 'Learn More', href: '#faq' }}
-        imageSrc="/images/faq-hero.jpg"
+        imageSrc="/images/we.jpg"
       />
 
       {/* FAQ Sections */}

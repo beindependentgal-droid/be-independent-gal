@@ -209,8 +209,8 @@ export default function ResetPage() {
       {/* Right side - Hero Image */}
       <div className="hidden lg:flex flex-col justify-center items-center bg-white p-12">
         <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl">
-          <FallbackImage
-            src="/images/hero-women.jpg"
+            <FallbackImage
+              src="/images/hero-women.png"
             alt="BIG Community"
             fill
             className="object-cover"
