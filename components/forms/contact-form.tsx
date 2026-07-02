@@ -124,7 +124,6 @@ export function ContactForm() {
               <SelectItem value="membership">Membership</SelectItem>
               <SelectItem value="partnership">Partnerships</SelectItem>
               <SelectItem value="academy">Academy</SelectItem>
-              <SelectItem value="fund">BIG Fund</SelectItem>
               <SelectItem value="events">Events</SelectItem>
               <SelectItem value="media">Media</SelectItem>
             </SelectContent>
