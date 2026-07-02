@@ -4,12 +4,12 @@ import { requireAuth, errorResponse, successResponse } from "@/lib/api-utils";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const authResult = await requireAuth(request);
   if (authResult instanceof Response) return authResult;
 
-  const { id } = params;
+  const { id } = await params;
   const body = await request.json().catch(() => null);
 
   if (!body || typeof body !== "object" || typeof body.content !== "string") {
@@ -34,12 +34,12 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const authResult = await requireAuth(request);
   if (authResult instanceof Response) return authResult;
 
-  const { id } = params;
+  const { id } = await params;
   const deleted = await deleteCommunityPost(id);
   if (!deleted) {
     return errorResponse("Unable to delete community post.", 500);
