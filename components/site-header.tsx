@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Menu, Moon, Sun, X } from 'lucide-react'
@@ -61,17 +62,22 @@ export function SiteHeader() {
   }, [])
 
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
-  const [isThemeLoaded, setIsThemeLoaded] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const storedTheme = typeof window !== 'undefined' ? window.localStorage.getItem('theme') : null
-    const systemDark = typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
+    const storedTheme = window.localStorage.getItem('theme')
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
     const initialTheme = storedTheme === 'dark' || (!storedTheme && systemDark) ? 'dark' : 'light'
 
+    /* eslint-disable-next-line react-hooks/set-state-in-effect */
     setTheme(initialTheme)
-    setIsThemeLoaded(true)
-    document.documentElement.classList.toggle('dark', initialTheme === 'dark')
+    setMounted(true)
   }, [])
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark')
+    window.localStorage.setItem('theme', theme)
+  }, [theme])
 
   const toggleTheme = useCallback(() => {
     const nextTheme = theme === 'dark' ? 'light' : 'dark'
@@ -154,7 +160,9 @@ export function SiteHeader() {
                 : 'border-border/70 bg-background text-foreground hover:bg-muted',
             )}
           >
-            {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            <span suppressHydrationWarning>
+              {mounted ? (theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />) : <span className="h-5 w-5" />}
+            </span>
           </button>
 
           {isAuthenticated ? (
@@ -180,9 +188,11 @@ export function SiteHeader() {
                 )}
               >
                 {user?.user_metadata?.avatar_url ? (
-                  <img
+                  <Image
                     src={user.user_metadata.avatar_url}
                     alt={userName}
+                    width={32}
+                    height={32}
                     className="h-8 w-8 rounded-full object-cover"
                   />
                 ) : (
@@ -258,7 +268,9 @@ export function SiteHeader() {
                 aria-label="Toggle dark mode"
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/70 bg-background text-foreground transition-colors hover:bg-muted"
               >
-                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                <span suppressHydrationWarning>
+                  {mounted ? (theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />) : <span className="h-5 w-5" />}
+                </span>
               </button>
 
               {isAuthenticated ? (
@@ -292,6 +304,13 @@ export function SiteHeader() {
                 </>
               ) : (
                 <>
+                  <Link
+                    href={`/auth/login?redirect=${encodeURIComponent(pathname?.startsWith('/auth') ? '/community' : pathname || '/community')}`}
+                    onClick={() => setOpen(false)}
+                    className="rounded-full border border-secondary/30 px-4 py-2 text-center font-semibold text-secondary transition-colors hover:bg-secondary hover:text-secondary-foreground"
+                  >
+                    Sign In
+                  </Link>
                   <Link
                     href="/join"
                     onClick={() => setOpen(false)}

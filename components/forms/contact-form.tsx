@@ -81,7 +81,7 @@ export function ContactForm() {
       <div className="flex flex-col items-center rounded-2xl border border-border bg-card p-10 text-center">
         <span className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary animate-[pulse_1.2s_infinite]"><Check className="h-7 w-7" /></span>
         <h3 className="mt-4 font-heading text-xl font-bold text-secondary">Message sent!</h3>
-        <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">Thanks for reaching out. A member of the BIG team will get back to you shortly.</p>
+        <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">✅ Thank you! We&apos;ve received your message and will respond within one business day.</p>
         <button
           onClick={() => {
             setName('')

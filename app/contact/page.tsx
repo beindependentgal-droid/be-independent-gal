@@ -45,7 +45,7 @@ export default function ContactPage() {
               </div>
 
               <div className="relative h-72 w-full overflow-hidden rounded-3xl bg-slate-50">
-                <Image src="/images/mbl.jpg" alt="Women collaborating" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
+                <Image src="/images/event.png" alt="Women at a BIG community event" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
               </div>
             </div>
           </div>
@@ -56,9 +56,9 @@ export default function ContactPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
-              { icon: Mail, title: 'Email', value: 'hello@beindependentgal.com', href: 'mailto:hello@beindependentgal.com', action: 'Email us' },
-              { icon: Phone, title: 'Phone / WhatsApp', value: '+254 725 156 897', href: 'tel:+254725156897', action: 'Call / WhatsApp' },
-              { icon: MapPin, title: 'Location', value: 'Based in Nairobi, Kenya' },
+              { icon: Mail, title: 'Email', value: 'hello@beindependentgal.com', href: 'mailto:hello@beindependentgal.com', action: 'Send email' },
+              { icon: Phone, title: 'Phone & WhatsApp', value: '+254 725 156 897', href: 'tel:+254725156897', action: 'Call or WhatsApp' },
+              { icon: MapPin, title: 'Location', value: 'Based in Nairobi, Kenya', href: 'https://www.google.com/maps/search/?api=1&query=Nairobi+Kenya', action: 'View directions' },
               { icon: Clock, title: 'Office hours', value: 'Mon–Fri 9:00–17:00 EAT' },
             ].map((c) => {
               const Icon = c.icon
@@ -92,7 +92,7 @@ export default function ContactPage() {
               { title: 'Become a Member', href: '/join' },
               { title: 'Join BIG Academy', href: '/academy' },
               { title: 'Start a Sister Circle', href: '/circles' },
-              { title: 'Partner with BIG', href: '/get-involved' },
+              { title: 'Explore Opportunities', href: '/opportunities' },
             ].map((w) => (
               <Link key={w.title} href={w.href} className="rounded-3xl border border-gray-200 bg-white p-6 text-center hover:shadow-lg transition flex flex-col items-center gap-4">
                 <div className="h-12 w-12 rounded-md bg-slate-100 flex items-center justify-center text-slate-700">{w.title[0]}</div>
@@ -116,29 +116,6 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Quick Help */}
-      <section className="py-16 bg-white px-6 sm:px-12 lg:px-16">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">How can we help?</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { title: 'Become a Member', href: '/join' },
-              { title: 'Partner with BIG', href: '/get-involved' },
-              { title: 'Sponsor an Event', href: '/fund/apply' },
-              { title: 'Volunteer', href: '/get-involved' },
-              { title: 'Join the Academy', href: '/academy' },
-              { title: 'Start a Sister Circle', href: '/circles' },
-              { title: 'Apply for Funding', href: '/fund/apply' },
-              { title: 'Partner Programs', href: '/opportunities' },
-            ].map((h) => (
-              <Link key={h.title} href={h.href} className="rounded-3xl border border-gray-200 p-6 text-center hover:shadow-lg transition flex flex-col items-center gap-3">
-                <div className="h-12 w-12 rounded-md bg-slate-100 flex items-center justify-center text-slate-700">{h.title[0]}</div>
-                <div className="font-semibold text-sm text-slate-900">{h.title}</div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Based in Nairobi */}
       <section className="py-12 bg-gray-50 px-6 sm:px-12 lg:px-16">
@@ -168,6 +145,10 @@ export default function ContactPage() {
               </AccordionItem>
             ))}
           </Accordion>
+          <div className="mt-8 text-center">
+            <p className="text-sm text-slate-600">Still have a question? We&apos;d love to help.</p>
+            <Link href="#contact-form" className="mt-4 inline-flex rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary/90">Contact Us →</Link>
+          </div>
         </div>
       </section>
 
@@ -177,18 +158,18 @@ export default function ContactPage() {
           <h3 className="text-2xl font-semibold text-slate-900 mb-6">Social Community</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {[
-              { name: 'Instagram', url: 'https://instagram.com/beindependentgal', desc: 'Photos and stories' },
-              { name: 'Facebook', url: 'https://facebook.com/beindependentgal', desc: 'Community updates' },
-              { name: 'LinkedIn', url: 'https://linkedin.com/company/beindependentgal', desc: 'Partnerships & careers' },
-              { name: 'TikTok', url: 'https://tiktok.com/@be.independent.gal', desc: 'Short videos & events' },
-              { name: 'YouTube', url: 'https://youtube.com', desc: 'Workshops and talks' },
-              { name: 'X', url: 'https://x.com/beindependentgal', desc: 'Quick updates' },
+              { name: 'Instagram', url: 'https://instagram.com/beindependentgal', desc: 'Stories, events & community' },
+              { name: 'Facebook', url: 'https://facebook.com/beindependentgal', desc: 'Stories, events & community' },
+              { name: 'LinkedIn', url: 'https://linkedin.com/company/beindependentgal', desc: 'Stories, events & community' },
+              { name: 'TikTok', url: 'https://tiktok.com/@be.independent.gal', desc: 'Stories, events & community' },
+              { name: 'YouTube', url: 'https://youtube.com', desc: 'Stories, events & community' },
+              { name: 'X', url: 'https://x.com/beindependentgal', desc: 'Stories, events & community' },
             ].map((s) => (
               <a key={s.name} href={s.url} target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-4 hover:shadow-md transition">
                 <div className="h-12 w-12 rounded-md bg-slate-100 flex items-center justify-center text-slate-700">{s.name[0]}</div>
                 <div>
                   <div className="text-sm font-semibold text-slate-900">{s.name}</div>
-                  <div className="text-xs text-slate-500">{s.desc} · 12k followers</div>
+                  <div className="text-xs text-slate-500">{s.desc}</div>
                 </div>
                 <div className="ml-auto text-sm text-primary font-semibold">Follow</div>
               </a>
