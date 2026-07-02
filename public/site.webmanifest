@@ -7,7 +7,7 @@
   "description": "BIG — a women’s growth community",
   "icons": [
     {
-      "src": "/images/big.svg",
+      "src": "/icon.svg",
       "sizes": "512x512",
       "type": "image/svg+xml"
     }

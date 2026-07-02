@@ -20,6 +20,9 @@ export default function SignUpScreen({ searchParams }: SignUpScreenProps) {
   const [googleReturn, setGoogleReturn] = useState(false)
   const [isReady, setIsReady] = useState(false)
 
+  const isValidRedirect = (path?: string) => path?.startsWith('/') && !path.startsWith('//')
+  const loginRedirect = isValidRedirect(redirect) && !redirect.startsWith('/auth/onboarding') ? redirect : '/dashboard'
+
   // Resolve search params
   useEffect(() => {
     let isMounted = true
@@ -27,7 +30,7 @@ export default function SignUpScreen({ searchParams }: SignUpScreenProps) {
     const resolveParams = async () => {
       const params = await searchParams
       if (isMounted) {
-        setRedirect(params.redirect || '/auth/onboarding/profile')
+        setRedirect(isValidRedirect(params.redirect) ? params.redirect! : '/auth/onboarding/profile')
         setGoogleReturn(params.from === 'google')
         setIsReady(true)
       }
@@ -65,12 +68,12 @@ export default function SignUpScreen({ searchParams }: SignUpScreenProps) {
           {/* Logo */}
           <div className="flex justify-center">
             <Image
-              src="/images/big.svg"
+              src="/icon.svg"
               alt="BIG Logo"
               width={48}
               height={48}
               onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = '/images/big-logo-placeholder.svg'
+                (e.currentTarget as HTMLImageElement).src = '/favicon.svg'
               }}
               className="h-12 w-12"
             />
@@ -89,7 +92,7 @@ export default function SignUpScreen({ searchParams }: SignUpScreenProps) {
           <div className="text-center space-y-3 pt-4 border-t border-gray-200">
             <p className="text-xs text-gray-500">
               Already have an account?{' '}
-              <a href="/auth/login" className="text-secondary- hover:text-secondary- font-medium">
+              <a href={`/auth/login?redirect=${encodeURIComponent(loginRedirect)}`} className="text-secondary- hover:text-secondary- font-medium">
                 Sign In
               </a>
             </p>

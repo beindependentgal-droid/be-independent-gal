@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   const next =
     requestUrl.searchParams.get("next") ||
     requestUrl.searchParams.get("redirect") ||
-    "/community";
+    "/dashboard";
 
   const cookieStore = await cookies();
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -41,6 +41,6 @@ export async function GET(request: Request) {
     }
   }
 
-  const redirectPath = next.startsWith("/") ? next : "/community";
+  const redirectPath = next.startsWith("/") ? next : "/dashboard";
   return NextResponse.redirect(new URL(redirectPath, requestUrl.origin));
 }

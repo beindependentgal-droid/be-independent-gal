@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { ChevronLeft, Loader, Check, AlertCircle, Upload, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -25,6 +25,7 @@ interface ProfileFormData {
 
 export default function EditProfilePage() {
   const router = useRouter()
+  const pathname = usePathname()
   const { user, isAuthenticated, loading: authLoading } = useAuth()
 
   const [formData, setFormData] = useState<ProfileFormData>({
@@ -49,9 +50,9 @@ export default function EditProfilePage() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push('/auth/login')
+      router.push(`/auth/login?redirect=${encodeURIComponent(pathname ?? '/profile/edit')}`)
     }
-  }, [authLoading, isAuthenticated, router])
+  }, [authLoading, isAuthenticated, router, pathname])
 
   // Fetch profile data
   useEffect(() => {

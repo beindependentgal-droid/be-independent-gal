@@ -6,7 +6,7 @@ const samplePosts = [
     {
     id: 'w1',
     author: 'BIG Team',
-    avatar: '/images/big.svg',
+    avatar: '/icon.svg',
     text: 'Welcome to BIG! This is your community feed — meet sisters, share wins, and grow together. 💜',
     time: 'Just now',
   },

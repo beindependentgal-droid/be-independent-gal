@@ -141,7 +141,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
           <Button onClick={handleResend} disabled={loading} variant="outline" className="h-12 w-full rounded-full font-semibold">
             {loading ? 'Resending...' : 'Resend verification email'}
           </Button>
-          <Button onClick={() => router.push('/auth/login')} variant="ghost" className="h-12 w-full rounded-full font-semibold text-slate-600 hover:text-slate-900">
+          <Button onClick={() => router.push(`/auth/login?redirect=${encodeURIComponent(loginRedirect)}`)} variant="ghost" className="h-12 w-full rounded-full font-semibold text-slate-600 hover:text-slate-900">
             Back to sign in
           </Button>
         </div>
@@ -154,6 +154,9 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
       </div>
     )
   }
+
+  const isValidRedirect = (path?: string) => path?.startsWith('/') && !path.startsWith('//')
+  const loginRedirect = isValidRedirect(redirect) && !redirect.startsWith('/auth/onboarding') ? redirect : '/dashboard'
 
   return (
     <form onSubmit={handleSubmit} className="w-full rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
@@ -249,7 +252,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
 
       <p className="mt-6 text-center text-sm text-slate-600">
         Already have an account?{' '}
-        <Link href="/auth/login" className="font-semibold text-secondary- hover:text-secondary-">
+        <Link href={`/auth/login?redirect=${encodeURIComponent(loginRedirect)}`} className="font-semibold text-secondary- hover:text-secondary-">
           Sign in
         </Link>
       </p>

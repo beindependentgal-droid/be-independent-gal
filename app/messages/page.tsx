@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ConversationsList } from '@/components/messaging/conversations-list'
 import { MessageCircle, Plus, Search } from 'lucide-react'
@@ -30,6 +30,7 @@ interface Conversation {
 
 export default function MessagesPage() {
   const router = useRouter()
+  const pathname = usePathname()
   const { isAuthenticated, loading: authLoading } = useAuth()
 
   const [conversations, setConversations] = useState<Conversation[]>([])
@@ -41,9 +42,9 @@ export default function MessagesPage() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push('/auth/login')
+      router.push(`/auth/login?redirect=${encodeURIComponent(pathname ?? '/messages')}`)
     }
-  }, [authLoading, isAuthenticated, router])
+  }, [authLoading, isAuthenticated, router, pathname])
 
   // Fetch conversations
   useEffect(() => {

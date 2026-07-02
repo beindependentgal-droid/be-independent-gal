@@ -207,12 +207,12 @@ export default function CircleDashboardPage({
           <h1 className="text-3xl font-bold text-gray-900">Access Required</h1>
           <p className="text-gray-600">You need to be signed in to view this circle.</p>
           <div className="space-y-3">
-            <Link href="/auth/login" className="block">
+            <Link href={`/auth/login?redirect=${encodeURIComponent(pathname)}`} className="block">
               <Button className="w-full bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12">
                 Sign In
               </Button>
             </Link>
-            <Link href="/auth/sign-up" className="block">
+            <Link href={`/auth/sign-up?redirect=${encodeURIComponent(pathname)}`} className="block">
               <Button variant="outline" className="w-full rounded-full h-12">
                 Create Account
               </Button>

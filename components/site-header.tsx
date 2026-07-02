@@ -38,7 +38,7 @@ export function SiteHeader() {
   const pathname = usePathname()
   const router = useRouter()
   const { user, isAuthenticated, signOut } = useAuth()
-  const redirectPath = pathname?.startsWith('/auth') ? '/community' : pathname || '/community'
+  const redirectPath = pathname?.startsWith('/auth') ? '/dashboard' : pathname || '/dashboard'
   const menuLinks = isAuthenticated ? authNavLinks : guestNavLinks
   const userName = user?.user_metadata?.full_name || user?.email || 'Member'
   const userRole = user?.user_metadata?.role || 'Member'
@@ -305,7 +305,7 @@ export function SiteHeader() {
               ) : (
                 <>
                   <Link
-                    href={`/auth/login?redirect=${encodeURIComponent(pathname?.startsWith('/auth') ? '/community' : pathname || '/community')}`}
+                    href={`/auth/login?redirect=${encodeURIComponent(pathname?.startsWith('/auth') ? '/dashboard' : pathname || '/dashboard')}`}
                     onClick={() => setOpen(false)}
                     className="rounded-full border border-secondary/30 px-4 py-2 text-center font-semibold text-secondary transition-colors hover:bg-secondary hover:text-secondary-foreground"
                   >
@@ -319,7 +319,7 @@ export function SiteHeader() {
                     Join BIG
                   </Link>
                   <Link
-                    href={`/auth/sign-up?redirect=${encodeURIComponent(pathname?.startsWith('/auth') ? '/community' : pathname || '/community')}`}
+                    href={`/auth/sign-up?redirect=${encodeURIComponent(pathname?.startsWith('/auth') ? '/dashboard' : pathname || '/dashboard')}`}
                     onClick={() => setOpen(false)}
                     className="rounded-full bg-primary px-4 py-2 text-center font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
                   >

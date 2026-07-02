@@ -13,7 +13,9 @@ interface LoginFormProps {
   googleReturn?: boolean
 }
 
-export default function LoginForm({ redirect = '/community', googleReturn = false }: LoginFormProps) {
+const DEFAULT_AUTH_REDIRECT = '/dashboard'
+
+export default function LoginForm({ redirect = DEFAULT_AUTH_REDIRECT, googleReturn = false }: LoginFormProps) {
   const { signIn, signInWithProvider } = useAuth()
 
   const [email, setEmail] = useState('')
@@ -75,21 +77,25 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full rounded-[32px] border border-slate-200 bg-slate-50 p-6 shadow-sm sm:p-8">
-      <div className="mb-8 text-center">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-fuchsia-100 px-3 py-1 text-sm font-semibold text-fuchsia-700">
-          <Sparkles className="h-4 w-4" />
-          Welcome back
-        </div>
-        <h2 className="text-3xl font-semibold text-slate-950">Sign in to BIG</h2>
-        <p className="mt-2 text-sm leading-7 text-slate-600">
-          Continue your journey with learning, connection, and opportunity.
-        </p>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <Button
+        type="button"
+        onClick={handleGoogleSignIn}
+        disabled={loading}
+        variant="outline"
+        className="flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900"
+      >
+        <Sparkles className="h-4 w-4" />
+        {loading ? 'Signing in...' : 'Continue with Google'}
+      </Button>
+
+      <div className="flex items-center gap-3 text-sm text-slate-400 before:block before:h-px before:flex-1 before:bg-slate-200 after:block after:h-px after:flex-1 after:bg-slate-200">
+        <span>Sign in with email</span>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 rounded-3xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-900">
         <div>
-          <Label htmlFor="email" className="text-sm font-semibold text-slate-700">
+          <Label htmlFor="email" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
             Email address
           </Label>
           <Input
@@ -99,16 +105,16 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
             onChange={(event) => setEmail(event.target.value)}
             placeholder="you@example.com"
             disabled={loading}
-            className="mt-2 h-12 rounded-2xl border border-slate-300 bg-white px-4 py-3 shadow-sm"
+            className="mt-2 h-12 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm focus:ring-2 focus:ring-fuchsia-400 dark:border-slate-700 dark:bg-slate-950"
           />
         </div>
 
         <div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password" className="text-sm font-semibold text-slate-700">
+          <div className="flex items-center justify-between text-sm text-slate-700 dark:text-slate-300">
+            <Label htmlFor="password" className="font-semibold">
               Password
             </Label>
-            <Link href="/auth/reset" className="text-sm font-semibold text-fuchsia-600 hover:text-fuchsia-700">
+            <Link href="/auth/reset" className="font-semibold text-fuchsia-600 hover:text-fuchsia-700 dark:text-fuchsia-400 dark:hover:text-fuchsia-300">
               Forgot password?
             </Link>
           </div>
@@ -120,12 +126,12 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
               onChange={(event) => setPassword(event.target.value)}
               placeholder="••••••••"
               disabled={loading}
-              className="h-12 w-full rounded-2xl border border-slate-300 bg-white px-4 pr-12 shadow-sm"
+              className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 pr-12 py-3 shadow-sm focus:ring-2 focus:ring-fuchsia-400 dark:border-slate-700 dark:bg-slate-950"
             />
             <button
               type="button"
               onClick={() => setShowPassword((current) => !current)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -135,14 +141,14 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
       </div>
 
       {googleReturn ? (
-        <div className="mt-5 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
+        <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900 dark:border-sky-500/40 dark:bg-sky-900/10 dark:text-sky-200">
           <p className="font-semibold">Finishing Google sign in</p>
-          <p className="mt-1">Complete the form below to access your BIG account.</p>
+          <p className="mt-1 text-slate-600 dark:text-slate-300">Complete the form below to access your BIG account.</p>
         </div>
       ) : null}
 
       {error ? (
-        <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 dark:border-rose-400/40 dark:bg-rose-900/10 dark:text-rose-200">
           {error}
         </div>
       ) : null}
@@ -150,31 +156,15 @@ export default function LoginForm({ redirect = '/community', googleReturn = fals
       <Button
         type="submit"
         disabled={loading}
-        className="mt-6 h-12 w-full rounded-full bg-fuchsia-700 font-semibold text-white shadow-sm shadow-fuchsia-700/20 hover:bg-fuchsia-800"
+        className="w-full rounded-full bg-fuchsia-700 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-fuchsia-700/30 transition hover:bg-fuchsia-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500"
       >
-        {loading ? 'Signing in...' : 'Sign in'}
+        {loading ? 'Signing in...' : 'Sign In'}
       </Button>
 
-      <div className="my-6 flex items-center gap-3">
-        <div className="h-px flex-1 bg-slate-200" />
-        <span className="text-sm text-slate-500">or</span>
-        <div className="h-px flex-1 bg-slate-200" />
-      </div>
-
-      <Button
-        type="button"
-        onClick={handleGoogleSignIn}
-        disabled={loading}
-        variant="outline"
-        className="h-12 w-full rounded-full border border-slate-300 bg-white font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
-      >
-        {loading ? 'Signing in...' : 'Continue with Google'}
-      </Button>
-
-      <p className="mt-6 text-center text-sm text-slate-600">
-        New here?{' '}
-        <Link href="/auth/sign-up" className="font-semibold text-fuchsia-600 hover:text-fuchsia-700">
-          Create an account
+      <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+        Don&apos;t have an account?{' '}
+        <Link href={`/auth/sign-up?redirect=${encodeURIComponent(redirect)}`} className="font-semibold text-fuchsia-600 hover:text-fuchsia-700 dark:text-fuchsia-400 dark:hover:text-fuchsia-300">
+          Create one
         </Link>
       </p>
     </form>

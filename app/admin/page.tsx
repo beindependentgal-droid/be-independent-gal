@@ -206,7 +206,7 @@ export default function AdminDashboardPage() {
             You must be signed in with an admin account to view this page.
           </p>
           <div className="mt-6">
-            <Link href="/auth/login">
+            <Link href="/auth/login?redirect=/admin">
               <Button className="rounded-full bg-secondary- px-5 py-3 text-sm font-semibold text-white hover:bg-secondary-">
                 Sign in
               </Button>
@@ -247,7 +247,7 @@ export default function AdminDashboardPage() {
             >
               Retry
             </Button>
-            <Link href="/auth/login" className="mt-3 sm:mt-0 text-sm font-semibold text-secondary- underline underline-offset-2">
+            <Link href="/auth/login?redirect=/admin" className="mt-3 sm:mt-0 text-sm font-semibold text-secondary- underline underline-offset-2">
               Sign in again
             </Link>
           </div>

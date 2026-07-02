@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Loader, Trophy, Award } from 'lucide-react'
@@ -23,6 +23,7 @@ interface LeaderboardEntry {
 
 export default function LeaderboardPage() {
   const router = useRouter()
+  const pathname = usePathname()
   const { isAuthenticated, loading: authLoading } = useAuth()
 
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
@@ -33,9 +34,9 @@ export default function LeaderboardPage() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push('/auth/login')
+      router.push(`/auth/login?redirect=${encodeURIComponent(pathname ?? '/leaderboard')}`)
     }
-  }, [authLoading, isAuthenticated, router])
+  }, [authLoading, isAuthenticated, router, pathname])
 
   // Fetch leaderboard
   useEffect(() => {

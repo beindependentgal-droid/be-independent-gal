@@ -39,7 +39,7 @@ export function SiteFooter() {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3">
               <img
-                src="/images/big-logo.jpeg"
+                src="/icon.svg"
                 alt="Be Independent Gal logo"
                 className="h-14 w-14 rounded-full object-cover shadow-sm"
               />
@@ -106,10 +106,15 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-secondary-foreground/60 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            &copy; {new Date().getFullYear()} Be Independent Gal. All rights
-            reserved.
-          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <p>&copy; {new Date().getFullYear()} Be Independent Gal. All rights reserved.</p>
+            <Link href="/privacy" className="transition hover:text-secondary-foreground">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="transition hover:text-secondary-foreground">
+              Terms
+            </Link>
+          </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <span className="inline-flex items-center gap-1.5">
               <MapPin className="h-4 w-4 text-accent" /> Nairobi, Kenya

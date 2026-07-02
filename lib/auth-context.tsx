@@ -21,11 +21,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 function mapSupabaseUser(user: User | null | undefined): AuthUser | null {
   if (!user) return null;
 
+  const metadata =
+    typeof user.user_metadata === 'object' && user.user_metadata !== null
+      ? (user.user_metadata as Record<string, unknown>)
+      : {}
+
   return {
     id: user.id,
     email: user.email || '',
-    first_name: (user.user_metadata as any)?.first_name,
-    last_name: (user.user_metadata as any)?.last_name,
+    first_name: typeof metadata.first_name === 'string' ? metadata.first_name : undefined,
+    last_name: typeof metadata.last_name === 'string' ? metadata.last_name : undefined,
     user_metadata: user.user_metadata,
   };
 }
@@ -102,7 +107,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithProvider = async (provider: 'google', redirectTo?: string) => {
     if (provider !== 'google') throw new Error('Only Google provider is supported');
 
-    const safeRedirect = redirectTo?.startsWith('/') ? redirectTo : '/community';
+    const DEFAULT_AUTH_REDIRECT = '/dashboard'
+    const safeRedirect = redirectTo?.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : DEFAULT_AUTH_REDIRECT;
     const baseCallbackUrl =
       process.env.NEXT_PUBLIC_AUTH_REDIRECT_URL ||
       `${window.location.origin}/auth/callback`;

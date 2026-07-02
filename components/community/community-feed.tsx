@@ -1,312 +1,203 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
-  Search,
   Bell,
-  MessageCircle,
-  UserCircle,
-  Home,
-  Users,
+  Briefcase,
   CalendarDays,
-  Bookmark,
-  Sparkles,
-  HeartPulse,
-  MoreHorizontal,
   ChevronRight,
   Grid,
+  Heart,
+  Home,
+  MessageCircle,
   Plus,
-  Smile,
-  BadgeCheck,
-  Paperclip,
-  ChevronLeft,
-  Play,
-  Pause,
-  Briefcase,
-  TrendingUp,
-  Trophy,
-  Star,
-  Clock,
+  Search,
+  Sparkles,
+  UserCircle,
+  Users,
 } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import type { Post } from '@/lib/db'
 
-const topTabs = [
-  { label: 'Community', icon: Users, href: '/community' },
-  { label: 'Circles', icon: Grid, href: '/circles' },
-  { label: 'Mentors', icon: UserCircle, href: '/mentorship' },
-  { label: 'Events', icon: CalendarDays, href: '/events' },
-  { label: 'Academy', icon: Sparkles, href: '/academy' },
-  { label: 'Opportunities', icon: Briefcase, href: '/opportunities' },
-]
-
 const navItems = [
   { label: 'Community', icon: Users, href: '/community' },
   { label: 'Academy', icon: Sparkles, href: '/academy' },
-  { label: 'Circles', icon: Grid, href: '/circles' },
+  { label: 'Sister Circles', icon: Grid, href: '/circles' },
   { label: 'Events', icon: CalendarDays, href: '/events' },
   { label: 'Opportunities', icon: Briefcase, href: '/opportunities' },
+  { label: 'Mentors', icon: UserCircle, href: '/mentorship' },
 ]
 
-const mobileBottomNav = [
-  { label: 'Community', icon: Home },
-  { label: 'Explore', icon: Search },
-  { label: 'New', icon: Plus },
-  { label: 'Messages', icon: MessageCircle },
-  { label: 'Profile', icon: UserCircle },
+const feedTabs = [
+  { label: 'For You', value: 'for_you', icon: Home },
+  { label: 'Following', value: 'following', icon: Users },
+  { label: 'Trending', value: 'trending', icon: Sparkles },
+  { label: 'Questions', value: 'question', icon: MessageCircle },
+  { label: 'Celebrations', value: 'celebration', icon: Heart },
+  { label: 'Opportunities', value: 'funding', icon: Briefcase },
 ]
 
-type ApiCommunityPost = {
+type CommunityFeedPost = {
   id: string
+  content?: string
+  created_at?: string
+  comments_count?: number
   profile?: {
     first_name?: string | null
     last_name?: string | null
     avatar_url?: string | null
     profession?: string | null
   }
-  content?: string
   media?: Array<{ url?: string }>
-  created_at?: string
-  reactions?: unknown
-  comments_count?: number
+  reactions?: unknown[]
 }
 
-const feedTabs = [
-  { label: 'For You', value: 'for_you', icon: Home },
-  { label: 'Following', value: 'following', icon: Users },
-  { label: 'Trending', value: 'trending', icon: TrendingUp },
-  { label: 'Newest', value: 'newest', icon: Clock },
-  { label: 'Business Wins', value: 'business_win', icon: Trophy },
-  { label: 'Questions', value: 'question', icon: Star },
-  { label: 'Celebrations', value: 'celebration', icon: Sparkles },
-  { label: 'Funding', value: 'opportunity', icon: Briefcase },
-  { label: 'Academy', value: 'academy', icon: Bookmark },
-]
-
-const storyItems = [
+const storyCards = [
   {
     name: 'Your Story',
-    label: 'Create a story',
-    time: 'Now',
-    category: 'Celebration',
-    primary: true,
+    label: 'Share a win',
+    avatar: 'H',
     accent: 'from-violet-700 via-fuchsia-600 to-pink-500',
-    online: true,
-    seen: false,
-    progress: 0,
-    live: true,
+    primary: true,
   },
-  {
-    name: 'Sharon',
-    label: 'Business win',
-    time: '2h',
-    category: 'Business Win',
-    accent: 'from-amber-400 to-orange-500',
-    online: true,
-    seen: false,
-    progress: 0.4,
-    live: false,
-  },
-  {
-    name: 'Faith',
-    label: 'Graduation milestone',
-    time: 'Today',
-    category: 'Graduation',
-    accent: 'from-emerald-500 to-teal-500',
-    online: false,
-    seen: true,
-    progress: 0.8,
-    live: false,
-  },
-  {
-    name: 'Pauline',
-    label: 'Launch day',
-    time: '4h',
-    category: 'Launch',
-    accent: 'from-sky-500 to-cyan-500',
-    online: true,
-    seen: false,
-    progress: 0.2,
-    live: false,
-  },
-  {
-    name: 'Mercy',
-    label: 'Funding circle',
-    time: '6h',
-    category: 'Funding',
-    accent: 'from-pink-500 to-rose-500',
-    online: false,
-    seen: true,
-    progress: 1,
-    live: false,
-  },
-  {
-    name: 'Grace',
-    label: 'Community retreat',
-    time: '1d',
-    category: 'Community',
-    accent: 'from-violet-500 to-indigo-500',
-    online: false,
-    seen: false,
-    progress: 0.6,
-    live: false,
-  },
+  { name: 'Sharon', label: 'Business win', avatar: 'S', accent: 'from-amber-400 to-orange-500' },
+  { name: 'Faith', label: 'Growth moment', avatar: 'F', accent: 'from-emerald-500 to-teal-500' },
+  { name: 'Pauline', label: 'Launch day', avatar: 'P', accent: 'from-sky-500 to-cyan-500' },
+  { name: 'Mercy', label: 'Workshop recap', avatar: 'M', accent: 'from-pink-500 to-rose-500' },
+  { name: 'Grace', label: 'Circle highlight', avatar: 'G', accent: 'from-violet-500 to-indigo-500' },
+  { name: 'Amina', label: 'Mentor tip', avatar: 'A', accent: 'from-fuchsia-600 to-violet-700' },
+  { name: 'Nia', label: 'New opportunity', avatar: 'N', accent: 'from-indigo-500 to-cyan-500' },
 ]
 
-const storyBadges = [
-  { label: 'Business Win', icon: '🏆' },
-  { label: 'Graduation', icon: '🎓' },
-  { label: 'Launch', icon: '🚀' },
-  { label: 'Funding', icon: '💰' },
-  { label: 'Community', icon: '❤️' },
-  { label: 'Celebration', icon: '🎉' },
-  { label: 'Event', icon: '🌍' },
+const prompts = [
+  '💜 Celebrate a win today...',
+  '🤝 Ask the community for advice...',
+  '🌱 What are you learning this week?',
+  '🚀 Share an opportunity with another woman...',
+  '✨ Inspire another member with your story...',
+]
+
+const toolbarActions = [
+  { label: 'Emoji', icon: '😊' },
+  { label: 'Photo', icon: '📷' },
+  { label: 'Video', icon: '🎥' },
+  { label: 'Attachment', icon: '📎' },
+  { label: 'Location', icon: '📍' },
+  { label: 'Tags', icon: '🏷' },
+  { label: 'Mention', icon: '👥' },
+  { label: 'Poll', icon: '🗳' },
+  { label: 'Event', icon: '📅' },
+  { label: 'Opportunity', icon: '🚀' },
 ]
 
 const upcomingEvents = [
-  {
-    title: "Women's Leadership Retreat",
-    location: 'Naivasha',
-    date: '12 Aug',
-    time: '9:00 AM',
-    attendees: 74,
-    image: '/images/event-1.jpg',
-    circle: 'Founder Circle',
-  },
-  {
-    title: 'Funding Circle Showcase',
-    location: 'Nairobi',
-    date: '22 Aug',
-    time: '2:00 PM',
-    attendees: 98,
-    image: '/images/event-2.jpg',
-    circle: 'Funding Circle',
-  },
+  { title: 'Leadership Lab', date: '12 Aug', location: 'Nairobi', type: 'Retreat' },
+  { title: 'Mentor Match', date: '18 Aug', location: 'Virtual', type: 'Workshop' },
 ]
 
 const trendingTopics = [
-  { topic: 'Funding', conversations: 245, trend: '+18%' },
-  { topic: 'WomenInTech', conversations: 182, trend: '+12%' },
-  { topic: 'Mentoring', conversations: 134, trend: '+9%' },
+  'Funding',
+  'WomenInTech',
+  'Mentorship',
+  'Career Growth',
+  'Wellness',
 ]
 
 const suggestedMembers = [
-  {
-    name: 'Pauline',
-    role: 'Fashion Designer',
-    circle: 'Founder Circle',
-    mutual: 3,
-  },
-  {
-    name: 'Faith',
-    role: 'Corporate Lawyer',
-    circle: 'Mentor Circle',
-    mutual: 2,
-  },
-  {
-    name: 'Mercy',
-    role: 'Community Builder',
-    circle: 'Growth Circle',
-    mutual: 4,
-  },
+  { name: 'Pauline', role: 'Fashion Designer', circle: 'Founders Circle' },
+  { name: 'Faith', role: 'Corporate Lawyer', circle: 'Mentor Circle' },
+  { name: 'Mercy', role: 'Community Builder', circle: 'Growth Circle' },
 ]
 
-const notifications = [
-  { icon: '❤️', title: 'Pauline celebrated your win', time: '2m' },
-  { icon: '👤', title: 'Sharon followed you', time: '15m' },
-  { icon: '🎓', title: 'Academy certificate ready', time: 'Yesterday' },
-  { icon: '💼', title: 'New opportunity posted', time: 'Yesterday' },
-  { icon: '🏆', title: 'Badge unlocked: Community Champion', time: '2d' },
+const pinnedAnnouncement = {
+  title: 'BIG Leadership Summit',
+  description: 'Register now for the flagship event designed for founders, mentors, and ambitious women building together.',
+  action: 'Register',
+  href: '/events',
+}
+
+const bottomNav = [
+  { label: 'Community', icon: Home, href: '/community' },
+  { label: 'Circles', icon: Grid, href: '/circles' },
+  { label: 'Events', icon: CalendarDays, href: '/events' },
+  { label: 'Opportunities', icon: Briefcase, href: '/opportunities' },
+  { label: 'Profile', icon: UserCircle, href: '/auth/profile' },
 ]
 
 export default function CommunityFeed() {
   const router = useRouter()
   const { isAuthenticated, loading, user } = useAuth()
-  const [feedPosts, setFeedPosts] = useState<Post[]>([])
+  const [posts, setPosts] = useState<Post[]>([])
   const [draft, setDraft] = useState('')
+  const [composerOpen, setComposerOpen] = useState(false)
+  const [selectedTab, setSelectedTab] = useState('for_you')
+  const [promptIndex] = useState(() => Math.floor(Math.random() * prompts.length))
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [draftSaved, setDraftSaved] = useState(false)
   const [announcementVisible, setAnnouncementVisible] = useState(true)
-  const [storyComposerOpen, setStoryComposerOpen] = useState(false)
-  const [storyViewerOpen, setStoryViewerOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [fabOpen, setFabOpen] = useState(false)
-  const [bottomNavActive, setBottomNavActive] = useState('Community')
-  const [selectedFeedTab, setSelectedFeedTab] = useState('for_you')
-  const [activeStoryIndex, setActiveStoryIndex] = useState(0)
-  const [storyPaused, setStoryPaused] = useState(false)
-  const [composerExpanded, setComposerExpanded] = useState(false)
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
-  const maxChars = 1500
+
+  const currentUserName = [user?.first_name, user?.last_name].filter(Boolean).join(' ') || user?.email || 'You'
+  const placeholder = prompts[promptIndex]
 
   useEffect(() => {
-    if (composerExpanded) {
-      // small timeout to allow expansion animation to settle
-      setTimeout(() => textareaRef.current?.focus(), 120)
-    }
-  }, [composerExpanded])
-
-  const currentUserDisplayName = [user?.first_name, user?.last_name].filter(Boolean).join(' ') || user?.email || 'You'
-  const activeStory = storyItems[activeStoryIndex] ?? storyItems[0]
-
-  const fetchFeed = useCallback(async () => {
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      const params = new URLSearchParams()
-      if (searchQuery.trim()) {
-        params.set('query', searchQuery.trim())
-      }
-      if (selectedFeedTab && selectedFeedTab !== 'for_you') {
-        const filter = selectedFeedTab === 'funding' ? 'opportunity' : selectedFeedTab
-        params.set('filter', filter)
+    const loadFeed = async () => {
+      if (!loading && !isAuthenticated) {
+        router.replace('/auth/login?redirect=/community')
+        return
       }
 
-      const response = await fetch(`/api/community/posts?${params.toString()}`)
-      if (!response.ok) {
-        throw new Error('Unable to load community feed')
-      }
+      if (!isAuthenticated) return
 
-      const data = await response.json()
-      const posts = Array.isArray(data.posts) ? (data.posts as ApiCommunityPost[]) : []
+      setIsLoading(true)
+      setError(null)
 
-      const mappedPosts = posts.map((post) => {
-        const profile = post.profile ?? {}
-        const createdAt = typeof post.created_at === 'string' ? post.created_at : ''
-        const reactions = Array.isArray(post.reactions) ? post.reactions : []
-        return {
+      try {
+        const params = new URLSearchParams()
+        if (selectedTab !== 'for_you' && selectedTab !== 'following' && selectedTab !== 'trending') {
+          params.set('filter', selectedTab)
+        }
+
+        const response = await fetch(`/api/community/posts?${params.toString()}`)
+        if (!response.ok) {
+          throw new Error('Unable to load feed')
+        }
+
+        const data = await response.json()
+        const incoming = Array.isArray(data.posts) ? (data.posts as CommunityFeedPost[]) : []
+
+        const normalized: Post[] = incoming.map((post) => ({
           id: post.id,
           author: {
-            name: [profile.first_name, profile.last_name].filter(Boolean).join(' ') || 'Member',
-            avatar: profile.avatar_url || '',
-            rank: profile.profession || 'Member',
+            name: [post.profile?.first_name, post.profile?.last_name].filter(Boolean).join(' ') || 'Member',
+            avatar: post.profile?.avatar_url || '',
+            rank: post.profile?.profession || 'Member',
           },
-          content: typeof post.content === 'string' ? post.content : '',
-          image: post.media?.[0]?.url,
-          timestamp: createdAt
-            ? new Date(createdAt).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-              })
+          content: post.content || '',
+          image: post.media?.[0]?.url || undefined,
+          timestamp: post.created_at
+            ? new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
             : '',
-          likes: reactions.length,
+          likes: Array.isArray(post.reactions) ? post.reactions.length : 0,
           comments: post.comments_count ?? 0,
-        }
-      }) as Post[]
-      setFeedPosts(mappedPosts)
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Something went wrong while loading community posts.')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [searchQuery, selectedFeedTab])
+        }))
 
-  const handlePost = async () => {
+        setPosts(normalized)
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Failed to load community posts')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    void loadFeed()
+  }, [isAuthenticated, loading, router, selectedTab])
+
+  const handlePublish = async () => {
     const content = draft.trim()
     if (!content) return
 
@@ -316,78 +207,47 @@ export default function CommunityFeed() {
     try {
       const response = await fetch('/api/community/posts', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ content }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content, post_type: 'text', visibility: 'public', metadata: {} }),
       })
 
       if (!response.ok) {
         const data = await response.json().catch(() => null)
-        throw new Error(data?.error || 'Failed to publish post')
+        throw new Error(data?.error || 'Unable to publish post')
       }
 
       const data = await response.json()
-      const post = {
+      const nextPost: Post = {
         id: data.id,
         author: {
-          name: [data.profile?.first_name, data.profile?.last_name].filter(Boolean).join(' ') || 'Member',
+          name: [data.profile?.first_name, data.profile?.last_name].filter(Boolean).join(' ') || currentUserName,
           avatar: data.profile?.avatar_url || '',
           rank: data.profile?.profession || 'Member',
         },
         content: data.content,
-        image: data.media?.[0]?.url,
-        timestamp: new Date(data.created_at).toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-        }),
+        image: data.media?.[0]?.url || undefined,
+        timestamp: new Date(data.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         likes: Array.isArray(data.reactions) ? data.reactions.length : 0,
         comments: data.comments_count ?? 0,
-      } as Post
-
-      setFeedPosts((current) => [post, ...current])
+      }
+      setPosts((current) => [nextPost, ...current])
       setDraft('')
+      setComposerOpen(false)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Unable to publish your post.')
+      setError(err instanceof Error ? err.message : 'Unable to publish your post')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  useEffect(() => {
-    const loadFeed = async () => {
-      if (!loading && !isAuthenticated) {
-        router.replace('/auth/login?redirect=/community')
-        return
-      }
-
-      if (isAuthenticated) {
-        await fetchFeed()
-      }
-    }
-
-    void loadFeed()
-  }, [isAuthenticated, loading, router, selectedFeedTab, searchQuery, fetchFeed])
-
-  const openStory = (index: number) => {
-    setActiveStoryIndex(index)
-    setStoryViewerOpen(true)
-    setStoryPaused(false)
+  const handleSaveDraft = () => {
+    setDraftSaved(true)
+    window.setTimeout(() => setDraftSaved(false), 1200)
   }
 
-  const goToNextStory = () => {
-    setActiveStoryIndex((current) => (current + 1) % storyItems.length)
-    setStoryPaused(false)
-  }
-
-  const goToPreviousStory = () => {
-    setActiveStoryIndex((current) => (current - 1 + storyItems.length) % storyItems.length)
-    setStoryPaused(false)
-  }
-
-  if (loading || !isAuthenticated) {
+  if (loading || (!isAuthenticated && typeof window !== 'undefined')) {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center bg-slate-50">
         <p className="text-base text-slate-600">Redirecting to login…</p>
       </div>
     )
@@ -396,83 +256,36 @@ export default function CommunityFeed() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/95 backdrop-blur-xl">
-        <div className="flex items-center justify-between gap-3 px-4 py-3 md:hidden">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-3xl bg-linear-to-br from-violet-700 via-fuchsia-600 to-pink-500 text-white shadow-xl shadow-violet-200/30">
-              <Grid className="h-5 w-5" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-linear-to-br from-violet-700 via-fuchsia-600 to-pink-500 text-white shadow-xl shadow-violet-200/30">
+              <Users className="h-5 w-5" />
             </div>
-            <span className="text-sm font-semibold text-slate-900">BIG</span>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-violet-700">BIG Community</p>
+              <p className="text-sm text-slate-600">A premium space for women to share, connect, and grow.</p>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <button type="button" aria-label="Search" onClick={() => setSearchOpen(true)} className="inline-flex h-11 w-11 items-center justify-center rounded-3xl bg-slate-100 text-slate-600 transition duration-200 hover:bg-violet-50 hover:text-violet-700 active:scale-[0.97]">
+            <button type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-3xl bg-slate-100 text-slate-600 transition hover:bg-violet-50 hover:text-violet-700">
               <Search className="h-5 w-5" />
             </button>
-            <button type="button" aria-label="Notifications" className="inline-flex h-11 w-11 items-center justify-center rounded-3xl bg-slate-100 text-slate-600 transition duration-200 hover:bg-violet-50 hover:text-violet-700 active:scale-[0.97]">
+            <button type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-3xl bg-slate-100 text-slate-600 transition hover:bg-violet-50 hover:text-violet-700">
               <Bell className="h-5 w-5" />
             </button>
-            <button type="button" aria-label="Messages" className="inline-flex h-11 w-11 items-center justify-center rounded-3xl bg-slate-100 text-slate-600 transition duration-200 hover:bg-violet-50 hover:text-violet-700 active:scale-[0.97]">
+            <button type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-3xl bg-slate-100 text-slate-600 transition hover:bg-violet-50 hover:text-violet-700">
               <MessageCircle className="h-5 w-5" />
             </button>
-            <button type="button" aria-label="Profile" className="inline-flex h-11 w-11 items-center justify-center rounded-3xl bg-slate-100 text-slate-600 transition duration-200 hover:bg-violet-50 hover:text-violet-700 active:scale-[0.97]">
-              <UserCircle className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-
-        <div className="hidden md:flex mx-auto max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-linear-to-br from-violet-700 via-fuchsia-600 to-pink-500 text-white shadow-xl shadow-violet-200/30">
-                <Grid className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold tracking-wide text-violet-700">BIG</p>
-                <p className="text-sm text-slate-500">Community Hub</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button className="inline-flex h-11 w-11 items-center justify-center rounded-3xl border border-slate-200/80 bg-white text-slate-600 shadow-sm transition duration-200 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700 hover:shadow-md focus-visible:outline-2 focus-visible:outline-violet-200 active:scale-[0.98]">
-                <Bell className="h-5 w-5" />
-              </button>
-              <button className="inline-flex h-11 w-11 items-center justify-center rounded-3xl border border-slate-200/80 bg-white text-slate-600 shadow-sm transition duration-200 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700 hover:shadow-md focus-visible:outline-2 focus-visible:outline-violet-200 active:scale-[0.98]">
-                <MessageCircle className="h-5 w-5" />
-              </button>
-              <button className="inline-flex h-11 w-11 items-center justify-center rounded-3xl border border-slate-200/80 bg-white text-slate-600 shadow-sm transition duration-200 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700 hover:shadow-md focus-visible:outline-2 focus-visible:outline-violet-200 active:scale-[0.98]">
-                <UserCircle className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-slate-200/70 bg-white/95 px-4 py-3 shadow-sm shadow-slate-200/10 md:px-6 lg:px-8">
-          <div className="mx-auto flex max-w-7xl gap-3 overflow-x-auto pb-1">
-            {topTabs.map((tab) => {
-              const Icon = tab.icon
-              const active = tab.label === 'Community'
-              return (
-                <Link
-                  key={tab.label}
-                  href={tab.href}
-                  className={`inline-flex min-w-[10rem] items-center gap-2 rounded-full border px-4 py-3 text-sm font-semibold transition ${
-                    active ? 'border-violet-200 bg-violet-50 text-violet-700 shadow-sm shadow-violet-100' : 'border-slate-200 bg-white text-slate-600 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {tab.label}
-                </Link>
-              )
-            })}
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-6 pb-24 sm:px-6 lg:px-8 xl:pb-6">
-        <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1.8fr)_320px]">
+      <main className="mx-auto max-w-7xl px-4 py-6 lg:px-8 xl:pb-24">
+        <div className="grid gap-6 xl:grid-cols-[240px_minmax(0,1.75fr)_320px]">
           <aside className="hidden xl:block xl:sticky xl:top-6 xl:self-start">
-            <div className="space-y-4 rounded-[28px] border border-slate-200/70 bg-white p-5 shadow-sm shadow-slate-200/50">
-              <div className="text-sm font-semibold text-slate-600">Quick access</div>
+            <div className="space-y-4 rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/50">
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-700">Navigation</p>
               <nav className="space-y-2">
                 {navItems.map((item) => {
                   const Icon = item.icon
@@ -481,694 +294,389 @@ export default function CommunityFeed() {
                     <Link
                       key={item.label}
                       href={item.href}
-                      className={`group flex items-center gap-3 rounded-[24px] px-4 py-3 transition duration-200 ${
-                        active ? 'bg-violet-50 text-violet-700 shadow-sm shadow-violet-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      className={`group flex items-center gap-3 rounded-[24px] px-4 py-3 text-sm font-semibold transition ${
+                        active
+                          ? 'bg-violet-50 text-violet-700 shadow-sm shadow-violet-100'
+                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                       }`}
                     >
-                      <span className={`flex h-12 w-12 items-center justify-center rounded-3xl bg-slate-100 text-slate-600 transition duration-200 ${active ? 'bg-violet-100 text-violet-700' : ''}`}>
+                      <span className={`flex h-11 w-11 items-center justify-center rounded-3xl bg-slate-100 text-slate-600 transition ${active ? 'bg-violet-100 text-violet-700' : ''}`}>
                         <Icon className="h-5 w-5" />
                       </span>
-                      <span className="text-sm font-semibold">{item.label}</span>
+                      {item.label}
                     </Link>
                   )
                 })}
               </nav>
             </div>
-
-            <div className="rounded-[28px] border border-slate-200/70 bg-white p-6 shadow-sm shadow-slate-200/50">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-semibold text-slate-900">Community Level</p>
-                  <p className="mt-1 text-sm text-slate-500">Explorer</p>
-                </div>
-                <HeartPulse className="h-5 w-5 text-fuchsia-500" />
-              </div>
-              <div className="mt-5 rounded-full bg-slate-100 p-1">
-                <div className="h-3 rounded-full bg-linear-to-r from-violet-700 via-fuchsia-500 to-pink-500" style={{ width: '80%' }} />
-              </div>
-              <p className="mt-4 text-sm leading-6 text-slate-500">80% complete toward Community Leader.</p>
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                <li>• Complete your profile</li>
-                <li>• Attend one event</li>
-                <li>• Comment on five posts</li>
-                <li>• Share your first story</li>
-              </ul>
-            </div>
           </aside>
 
           <section className="space-y-6">
-            <div className="overflow-hidden rounded-[32px] border border-slate-200/70 bg-white p-5 shadow-sm shadow-slate-200/40 transition duration-200 hover:shadow-md">
-              <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/40">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.28em] text-violet-700">Community feed</p>
+                  <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">The heart of BIG</h1>
+                  <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">Connect with women who are learning, launching, mentoring, and growing together in one calm, beautiful feed.</p>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <Link href="/circles" className="rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700">
+                    Explore Circles
+                  </Link>
+                  <Link href="/opportunities" className="rounded-full bg-violet-700 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-800">
+                    Browse Opportunities
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-700">Stories</p>
-                  <p className="mt-1 text-sm text-slate-500">A premium lens into wins, launches, mentors, and moments shaping BIG.</p>
+                  <p className="mt-1 text-sm text-slate-500">Swipe through community moments, launches, and wins.</p>
                 </div>
-                <div className="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-xs text-slate-600">
-                  <span className="font-semibold text-violet-700">Live</span> Today
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setComposerOpen(true)}
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Create Story
+                </button>
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-2">
-                {feedTabs.map((tab) => {
-                  const Icon = tab.icon
-                  const active = selectedFeedTab === tab.value
-                  return (
-                    <button
-                      key={tab.value}
-                      type="button"
-                      onClick={() => setSelectedFeedTab(tab.value)}
-                      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
-                        active ? 'bg-violet-100 text-violet-700 shadow-sm shadow-violet-100' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {tab.label}
-                    </button>
-                  )
-                })}
-              </div>
-
-              <div className="mt-5 w-full overflow-x-auto pb-2">
-                <div className="grid w-max grid-flow-col gap-4">
+              <div className="mt-5 flex gap-4 overflow-x-auto pb-3">
+                {storyCards.map((story) => (
                   <button
+                    key={story.name}
                     type="button"
-                    onClick={() => setStoryComposerOpen(true)}
-                    className="group min-w-42.5 rounded-[28px] border border-violet-200 bg-linear-to-br from-violet-700 via-fuchsia-600 to-pink-500 p-4 text-left text-white shadow-xl shadow-violet-200/40 transition duration-200 hover:-translate-y-1 hover:shadow-2xl"
+                    className={`min-w-[170px] rounded-[28px] border p-4 text-left transition duration-200 ${
+                      story.primary
+                        ? 'border-transparent bg-linear-to-br from-violet-700 via-fuchsia-600 to-pink-500 text-white shadow-xl shadow-violet-200/40'
+                        : 'border-slate-200 bg-slate-50 text-slate-900 hover:-translate-y-1 hover:shadow-lg'
+                    }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-xl font-semibold">
-                        H
+                    <div className="flex items-center justify-between gap-3">
+                      <div className={`flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br ${story.accent} text-xl font-semibold shadow-lg shadow-slate-200/20`}>
+                        {story.avatar}
                       </div>
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/20 text-white">
-                        <Plus className="h-4 w-4" />
+                      {story.primary ? (
+                        <span className="inline-flex h-9 items-center rounded-full bg-white/15 px-3 text-xs font-semibold text-white backdrop-blur-sm">Your Story</span>
+                      ) : (
+                        <span className="inline-flex h-9 items-center rounded-full bg-slate-100 px-3 text-xs font-semibold text-slate-700">{story.label}</span>
+                      )}
+                    </div>
+
+                    <div className="mt-4">
+                      <p className={`text-sm font-semibold ${story.primary ? 'text-white' : 'text-slate-900'}`}>{story.name}</p>
+                      <p className={`mt-1 text-xs leading-5 ${story.primary ? 'text-slate-100/90' : 'text-slate-500'}`}>{story.primary ? 'Share your next community moment' : story.label}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-700">Create post</p>
+                  <p className="mt-1 text-sm text-slate-500">Share a win, ask for help, celebrate another woman, or post an opportunity.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setComposerOpen((value) => !value)}
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"
+                >
+                  <Plus className="h-4 w-4" />
+                  {composerOpen ? 'Collapse' : 'New post'}
+                </button>
+              </div>
+
+              <div className="mt-5 rounded-[28px] border border-slate-200 bg-slate-50 p-4 transition">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-linear-to-br from-violet-700 via-fuchsia-600 to-pink-500 text-white text-lg font-semibold shadow-lg shadow-violet-200/30">
+                    {currentUserName.charAt(0)}
+                  </div>
+                  <div className="flex-1 rounded-[24px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 transition hover:border-violet-200 hover:text-slate-700" role="button" tabIndex={0} onClick={() => setComposerOpen(true)}>
+                    {placeholder}
+                  </div>
+                </div>
+
+                {composerOpen ? (
+                  <div className="mt-5 space-y-4">
+                    <textarea
+                      value={draft}
+                      onChange={(event) => setDraft(event.target.value)}
+                      rows={6}
+                      placeholder={placeholder}
+                      className="w-full rounded-[24px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                    />
+
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      <div className="flex flex-wrap gap-2">
+                        {toolbarActions.map((action) => (
+                          <button
+                            key={action.label}
+                            type="button"
+                            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-600 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"
+                          >
+                            <span>{action.icon}</span>
+                            {action.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center justify-between gap-3">
+                        <label className="flex-1 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+                          Visibility
+                          <select className="ml-2 bg-transparent text-sm outline-none" defaultValue="public">
+                            <option value="public">Public</option>
+                            <option value="connections">Connections</option>
+                            <option value="circles">Circles</option>
+                          </select>
+                        </label>
+                        <button
+                          type="button"
+                          onClick={handleSaveDraft}
+                          className="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-slate-100 px-4 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"
+                        >
+                          Save draft
+                        </button>
                       </div>
                     </div>
-                    <p className="mt-5 text-sm font-semibold">Your Story</p>
-                    <p className="mt-2 text-xs leading-5 text-violet-50">Create a story or share an update.</p>
-                  </button>
 
-                  {storyItems.slice(1).map((story, index) => (
+                    <div className="flex flex-wrap items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={handlePublish}
+                        disabled={!draft.trim() || isSubmitting}
+                        className="inline-flex h-12 items-center justify-center rounded-full bg-linear-to-r from-violet-700 via-fuchsia-600 to-pink-500 px-6 text-sm font-semibold text-white shadow-lg shadow-violet-200/30 transition hover:-translate-y-0.5 hover:shadow-xl disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+                      >
+                        {isSubmitting ? 'Publishing…' : 'Publish'}
+                      </button>
+                      <span className="text-sm text-slate-500">{draft.length} characters</span>
+                      {draftSaved ? <span className="text-sm font-semibold text-violet-700">Draft saved</span> : null}
+                    </div>
+                    {error ? <p className="text-sm text-rose-600">{error}</p> : null}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+
+            {announcementVisible ? (
+              <div className="rounded-[28px] border border-violet-200/80 bg-violet-50 p-5 shadow-sm shadow-violet-100/60">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-700">Pinned announcement</p>
+                    <h2 className="mt-2 text-xl font-semibold text-slate-950">{pinnedAnnouncement.title}</h2>
+                    <p className="mt-2 text-sm leading-6 text-slate-700">{pinnedAnnouncement.description}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Link href={pinnedAnnouncement.href} className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+                      {pinnedAnnouncement.action}
+                      <ChevronRight className="h-4 w-4" />
+                    </Link>
                     <button
-                      key={story.name}
                       type="button"
-                      onClick={() => openStory(index + 1)}
-                      className="group min-w-42.5 rounded-[28px] border border-slate-200 bg-slate-50 p-4 text-left shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg"
+                      onClick={() => setAnnouncementVisible(false)}
+                      className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700"
                     >
-                      <div className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br p-0.5 shadow-sm shadow-slate-200/60">
-                        <div className={`flex h-full w-full items-center justify-center rounded-full bg-white text-sm font-semibold text-slate-900 ${story.seen ? 'opacity-80' : ''}`}>
-                          {story.name.charAt(0)}
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-700">Community feed</p>
+                  <p className="mt-1 text-sm text-slate-500">The latest conversations, support, and opportunities from BIG members.</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {feedTabs.map((tab) => {
+                    const Icon = tab.icon
+                    const active = selectedTab === tab.value
+                    return (
+                      <button
+                        key={tab.value}
+                        type="button"
+                        onClick={() => setSelectedTab(tab.value)}
+                        className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                          active ? 'bg-violet-100 text-violet-700 shadow-sm shadow-violet-100' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {tab.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-5">
+                {isLoading ? (
+                  <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-8 text-center text-slate-500">
+                    <p className="text-base font-semibold text-slate-900">Loading posts…</p>
+                    <p className="mt-2 text-sm text-slate-500">Gathering the latest stories from your community.</p>
+                  </div>
+                ) : posts.length === 0 ? (
+                  <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-8 text-center">
+                    <p className="text-base font-semibold text-slate-950">You&apos;re early! Start the first conversation and inspire another woman.</p>
+                    <p className="mt-3 text-sm text-slate-600">Share a win, ask a question, or spotlight a sister today.</p>
+                    <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                      <button
+                        type="button"
+                        onClick={() => setComposerOpen(true)}
+                        className="rounded-full bg-violet-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200/30 transition hover:bg-violet-800"
+                      >
+                        Create Post
+                      </button>
+                      <Link href="/opportunities" className="rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
+                        Browse Opportunities
+                      </Link>
+                      <Link href="/circles" className="rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
+                        Explore Sister Circles
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  posts.map((post) => (
+                    <article key={post.id} className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-linear-to-br from-violet-700 via-fuchsia-600 to-pink-500 text-white text-lg font-semibold shadow-lg shadow-violet-200/20">
+                            {post.author.name.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-slate-950">{post.author.name}</p>
+                            <p className="mt-1 text-sm text-slate-500">{post.author.rank} • {post.timestamp}</p>
+                          </div>
                         </div>
-                        {story.online ? <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-white bg-emerald-500" /> : null}
+                        <button className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-violet-200 hover:bg-white">
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
                       </div>
-                      <div className="mt-4">
-                        <p className="text-sm font-semibold text-slate-900">{story.name}</p>
-                        <p className="mt-1 text-xs text-slate-500">{story.label}</p>
+
+                      <p className="mt-5 text-base leading-7 text-slate-700">{post.content}</p>
+
+                      {post.image ? (
+                        <div className="mt-5 overflow-hidden rounded-[28px] border border-slate-200 bg-slate-100">
+                          <div className="relative h-[330px] w-full">
+                            <Image src={post.image} alt="Post media" fill className="object-cover" />
+                          </div>
+                        </div>
+                      ) : null}
+
+                      <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4 text-sm text-slate-600">
+                        <button className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 transition hover:border-violet-200 hover:text-violet-700">
+                          <span>❤️</span>
+                          Support
+                        </button>
+                        <button className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 transition hover:border-violet-200 hover:text-violet-700">
+                          <span>👏</span>
+                          Celebrate
+                        </button>
+                        <button className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 transition hover:border-violet-200 hover:text-violet-700">
+                          <span>💬</span>
+                          Comment
+                        </button>
+                        <button className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 transition hover:border-violet-200 hover:text-violet-700">
+                          <span>↗</span>
+                          Share
+                        </button>
+                        <button className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 transition hover:border-violet-200 hover:text-violet-700">
+                          <span>🔖</span>
+                          Save
+                        </button>
                       </div>
+                    </article>
+                  ))
+                )}
+              </div>
+            </div>
+          </section>
+
+          <aside className="hidden xl:block">
+            <div className="space-y-6 sticky top-6">
+              <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/40">
+                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-700">Upcoming events</p>
+                <div className="mt-5 space-y-4">
+                  {upcomingEvents.map((event) => (
+                    <div key={event.title} className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="font-semibold text-slate-950">{event.title}</p>
+                          <p className="mt-1 text-sm text-slate-500">{event.location}</p>
+                        </div>
+                        <span className="rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-violet-700">{event.type}</span>
+                      </div>
+                      <p className="mt-3 text-sm text-slate-600">{event.date}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/40">
+                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-700">Trending topics</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {trendingTopics.map((topic) => (
+                    <button key={topic} className="rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700">
+                      #{topic}
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="mt-5 flex flex-wrap gap-2">
-                {storyBadges.map((badge) => (
-                  <span key={badge.label} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-600">
-                    {badge.icon} {badge.label}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {announcementVisible ? (
-              <div className="rounded-[32px] border border-amber-200/80 bg-amber-50 p-5 shadow-sm shadow-amber-100/70">
-                <div className="flex items-center gap-3 text-sm text-slate-700">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-3xl bg-amber-100 text-amber-700 shadow-sm">📌</div>
-                  <div>
-                    <p className="font-semibold text-slate-900">Pinned by BIG</p>
-                    <p className="mt-1 text-base font-semibold text-slate-900">Women&apos;s Leadership Summit</p>
-                  </div>
-                </div>
-                <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <Link href="/events" className="inline-flex items-center gap-2 rounded-3xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
-                    Register
-                    <ChevronRight className="h-4 w-4" />
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => setAnnouncementVisible(false)}
-                    className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-violet-200 hover:text-violet-700"
-                  >
-                    Dismiss
-                  </button>
-                </div>
-              </div>
-            ) : null}
-
-            <div className="rounded-[28px] border border-slate-200/70 bg-white p-4 shadow-sm shadow-slate-200/40 sm:p-5">
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => setComposerExpanded((value) => !value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    setComposerExpanded((value) => !value)
-                  }
-                }}
-                aria-expanded={composerExpanded}
-                className="group flex w-full flex-col gap-4 rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4 transition hover:border-violet-200 hover:bg-white"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-3xl bg-linear-to-br from-pink-500 via-fuchsia-500 to-violet-700 text-base font-semibold text-white shadow-lg shadow-violet-200/20">
-                      H
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900">Hassan</p>
-                      <p className="text-sm text-slate-500">What&apos;s inspiring you today?</p>
-                    </div>
-                  </div>
-                  <div className="inline-flex items-center gap-2">
-                    <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm shadow-slate-100/80">
-                      <Smile className="h-5 w-5" />
-                    </div>
-                    <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm shadow-slate-100/80">
-                      <Paperclip className="h-5 w-5" />
-                    </div>
-                  </div>
-                </div>
-                <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 transition group-hover:border-violet-200">
-                  Share a win, ask for advice, or inspire the BIG community...
-                </div>
-              </div>
-
-              <div
-                style={{ maxHeight: composerExpanded ? '520px' : '0px', transition: 'max-height 220ms ease', overflow: 'hidden' }}
-                aria-hidden={!composerExpanded}
-              >
-                <div className="mt-4 rounded-[24px] border border-slate-200 bg-slate-50/90 p-4">
-                  <div className="mb-4 rounded-[20px] bg-white p-4 shadow-sm shadow-slate-200/40">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-3xl bg-linear-to-br from-pink-500 via-fuchsia-500 to-violet-700 text-base font-semibold text-white">
-                        H
+              <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/40">
+                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-700">Suggested members</p>
+                <div className="mt-4 space-y-3">
+                  {suggestedMembers.map((member) => (
+                    <div key={member.name} className="flex items-center gap-3 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-violet-100 text-violet-700 font-semibold shadow-sm">{member.name.charAt(0)}</div>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold text-slate-950">{member.name}</p>
+                        <p className="text-sm text-slate-500">{member.role}</p>
+                        <p className="mt-1 text-xs text-slate-400">{member.circle}</p>
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-slate-900">Hassan</p>
-                        <p className="text-sm text-slate-500">Share your next community moment.</p>
-                      </div>
+                      <button className="rounded-full border border-violet-200 bg-violet-50 px-3 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-100">
+                        Connect
+                      </button>
                     </div>
-                  </div>
-
-                  <textarea
-                    ref={textareaRef}
-                    value={draft}
-                    onChange={(event) => {
-                      if (event.target.value.length <= maxChars) setDraft(event.target.value)
-                    }}
-                    rows={5}
-                    placeholder="Share a business win, ask for advice, celebrate another woman, post an opportunity, or inspire the BIG community..."
-                    className="min-h-35 w-full rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-900 outline-none transition duration-200 focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
-                  />
-
-                  <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <button type="button" className="inline-flex h-11 items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 text-sm text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
-                      <Smile className="h-4 w-4 text-violet-700" />
-                      Emoji
-                    </button>
-                    <button type="button" className="inline-flex h-11 items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 text-sm text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
-                      <Paperclip className="h-4 w-4 text-violet-700" />
-                      Attach
-                    </button>
-                    <div className="ml-auto text-xs text-slate-400">{draft.length}/{maxChars}</div>
-                    <button type="button" onClick={async () => { await handlePost(); setComposerExpanded(false) }} disabled={isSubmitting || !draft.trim() || draft.length > maxChars} className="inline-flex h-11 items-center justify-center rounded-3xl bg-linear-to-r from-violet-700 via-fuchsia-600 to-pink-500 px-5 text-sm font-semibold text-white shadow-lg shadow-violet-200/30 transition duration-200 hover:-translate-y-0.5 hover:shadow-xl disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600">
-                      {isSubmitting ? 'Posting…' : 'Post'}
-                    </button>
-                  </div>
+                  ))}
                 </div>
               </div>
-
-              {error ? <p className="mt-4 text-sm text-rose-600">{error}</p> : null}
-            </div>
-
-            <div className="space-y-5">
-              {isLoading ? (
-                <div className="rounded-[32px] border border-slate-200/70 bg-white p-8 text-center text-slate-500 shadow-sm shadow-slate-200/40">
-                  <p className="text-base font-semibold text-slate-900">Loading community feed…</p>
-                  <p className="mt-2 text-sm text-slate-500">Hang tight while we gather the latest conversations.</p>
-                </div>
-              ) : feedPosts.length === 0 ? (
-                <div className="rounded-[32px] border border-slate-200/70 bg-white p-8 text-center text-slate-500 shadow-sm shadow-slate-200/40">
-                  <p className="text-base font-semibold text-slate-900">No posts yet</p>
-                  <p className="mt-2 text-sm text-slate-500">Start the conversation and inspire the community.</p>
-                </div>
-              ) : (
-                feedPosts.map((post) => (
-                  <article key={post.id} className="rounded-[32px] border border-slate-200/70 bg-white p-6 shadow-sm shadow-slate-200/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-                    <div className="flex flex-col gap-4">
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-start gap-3">
-                          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-linear-to-br from-violet-600 via-fuchsia-500 to-pink-500 text-white shadow-lg shadow-violet-200/60">
-                            {post.author.name.charAt(0)}
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                              <span>{post.author.name}</span>
-                              <BadgeCheck className="h-4 w-4 text-violet-600" />
-                            </div>
-                            <p className="mt-1 text-sm text-slate-500">{post.author.rank || 'Founder'} • {post.timestamp}</p>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-violet-200 hover:bg-white"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </button>
-                      </div>
-
-                      <p className="text-base leading-7 text-slate-700">{post.content}</p>
-
-                      <div className="h-px bg-slate-200" />
-
-                      <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2">
-                          <span>👏</span>
-                          {post.likes || 32}
-                        </span>
-                        <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2">
-                          <span>❤️</span>
-                          {post.likes || 14}
-                        </span>
-                        <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2">
-                          <span>💬</span>
-                          {post.comments || 8}
-                        </span>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4 text-sm text-slate-600">
-                        <button className="inline-flex items-center gap-2 text-slate-700 transition hover:text-violet-700">
-                          <Sparkles className="h-4 w-4" /> Share
-                        </button>
-                        <button className="inline-flex items-center gap-2 text-slate-700 transition hover:text-violet-700">
-                          <Bookmark className="h-4 w-4" /> Save
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                ))
-              )}
-            </div>
-            <div className="lg:hidden rounded-[32px] border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/40">
-              <div className="flex items-center justify-between text-sm font-semibold text-slate-700">
-                <span>Bottom Navigation</span>
-                <span className="text-slate-400">Swipe</span>
-              </div>
-              <div className="mt-4 flex justify-between">
-                {['🏠', '🔍', '➕', '💬', '👤'].map((item) => (
-                  <button
-                    key={item}
-                    className="flex h-12 w-12 items-center justify-center rounded-3xl bg-slate-100 text-lg transition duration-200 hover:bg-violet-50 hover:text-violet-700 active:scale-[0.97]"
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          <aside className="hidden xl:block xl:space-y-6 xl:sticky xl:top-6 xl:self-start">
-            <div className="rounded-[32px] border border-slate-200 bg-white/95 p-6 shadow-md shadow-slate-200/50">
-              <p className="text-sm text-slate-500">Welcome back</p>
-              <h2 className="mt-2 text-2xl font-bold text-slate-900">{currentUserDisplayName || 'Member'} 👋</h2>
-              <div className="mt-4 rounded-3xl bg-slate-100 p-4 text-sm text-slate-700">
-                <div className="flex items-center justify-between">
-                  <span>Profile complete</span>
-                  <span className="font-semibold text-violet-700">80%</span>
-                </div>
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200">
-                  <div className="h-2 w-4/5 rounded-full bg-linear-to-r from-violet-700 to-fuchsia-500" />
-                </div>
-                <button className="mt-4 w-full rounded-3xl bg-violet-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-800">Complete →</button>
-              </div>
-            </div>
-
-            <div className="rounded-[32px] border border-slate-200 bg-white/95 p-6 shadow-md shadow-slate-200/50">
-              <p className="text-sm font-semibold text-slate-900">Community Snapshot</p>
-              <div className="mt-4 space-y-3 text-sm text-slate-600">
-                <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-                  <span>Members</span>
-                  <span className="font-semibold text-slate-900">4,800</span>
-                </div>
-                <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-                  <span>Posts today</span>
-                  <span className="font-semibold text-slate-900">128</span>
-                </div>
-                <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-                  <span>Events</span>
-                  <span className="font-semibold text-slate-900">5</span>
-                </div>
-                <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-                  <span>Circles</span>
-                  <span className="font-semibold text-slate-900">42</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[32px] border border-slate-200 bg-white/95 p-6 shadow-md shadow-slate-200/50">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-900">Upcoming Events</p>
-                  <p className="text-xs text-slate-500">Stay ready for the next community moment</p>
-                </div>
-              </div>
-              <div className="mt-5 space-y-4">
-                {upcomingEvents.map((event) => (
-                  <div key={event.title} className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                    <p className="font-semibold text-slate-900">{event.title}</p>
-                    <p className="mt-1 text-sm text-slate-500">{event.location}</p>
-                    <div className="mt-3 flex items-center justify-between text-sm text-slate-700">
-                      <span>{event.date}</span>
-                      <button className="rounded-3xl bg-violet-700 px-3 py-1 text-white transition hover:bg-violet-800">Join →</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-[32px] border border-slate-200 bg-white/95 p-6 shadow-md shadow-slate-200/50">
-              <p className="text-sm font-semibold text-slate-900">Trending Topics</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {trendingTopics.map((topic) => (
-                  <button key={topic.topic} className="rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-700 transition hover:bg-violet-50 hover:text-violet-700">
-                    #{topic.topic}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-[32px] border border-slate-200 bg-white/95 p-6 shadow-md shadow-slate-200/50">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-slate-900">Suggested Members</p>
-                <span className="text-xs text-slate-500">Build your crew</span>
-              </div>
-              <div className="mt-4 space-y-3">
-                {suggestedMembers.map((member) => (
-                  <div key={member.name} className="flex items-center gap-3 rounded-[28px] border border-slate-200 bg-slate-50 p-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-violet-100 text-violet-700 font-semibold shadow-sm">
-                      {member.name.charAt(0)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-slate-900">{member.name}</p>
-                      <p className="text-sm text-slate-500">{member.role}</p>
-                      <p className="mt-2 text-xs text-slate-400">{member.mutual} mutual circles</p>
-                    </div>
-                    <button className="rounded-3xl border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-100">Follow</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-[32px] border border-slate-200 bg-white/95 p-6 shadow-md shadow-slate-200/50">
-              <p className="text-sm font-semibold text-slate-900">Notification Center</p>
-              <ul className="mt-4 space-y-4 text-sm text-slate-600">
-                {notifications.map((note) => (
-                  <li key={note.title} className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="font-semibold text-slate-900">{note.title}</p>
-                        <p className="mt-1 text-xs text-slate-500">{note.time}</p>
-                      </div>
-                      <span className="mt-1 h-2 w-2 rounded-full bg-violet-500" />
-                    </div>
-                  </li>
-                ))}
-              </ul>
             </div>
           </aside>
         </div>
       </main>
 
-      {searchOpen ? (
-        <div className="fixed inset-0 z-60 flex items-start justify-center bg-slate-950/75 px-4 pt-24 pb-8 backdrop-blur-sm lg:hidden">
-          <div className="w-full max-w-xl rounded-[32px] border border-slate-200 bg-white shadow-2xl shadow-slate-950/20">
-            <div className="flex items-center gap-3 border-b border-slate-200 px-4 py-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                <input
-                  autoFocus
-                  value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                  type="search"
-                  placeholder="Search BIG…"
-                  className="w-full rounded-3xl border border-slate-200 bg-slate-100 py-3 pl-11 pr-4 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:bg-white"
-                />
-              </div>
-              <button type="button" onClick={() => { setSearchOpen(false); setSearchQuery('') }} className="inline-flex h-11 w-11 items-center justify-center rounded-3xl bg-slate-100 text-slate-600 transition hover:bg-violet-50 hover:text-violet-700">
-                ✕
-              </button>
-            </div>
-            <div className="space-y-4 px-4 py-5">
-              <div>
-                <p className="text-sm font-semibold text-slate-900">Popular searches</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {['Community', 'Funding', 'Mentors', 'Events', 'Academy'].map((term) => (
-                    <button key={term} type="button" className="rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-600 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700">
-                      {term}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="rounded-[28px] bg-slate-50 p-4 text-sm text-slate-600">
-                Search posts, stories, events, and members across BIG.
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
       <div className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-t shadow-slate-200/30 backdrop-blur-xl lg:hidden">
         <div className="mx-auto flex max-w-lg items-center justify-between gap-2">
-          {mobileBottomNav.map((item) => {
+          {bottomNav.map((item) => {
             const Icon = item.icon
-            const active = item.label === bottomNavActive
             return (
-              <button
+              <Link
                 key={item.label}
-                type="button"
-                onClick={() => setBottomNavActive(item.label)}
-                className={`flex flex-1 flex-col items-center justify-center gap-1 rounded-3xl px-3 py-2 text-[11px] font-semibold transition ${
-                  active ? 'bg-violet-100 text-violet-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-                }`}
+                href={item.href}
+                className="flex flex-1 flex-col items-center justify-center gap-1 rounded-3xl bg-slate-100 px-3 py-2 text-[11px] font-semibold text-slate-600 transition hover:bg-violet-50 hover:text-violet-700"
               >
                 <Icon className="h-5 w-5" />
                 {item.label}
-              </button>
+              </Link>
             )
           })}
           <button
             type="button"
-            onClick={() => setFabOpen((value) => !value)}
-            aria-label="Create new post"
-            className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-br from-violet-700 via-fuchsia-600 to-pink-500 text-white shadow-xl shadow-violet-200/40 transition hover:scale-[0.98]"
+            onClick={() => setComposerOpen(true)}
+            className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-br from-violet-700 via-fuchsia-600 to-pink-500 text-white shadow-xl shadow-violet-200/30 transition hover:scale-[0.98]"
           >
-            <Plus className="h-5 w-5" />
+            <Plus className="h-6 w-6" />
           </button>
         </div>
       </div>
-
-      {fabOpen ? (
-        <div className="fixed inset-x-0 bottom-20 z-50 flex justify-center px-4 lg:hidden">
-          <div className="w-full max-w-md rounded-[32px] border border-slate-200 bg-white p-3 shadow-2xl shadow-slate-950/15">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setComposerExpanded(true)
-                  setFabOpen(false)
-                }}
-                className="flex flex-col items-center gap-2 rounded-[24px] border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-violet-50 hover:text-violet-700"
-              >
-                <Plus className="h-5 w-5" />
-                New Post
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setStoryComposerOpen(true)
-                  setFabOpen(false)
-                }}
-                className="flex flex-col items-center gap-2 rounded-[24px] border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-violet-50 hover:text-violet-700"
-              >
-                <Sparkles className="h-5 w-5" />
-                Story
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchOpen(true)
-                  setFabOpen(false)
-                }}
-                className="flex flex-col items-center gap-2 rounded-[24px] border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-violet-50 hover:text-violet-700"
-              >
-                <Search className="h-5 w-5" />
-                Search
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      {storyComposerOpen ? (
-        <div className="fixed inset-0 z-70 flex items-center justify-center bg-slate-950/60 px-4 py-6 backdrop-blur-sm">
-          <div className="w-full max-w-5xl overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-2xl shadow-slate-950/20">
-            <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-6 py-4">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-700">Share your story</p>
-                <p className="mt-1 text-sm text-slate-500">Create a moment worth remembering.</p>
-              </div>
-              <button type="button" onClick={() => setStoryComposerOpen(false)} className="rounded-full border border-slate-200 bg-white p-2 text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
-                <Plus className="h-5 w-5 rotate-45" />
-              </button>
-            </div>
-
-            <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
-              <div className="p-6">
-                <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-linear-to-br from-violet-700 via-fuchsia-600 to-pink-500 text-lg font-semibold text-white">
-                      H
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900">Good morning, Hassan</p>
-                      <p className="text-sm text-slate-500">What would you like to share today?</p>
-                    </div>
-                  </div>
-
-                  <textarea
-                    rows={7}
-                    placeholder="Celebrate a win, ask for support, or inspire another woman..."
-                    className="mt-4 min-h-45 w-full rounded-[24px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-700 outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
-                  />
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <button type="button" className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600">📷 Upload Photo</button>
-                    <button type="button" className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600">🎥 Upload Video</button>
-                    <button type="button" className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600">😊 Add Emoji</button>
-                    <button type="button" className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600">📍 Add Location</button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-slate-200 bg-white p-6 lg:border-l lg:border-t-0">
-                <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-4">
-                  <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-700">Preview story</p>
-                  <div className="mt-4 rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-linear-to-br from-violet-700 via-fuchsia-600 to-pink-500 text-sm font-semibold text-white">
-                          H
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-slate-900">Hassan</p>
-                          <p className="text-xs text-slate-500">Today • Community</p>
-                        </div>
-                      </div>
-                      <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-violet-700">Celebration</span>
-                    </div>
-                    <div className="mt-4 rounded-[24px] bg-linear-to-br from-violet-100 via-white to-fuchsia-100 p-5">
-                      <p className="text-sm leading-7 text-slate-700">Celebrate a win, share a lesson, or inspire another woman to keep going.</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <label className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600">
-                      <select className="bg-transparent outline-none">
-                        <option>Category</option>
-                        <option>Business Win</option>
-                        <option>Graduation</option>
-                        <option>Funding</option>
-                      </select>
-                    </label>
-                    <label className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600">
-                      <select className="bg-transparent outline-none">
-                        <option>Audience</option>
-                        <option>Community</option>
-                        <option>Circles</option>
-                        <option>Mentors</option>
-                      </select>
-                    </label>
-                  </div>
-
-                  <button type="button" onClick={() => setStoryComposerOpen(false)} className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-linear-to-r from-violet-700 via-fuchsia-600 to-pink-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200/40 transition hover:-translate-y-0.5 hover:shadow-xl">
-                    Publish story
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      {storyViewerOpen ? (
-        <div className="fixed inset-0 z-80 flex items-center justify-center bg-slate-950/75 px-4 py-6 backdrop-blur-sm">
-          <div className="relative w-full max-w-3xl overflow-hidden rounded-[36px] border border-white/10 bg-slate-950 text-white shadow-2xl shadow-slate-950/30">
-            <div className="absolute inset-x-0 top-0 flex gap-2 px-4 py-4">
-              {storyItems.map((_, index) => (
-                <div key={`${index}-progress`} className="h-1 flex-1 overflow-hidden rounded-full bg-white/20">
-                  <div className={`h-full rounded-full ${index <= activeStoryIndex ? 'bg-white' : 'bg-transparent'}`} style={{ width: index === activeStoryIndex ? '70%' : '100%' }} />
-                </div>
-              ))}
-            </div>
-
-            <div className="flex items-start justify-between px-5 pb-4 pt-12">
-              <div className="flex items-center gap-3">
-                <div className={`flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br ${activeStory.accent} text-lg font-semibold text-white`}>
-                  {activeStory.name.charAt(0)}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">{activeStory.name}</p>
-                  <p className="text-xs text-slate-300">{activeStory.category} • {activeStory.time}</p>
-                </div>
-              </div>
-              <button type="button" onClick={() => setStoryViewerOpen(false)} className="rounded-full border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20">
-                <Plus className="h-5 w-5 rotate-45" />
-              </button>
-            </div>
-
-            <div className="px-5 pb-6">
-              <div className="rounded-[28px] border border-white/10 bg-white/10 p-6 backdrop-blur-sm">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-violet-200">Story</p>
-                    <h3 className="mt-2 text-2xl font-semibold text-white">{activeStory.label}</h3>
-                  </div>
-                  <button type="button" onClick={() => setStoryPaused((current) => !current)} className="rounded-full border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20">
-                    {storyPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
-                  </button>
-                </div>
-                <div className="mt-6 rounded-[24px] bg-linear-to-br from-violet-600/20 via-slate-900 to-fuchsia-600/20 p-6">
-                  <p className="text-base leading-8 text-slate-100">A beautiful moment from the BIG community — a win, a lesson, a milestone, and a reminder that women grow better together.</p>
-                </div>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <button type="button" className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition hover:bg-white/20">Reply</button>
-                  <button type="button" className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition hover:bg-white/20">React</button>
-                  <button type="button" className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition hover:bg-white/20">Share</button>
-                </div>
-              </div>
-            </div>
-
-            <div className="absolute inset-y-0 left-3 flex items-center">
-              <button type="button" onClick={goToPreviousStory} className="rounded-full border border-white/15 bg-white/10 p-2 text-white transition hover:bg-white/20">
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="absolute inset-y-0 right-3 flex items-center">
-              <button type="button" onClick={goToNextStory} className="rounded-full border border-white/15 bg-white/10 p-2 text-white transition hover:bg-white/20">
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
     </div>
   )
 }

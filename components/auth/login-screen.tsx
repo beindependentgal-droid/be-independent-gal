@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { Check } from 'lucide-react'
 import LoginForm from '@/components/auth/login-form'
 import { useAuth } from '@/lib/auth-context'
 
@@ -13,28 +14,23 @@ interface LoginScreenProps {
   }>
 }
 
-const testimonials = [
-  {
-    quote: 'BIG helped me find a circle where I finally feel seen, supported, and inspired every week.',
-    author: 'Amina, Community Organizer',
-  },
-  {
-    quote: 'The Academy courses gave me confidence and practical skills to apply for my first leadership role.',
-    author: 'Zuri, Product Designer',
-  },
-  {
-    quote: 'I connected with mentors who understood my journey and helped me take the next step.',
-    author: 'Nyambura, Founder',
-  },
+const DEFAULT_AUTH_REDIRECT = '/dashboard'
+
+const isValidRedirect = (path?: string) => path?.startsWith('/') && !path.startsWith('//')
+
+const benefits = [
+  'Access your Academy courses',
+  'Join your Sister Circles',
+  'Discover new opportunities',
+  'Manage your BIG profile',
 ]
 
 export default function LoginScreen({ searchParams }: LoginScreenProps) {
   const router = useRouter()
   const { isAuthenticated, loading } = useAuth()
-  const [redirect, setRedirect] = useState('/community')
+  const [redirect, setRedirect] = useState(DEFAULT_AUTH_REDIRECT)
   const [googleReturn, setGoogleReturn] = useState(false)
   const [isReady, setIsReady] = useState(false)
-  const [testimonialIndex, setTestimonialIndex] = useState(0)
 
   useEffect(() => {
     let isMounted = true
@@ -42,7 +38,7 @@ export default function LoginScreen({ searchParams }: LoginScreenProps) {
     const resolveParams = async () => {
       const params = await searchParams
       if (isMounted) {
-        setRedirect(params.redirect || '/community')
+        setRedirect(isValidRedirect(params.redirect) ? params.redirect! : DEFAULT_AUTH_REDIRECT)
         setGoogleReturn(params.from === 'google')
         setIsReady(true)
       }
@@ -57,137 +53,75 @@ export default function LoginScreen({ searchParams }: LoginScreenProps) {
 
   useEffect(() => {
     if (!loading && isAuthenticated && isReady) {
-      router.push(redirect)
+      router.replace(redirect)
     }
   }, [loading, isAuthenticated, redirect, router, isReady])
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTestimonialIndex((current) => (current + 1) % testimonials.length)
-    }, 7000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const testimonial = useMemo(() => testimonials[testimonialIndex], [testimonialIndex])
-
   if (!isReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
         <div className="inline-block h-12 w-12 animate-spin rounded-full border-b-2 border-fuchsia-600" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen overflow-hidden bg-gradient-to-br from-pink-50 via-violet-50 to-slate-50">
-      <div className="mx-auto grid min-h-screen max-w-7xl grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="flex flex-col justify-center px-6 py-10 sm:px-10 lg:px-16">
-          <div className="mx-auto w-full max-w-md space-y-8">
-            <div className="rounded-[36px] border border-white/90 bg-white/95 p-6 shadow-[0_40px_120px_-60px_rgba(99,102,241,0.25)] backdrop-blur-xl">
-              <div className="flex justify-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-fuchsia-600 to-violet-600 text-white shadow-lg shadow-fuchsia-200/60">
-                  <span className="text-2xl font-black">BIG</span>
-                </div>
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <div className="mx-auto grid min-h-screen max-w-7xl grid-cols-1 lg:grid-cols-[0.45fr_0.55fr]">
+        <div className="relative hidden overflow-hidden bg-slate-950/5 lg:flex">
+          <div className="absolute inset-0 bg-slate-950/60" />
+          <Image
+            src="/images/hero-women3.jpg"
+            alt="Women collaborating"
+            fill
+            className="object-cover"
+            sizes="(min-width: 1024px) 45vw, 100vw"
+          />
+          <div className="relative z-10 flex h-full flex-col justify-center bg-gradient-to-r from-slate-950/70 via-slate-950/30 to-transparent px-12 py-16">
+            <div className="max-w-md text-white">
+              <div className="mb-8 inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-white/10 text-white shadow-lg shadow-black/20">
+                <span className="text-lg font-semibold">BIG</span>
               </div>
-
-              <div className="mt-8 space-y-4 text-center">
-                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-fuchsia-600/90">Sign in</p>
-                <h1 className="text-4xl font-semibold tracking-tight text-slate-950">Your circle is waiting.</h1>
-                <p className="mx-auto max-w-sm text-base leading-7 text-slate-600">
-                  Access your BIG profile, courses, circles, events, and opportunities from one welcoming place.
-                </p>
-              </div>
-
-              <div className="mt-8 lg:hidden">
-                <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
-                  <p className="text-sm font-semibold text-slate-900">BIG Community</p>
-                  <p className="mt-3 text-sm text-slate-600">A premium home for women building confidence, skills, and careers together.</p>
-                  <div className="mt-5 grid gap-3 text-sm text-slate-700">
-                    <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">4,800+ Members</div>
-                    <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">30+ Courses</div>
-                    <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">42 Circles</div>
+              <p className="text-4xl font-semibold leading-tight">Welcome back 👋</p>
+              <p className="mt-4 max-w-sm text-sm text-slate-200/90">Continue your journey with BIG.</p>
+              <div className="mt-10 space-y-4">
+                {benefits.map((benefit) => (
+                  <div key={benefit} className="flex items-start gap-3 rounded-3xl border border-white/10 bg-white/10 p-4 text-sm text-slate-100 shadow-sm shadow-black/10">
+                    <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-2xl bg-fuchsia-600 text-white">
+                      <Check className="h-4 w-4" />
+                    </span>
+                    <span>{benefit}</span>
                   </div>
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <LoginForm redirect={redirect} googleReturn={googleReturn} />
-              </div>
-
-              <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm text-slate-500">
-                <a href="/auth/sign-up" className="font-semibold text-fuchsia-600 hover:text-fuchsia-700">Create account</a>
-                <span aria-hidden="true">·</span>
-                <a href="/auth/reset" className="font-semibold text-fuchsia-600 hover:text-fuchsia-700">Reset password</a>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="relative hidden overflow-hidden border-l border-white/80 bg-gradient-to-br from-[#f7efff] via-[#fbf8ff] to-[#fff1f8] p-8 lg:flex">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(192,38,211,0.16),_transparent_34%)]" />
-          <div className="absolute inset-y-0 right-0 w-1/2 bg-white/20 blur-3xl" />
-          <div className="relative z-10 flex h-full flex-col justify-between gap-10">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-3 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-fuchsia-700 shadow-sm shadow-fuchsia-100">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-fuchsia-100 text-fuchsia-700">✨</span>
-                Continue your journey with BIG
+        <div className="flex min-h-screen flex-col justify-center bg-white px-6 py-10 ring-1 ring-slate-200/70 dark:bg-slate-950 dark:ring-slate-700/50 sm:px-8 lg:px-12">
+          <div className="mx-auto w-full max-w-md">
+            <div className="mb-10 text-center lg:hidden">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-fuchsia-600 text-white shadow-lg shadow-fuchsia-200/30">
+                <span className="text-lg font-semibold">BIG</span>
               </div>
-
-              <div className="rounded-[32px] border border-white/80 bg-white/85 p-6 shadow-lg shadow-slate-200/40 backdrop-blur-xl">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-slate-100">
-                  <Image
-                    src="/images/hero-women3.jpg"
-                    alt="Women learning and collaborating"
-                    fill
-                    className="object-cover"
-                    loading="eager"
-                  />
-                </div>
-              </div>
+              <p className="mt-6 text-3xl font-semibold text-slate-950 dark:text-white">Welcome back 👋</p>
+              <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Continue your journey with BIG.</p>
             </div>
 
-            <div className="grid gap-3 text-sm text-slate-700">
-              {[
-                'Learn practical skills',
-                'Join Sister Circles',
-                'Discover opportunities',
-                'Attend events',
-                'Meet mentors',
-                'Build your career',
-              ].map((item) => (
-                <div key={item} className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-fuchsia-100 text-fuchsia-700">✓</span>
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4 text-center text-sm font-semibold text-slate-900">
-                <div className="rounded-3xl bg-white px-4 py-5 shadow-sm">
-                  <p className="text-3xl">4,800+</p>
-                  <p className="mt-1 text-[13px] uppercase tracking-[0.24em] text-slate-500">Members</p>
-                </div>
-                <div className="rounded-3xl bg-white px-4 py-5 shadow-sm">
-                  <p className="text-3xl">30+</p>
-                  <p className="mt-1 text-[13px] uppercase tracking-[0.24em] text-slate-500">Courses</p>
-                </div>
-                <div className="rounded-3xl bg-white px-4 py-5 shadow-sm">
-                  <p className="text-3xl">42</p>
-                  <p className="mt-1 text-[13px] uppercase tracking-[0.24em] text-slate-500">Circles</p>
-                </div>
-                <div className="rounded-3xl bg-white px-4 py-5 shadow-sm">
-                  <p className="text-3xl">100+</p>
-                  <p className="mt-1 text-[13px] uppercase tracking-[0.24em] text-slate-500">Opportunities</p>
-                </div>
+            <div className="rounded-[28px] border border-slate-200 bg-white px-8 py-10 shadow-[0_30px_80px_-40px_rgba(15,23,42,0.3)] dark:border-slate-800 dark:bg-slate-900 sm:px-10 sm:py-12">
+              <div className="mb-8">
+                <p className="text-base font-semibold uppercase tracking-[0.2em] text-fuchsia-700">Sign in</p>
+                <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">Welcome back. Sign in to continue.</h1>
               </div>
 
-              <div className="rounded-[32px] border border-slate-200 bg-white px-6 py-6 shadow-sm">
-                <p className="text-sm uppercase tracking-[0.3em] text-fuchsia-700">Testimonial</p>
-                <p className="mt-4 text-lg font-semibold leading-8 text-slate-900">“{testimonial.quote}”</p>
-                <p className="mt-4 text-sm font-semibold text-slate-600">{testimonial.author}</p>
-              </div>
+              <LoginForm redirect={redirect} googleReturn={googleReturn} />
             </div>
+
+            <footer className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+              <a href="/privacy" className="transition hover:text-slate-900 dark:hover:text-white">Privacy Policy</a>
+              <a href="/terms" className="transition hover:text-slate-900 dark:hover:text-white">Terms</a>
+              <span>© Be Independent Gal</span>
+            </footer>
           </div>
         </div>
       </div>

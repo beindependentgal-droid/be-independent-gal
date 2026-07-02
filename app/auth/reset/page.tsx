@@ -59,11 +59,11 @@ export default function ResetPage() {
           <div className="flex justify-center">
             <Link href="/">
               <FallbackImage
-                src="/images/big.svg"
+                src="/icon.svg"
                 alt="BIG Logo"
                 width={48}
                 height={48}
-                fallbackSrc="/images/big-logo.jpeg"
+                fallbackSrc="/favicon.svg"
                 className="h-12 w-12"
               />
             </Link>
@@ -130,7 +130,7 @@ export default function ResetPage() {
                 </Button>
 
                 <Button
-                  onClick={() => router.push('/auth/login')}
+                  onClick={() => router.push('/auth/login?redirect=/dashboard')}
                   variant="ghost"
                   className="w-full h-12 rounded-full font-semibold text-gray-600 hover:text-gray-900"
                 >
