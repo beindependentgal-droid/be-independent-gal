@@ -16,6 +16,8 @@
     "supabase:test": "node scripts/test-supabase-connection.mjs",
     "supabase:seed": "node scripts/seed-supabase.mjs",
     "supabase:buckets": "node scripts/setup-storage-buckets.mjs"
+    ,
+    "generate:pwa-icons": "npx pwa-asset-generator public/images/biglogo.png public/images --icon-only --background '#ffffff'"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
