@@ -92,7 +92,7 @@ export default async function ArticlePage({ params }: Props) {
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
-                fallbackSrc="/images/article-placeholder.jpg"
+                fallbackSrc="/images/hero-women.jpg"
               />
             </div>
           )}

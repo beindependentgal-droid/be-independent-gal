@@ -137,7 +137,7 @@ export default function HomePage() {
                   width={900}
                   height={900}
                   className="h-full w-full object-cover"
-                  fallbackSrc="/images/placeholder.svg"
+                  fallbackSrc="/images/hero-women3.jpg"
                 />
               </div>
             </div>
@@ -252,7 +252,7 @@ export default function HomePage() {
                       alt={post.title}
                       fill
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      fallbackSrc="/images/placeholder.svg"
+                      fallbackSrc={post.image}
                     />
                   </div>
 
@@ -286,7 +286,7 @@ export default function HomePage() {
                     alt={program.title}
                     fill
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    fallbackSrc="/images/placeholder.svg"
+                    fallbackSrc={program.image}
                   />
                 </div>
 

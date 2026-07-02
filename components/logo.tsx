@@ -23,7 +23,7 @@ export function Logo({
         <span className="absolute -inset-0.5 rounded-full bg-secondary/80 blur opacity-80" />
         <img
           src={imageSrc}
-          onError={() => setImageSrc('/images/big-logo-placeholder.svg')}
+          onError={() => setImageSrc('/images/big-logo.jpeg')}
           alt="Be Independent Gal"
           className="relative h-10 w-10 rounded-full object-cover"
         />

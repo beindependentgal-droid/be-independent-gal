@@ -167,7 +167,7 @@ export default function CirclesPage() {
         description="Join women who are learning, connecting, earning, and thriving together in our four main circles."
         cta1={{ text: 'Browse Circles', href: '#circles-section' }}
         cta2={{ text: 'Learn More', href: '#how-it-works' }}
-        imageSrc="/images/hero-placeholder.svg"
+        imageSrc="/images/sister.jpg"
       />
 
       {/* Stats */}
@@ -328,7 +328,7 @@ export default function CirclesPage() {
                       width={48}
                       height={48}
                       className="w-full h-full object-cover"
-                      fallbackSrc="/images/member-placeholder.svg"
+                      fallbackSrc="/images/member-1.png"
                     />
                   </div>
                   <div>

@@ -45,7 +45,7 @@ export default async function EventsPage() {
         description="Join us for workshops, networking events, retreats, and community gatherings designed to support your growth journey."
         cta1={{ text: 'Create an Event', href: '/events/create' }}
         cta2={{ text: 'View Calendar', href: '#events' }}
-        imageSrc="/images/events-hero.jpg"
+        imageSrc="/images/event.png"
       />
 
       {/* Events by Circle */}
@@ -116,7 +116,7 @@ export default async function EventsPage() {
                                 alt={event.title}
                                 fill
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                fallbackSrc="/images/event-placeholder.jpg"
+                                fallbackSrc="/images/event.png"
                               />
 
                               {/* Event Type Badge */}
@@ -232,7 +232,7 @@ export default async function EventsPage() {
                                 alt={event.title}
                                 fill
                                 className="w-full h-full object-cover"
-                                fallbackSrc="/images/event-placeholder.jpg"
+                                fallbackSrc="/images/event.png"
                               />
 
                               <div className="absolute top-4 right-4">

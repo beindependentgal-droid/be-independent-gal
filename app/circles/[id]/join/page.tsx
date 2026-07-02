@@ -196,7 +196,7 @@ export default async function CircleJoinPage({
                 alt={circle.title}
                 fill
                 className="object-cover"
-                fallbackSrc="/images/circle-placeholder.jpg"
+                fallbackSrc="/images/circles.png"
               />
             </div>
 

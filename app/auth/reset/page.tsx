@@ -63,7 +63,7 @@ export default function ResetPage() {
                 alt="BIG Logo"
                 width={48}
                 height={48}
-                fallbackSrc="/images/big-logo-placeholder.svg"
+                fallbackSrc="/images/big-logo.jpeg"
                 className="h-12 w-12"
               />
             </Link>
@@ -214,7 +214,7 @@ export default function ResetPage() {
             alt="BIG Community"
             fill
             className="object-cover"
-            fallbackSrc="/images/hero-women-placeholder.jpg"
+            fallbackSrc="/images/hero-women2.jpg"
           />
         </div>
 

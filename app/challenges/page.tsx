@@ -75,7 +75,7 @@ function ChallengeCard({ challenge }: ChallengeCardProps) {
               alt={challenge.title}
               fill
               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-              fallbackSrc="/images/challenge-placeholder.jpg"
+              fallbackSrc="/images/hero-women3.jpg"
             />
             <div className="absolute top-4 right-4">
               <Badge className="bg-purple-600 text-white font-bold">
@@ -155,7 +155,7 @@ export default async function ChallengesPage() {
         description="Take on exciting challenges designed to boost your skills, creativity, and connection within the BIG community. Compete, grow, and have fun!"
         cta1={{ text: 'View Leaderboard', href: '/leaderboard' }}
         cta2={{ text: 'How it Works', href: '#how-it-works' }}
-        imageSrc="/images/challenges-hero.jpg"
+        imageSrc="/images/hero-women3.jpg"
       />
 
       {/* Main Challenges Section */}

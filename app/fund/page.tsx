@@ -268,16 +268,12 @@ export default function FundPage() {
                     alt={story.name}
                     fill
                     className="w-full h-full object-cover"
-                    fallbackSrc="/images/member-placeholder.svg"
+                    fallbackSrc="/images/member-1.png"
                   />
                 </div>
 
-                {/* Content */}
-                <div className="p-8">
-                  <div className="bg-secondary text-secondary-foreground text-sm font-bold px-3 py-1 rounded-full inline-block mb-4">
-                    {story.amount} funded
-                  </div>
-
+                <div className="px-6 py-4">
+                  <p className="text-sm text-secondary-700 font-semibold mb-2">{story.amount} funded</p>
                   <h3 className="text-xl font-bold text-foreground mb-1">{story.name}</h3>
                   <p className="text-secondary font-semibold mb-4">{story.business}</p>
 

@@ -106,35 +106,34 @@ export default function LoginScreen({ searchParams }: LoginScreenProps) {
             fill
             className="object-cover"
             onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = '/images/hero-women-placeholder.jpg'
+              ;(e.currentTarget as HTMLImageElement).src = '/images/hero-women2.jpg'
             }}
           />
         </div>
 
-        {/* Hero text */}
-        <div className="mt-12 text-center space-y-4 max-w-md">
+        <div className="mt-8 text-center max-w-md">
           <h2 className="text-2xl font-bold text-gray-900">
             Welcome back, Sister 💜
           </h2>
-          <p className="text-gray-600">
+          <p className="mt-3 text-gray-600">
             Continue your journey to Learn, Connect, Earn, and Thrive with the BIG community.
           </p>
 
           {/* Benefits */}
-          <div className="space-y-3 pt-4">
-            <div className="flex items-center gap-3 text-sm text-gray-700">
+          <div className="space-y-3 pt-6">
+            <div className="flex items-center gap-3 text-sm text-gray-700 justify-center">
               <span className="text-lg">📚</span>
               <span>Access to BIG Academy</span>
             </div>
-            <div className="flex items-center gap-3 text-sm text-gray-700">
+            <div className="flex items-center gap-3 text-sm text-gray-700 justify-center">
               <span className="text-lg">🤝</span>
               <span>Connect with amazing women</span>
             </div>
-            <div className="flex items-center gap-3 text-sm text-gray-700">
+            <div className="flex items-center gap-3 text-sm text-gray-700 justify-center">
               <span className="text-lg">💰</span>
               <span>Discover opportunities</span>
             </div>
-            <div className="flex items-center gap-3 text-sm text-gray-700">
+            <div className="flex items-center gap-3 text-sm text-gray-700 justify-center">
               <span className="text-lg">❤️</span>
               <span>Grow and thrive together</span>
             </div>

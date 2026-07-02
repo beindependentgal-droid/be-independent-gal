@@ -106,7 +106,7 @@ export default function SignUpScreen({ searchParams }: SignUpScreenProps) {
             fill
             className="object-cover"
             onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = '/images/hero-women-placeholder.jpg'
+              (e.currentTarget as HTMLImageElement).src = '/images/hero-women2.jpg'
             }}
           />
         </div>
