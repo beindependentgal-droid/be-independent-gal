@@ -207,14 +207,14 @@ export default function ProfilePage() {
             {/* Action Buttons */}
             {!isOwnProfile && (
               <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-3">
-                <Button className="w-full bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-11 flex items-center justify-center gap-2">
+                <Button className="w-full bg-gradient-to-r from-pink-600 to-violet-700 text-white font-bold rounded-full h-11 flex items-center justify-center gap-2 shadow-lg shadow-pink-200 hover:from-violet-700 hover:to-pink-600">
                   <MessageCircle className="w-4 h-4" />
                   Send Message
                 </Button>
 
                 <Button
                   variant="outline"
-                  className="w-full border-2 border-secondary- text-secondary- hover:bg-secondary- font-bold rounded-full h-11 flex items-center justify-center gap-2"
+                  className="w-full border-2 border-violet-300 bg-white text-violet-700 font-bold rounded-full h-11 flex items-center justify-center gap-2 hover:bg-gradient-to-r hover:from-pink-600 hover:to-violet-700 hover:text-white hover:border-transparent"
                 >
                   <UserPlus className="w-4 h-4" />
                   Request Mentorship

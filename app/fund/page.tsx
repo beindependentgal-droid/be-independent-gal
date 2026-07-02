@@ -166,7 +166,7 @@ export default function FundPage() {
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all"
+                  className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary hover:shadow-xl transition-all"
                 >
                   {/* Header with gradient */}
                   <div className={`bg-gradient-to-r ${fund.color} p-8 text-white`}>
@@ -199,7 +199,7 @@ export default function FundPage() {
 
                     {/* CTA */}
                     <Link href={`/fund/apply?type=${fund.title.toLowerCase().replace(/ /g, '-')}`}>
-                      <Button className="w-full bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-11">
+                      <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold rounded-full h-11">
                         Learn More
                       </Button>
                     </Link>
@@ -226,7 +226,7 @@ export default function FundPage() {
                 <div key={idx} className="relative">
                   <div className="bg-white rounded-2xl border border-gray-200 p-8 h-full">
                     {/* Step number */}
-                    <div className="text-5xl font-bold text-secondary- mb-4">{item.step}</div>
+                    <div className="text-5xl font-bold text-secondary mb-4">{item.step}</div>
 
                     {/* Content */}
                     <h4 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h4>
@@ -236,7 +236,7 @@ export default function FundPage() {
                   {/* Arrow connector */}
                   {idx < 3 && (
                     <div className="hidden lg:flex absolute -right-3 top-1/2 transform -translate-y-1/2 z-10">
-                      <ArrowRight className="w-6 h-6 text-secondary-" />
+                      <ArrowRight className="w-6 h-6 text-secondary" />
                     </div>
                   )}
                 </div>
@@ -259,7 +259,7 @@ export default function FundPage() {
             {successStories.map((story, idx) => (
               <div
                 key={idx}
-                className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all"
+                className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary hover:shadow-xl transition-all"
               >
                 {/* Image */}
                 <div className="relative aspect-square overflow-hidden bg-gray-300">
@@ -274,12 +274,12 @@ export default function FundPage() {
 
                 {/* Content */}
                 <div className="p-8">
-                  <div className="bg-secondary- text-secondary- text-sm font-bold px-3 py-1 rounded-full inline-block mb-4">
+                  <div className="bg-secondary text-secondary-foreground text-sm font-bold px-3 py-1 rounded-full inline-block mb-4">
                     {story.amount} funded
                   </div>
 
                   <h3 className="text-xl font-bold text-gray-900 mb-1">{story.name}</h3>
-                  <p className="text-secondary- font-semibold mb-4">{story.business}</p>
+                  <p className="text-secondary font-semibold mb-4">{story.business}</p>
 
                   <p className="text-gray-700 text-sm leading-relaxed italic">
                     "{story.outcome}"
@@ -302,8 +302,8 @@ export default function FundPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
             {requirements.map((req, idx) => (
-              <div key={idx} className="flex items-start gap-4 p-6 bg-white rounded-2xl border border-gray-200 hover:border-secondary- transition-colors">
-                <CheckCircle2 className="w-6 h-6 text-secondary- flex-shrink-0 mt-1" />
+              <div key={idx} className="flex items-start gap-4 p-6 bg-white rounded-2xl border border-gray-200 hover:border-secondary transition-colors">
+                <CheckCircle2 className="w-6 h-6 text-secondary flex-shrink-0 mt-1" />
                 <span className="font-medium text-gray-900">{req}</span>
               </div>
             ))}
@@ -335,11 +335,11 @@ export default function FundPage() {
             ].map((item, idx) => (
               <details
                 key={idx}
-                className="bg-gray-50 rounded-2xl border border-gray-200 p-6 hover:border-secondary- transition-colors cursor-pointer group"
+                className="bg-gray-50 rounded-2xl border border-gray-200 p-6 hover:border-secondary transition-colors cursor-pointer group"
               >
                 <summary className="flex items-center justify-between font-bold text-gray-900 select-none">
                   {item.q}
-                  <span className="text-secondary- group-open:rotate-180 transition-transform">+</span>
+                  <span className="text-secondary group-open:rotate-180 transition-transform">+</span>
                 </summary>
                 <p className="text-gray-600 mt-4 leading-relaxed">{item.a}</p>
               </details>
@@ -350,7 +350,7 @@ export default function FundPage() {
             <Link href="/fund/faq">
               <Button
                 variant="outline"
-                className="border-2 border-secondary- text-secondary- hover:bg-secondary- font-bold rounded-full h-11 px-8"
+                className="border-2 border-secondary text-secondary hover:bg-secondary/10 font-bold rounded-full h-11 px-8"
               >
                 View All FAQs
               </Button>
@@ -371,7 +371,7 @@ export default function FundPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Link href="/fund/apply">
-              <Button className="bg-white text-secondary- hover:bg-gray-100 font-bold rounded-full h-12 px-12 flex items-center gap-2 w-full sm:w-auto justify-center">
+              <Button className="bg-white text-secondary hover:bg-gray-100 font-bold rounded-full h-12 px-12 flex items-center gap-2 w-full sm:w-auto justify-center">
                 Start Your Application
                 <ArrowRight className="w-4 h-4" />
               </Button>

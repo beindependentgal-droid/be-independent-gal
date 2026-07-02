@@ -1,0 +1,144 @@
+{
+  "circleDashboard": {
+    "learn": {
+      "metrics": [
+        { "label": "Weekly Lessons", "value": "8", "detail": "Live and recorded sessions" },
+        { "label": "Active Sisters", "value": "220", "detail": "Engaged learners" },
+        { "label": "Mentorship", "value": "34", "detail": "Guided coaching pairs" },
+        { "label": "Resources", "value": "64", "detail": "Guides, templates, and tools" }
+      ],
+      "notifications": [
+        { "id": "learn-1", "title": "New workshop added", "description": "Join tonight's growth lab at 7 PM.", "time": "2h ago", "unread": true }
+      ],
+      "feed": [
+        {
+          "id": "post-learn-1",
+          "author": { "name": "Zuri", "avatar": "/images/member-1.png", "rank": "Mentor" },
+          "content": "We launched a new learning module on confident sales conversations!",
+          "timestamp": "2 hours ago",
+          "likes": 12,
+          "comments": 4,
+          "liked": false
+        }
+      ],
+      "members": [
+        { "id": "m1", "name": "Amina", "avatar": "/images/avatar-1.jpg", "title": "Founder", "city": "Nairobi", "rank": "Learner" },
+        { "id": "m2", "name": "Fatima", "avatar": "/images/avatar-2.jpg", "title": "Coach", "city": "Lagos", "rank": "Mentor" }
+      ],
+      "events": [
+        { "id": "e1", "title": "Masterclass: Build Your Pitch", "date": "2026-07-10", "time": "18:00", "location": "Online", "type": "webinar", "attendees": 120 }
+      ],
+      "challenges": [
+        { "id": "c1", "title": "7-Day Confidence Challenge", "description": "Daily prompts to grow your voice.", "reward": "Badge + community shoutout", "progress": 45, "completed": false, "badge": "confidence" }
+      ],
+      "resources": [
+        { "id": "r1", "title": "Guide: Pitch Your Service", "description": "Step-by-step sales framework", "type": "guide", "size": "12 pages" }
+      ]
+    },
+    "connect": {
+      "metrics": [
+        { "label": "Circle Chats", "value": "18", "detail": "Live connection sessions" },
+        { "label": "New Matches", "value": "56", "detail": "Mentor and partner introductions" },
+        { "label": "Events", "value": "12", "detail": "Networking experiences" },
+        { "label": "Support Threads", "value": "140", "detail": "Rich community conversations" }
+      ],
+      "notifications": [
+        { "id": "connect-1", "title": "New connection invited you", "description": "A sister wants to join your circle chat.", "time": "1d ago", "unread": false }
+      ],
+      "feed": [
+        {
+          "id": "post-connect-1",
+          "author": { "name": "Nia", "avatar": "/images/member-2.png", "rank": "Connector" },
+          "content": "We had an amazing peer support session on habits this morning.",
+          "timestamp": "5 hours ago",
+          "likes": 9,
+          "comments": 2,
+          "liked": false
+        }
+      ],
+      "members": [
+        { "id": "m3", "name": "Hawa", "avatar": "/images/avatar-3.jpg", "title": "Community Lead", "city": "Accra", "rank": "Member" },
+        { "id": "m4", "name": "Joy", "avatar": "/images/avatar-4.jpg", "title": "Entrepreneur", "city": "Kampala", "rank": "Member" }
+      ],
+      "events": [
+        { "id": "e2", "title": "Connection Circle", "date": "2026-07-15", "time": "19:00", "location": "Online", "type": "meetup", "attendees": 84 }
+      ],
+      "challenges": [
+        { "id": "c2", "title": "3-Day Networking Prompt", "description": "Invite three women into a meaningful chat.", "reward": "Community star", "progress": 20, "completed": false, "badge": "network" }
+      ],
+      "resources": [
+        { "id": "r2", "title": "Video: Build Trust Quickly", "description": "How to make strong first impressions.", "type": "video", "duration": "18 min" }
+      ]
+    },
+    "earn": {
+      "metrics": [
+        { "label": "Opportunities", "value": "32", "detail": "Partnerships and gigs" },
+        { "label": "Revenue Wins", "value": "18", "detail": "Members celebrating progress" },
+        { "label": "Skill Sessions", "value": "14", "detail": "Business bootcamps" },
+        { "label": "Pitch Reviews", "value": "9", "detail": "Peer feedback rounds" }
+      ],
+      "notifications": [
+        { "id": "earn-1", "title": "New marketplace lead", "description": "A partner wants to discuss your offer.", "time": "3h ago", "unread": true }
+      ],
+      "feed": [
+        {
+          "id": "post-earn-1",
+          "author": { "name": "Salma", "avatar": "/images/member-3.png", "rank": "Entrepreneur" },
+          "content": "I just landed a new client from our circle showcase!",
+          "timestamp": "30 minutes ago",
+          "likes": 27,
+          "comments": 8,
+          "liked": false
+        }
+      ],
+      "members": [
+        { "id": "m5", "name": "Leila", "avatar": "/images/avatar-5.jpg", "title": "Founder", "city": "Dar es Salaam", "rank": "Seller" },
+        { "id": "m6", "name": "Maya", "avatar": "/images/avatar-6.jpg", "title": "Consultant", "city": "Kigali", "rank": "Partner" }
+      ],
+      "events": [
+        { "id": "e3", "title": "Earn More Bootcamp", "date": "2026-07-20", "time": "17:00", "location": "Online", "type": "workshop", "attendees": 98 }
+      ],
+      "challenges": [
+        { "id": "c3", "title": "Offer Audit Challenge", "description": "Refine and price your service offer.", "reward": "Market-ready checklist", "progress": 65, "completed": false, "badge": "offer" }
+      ],
+      "resources": [
+        { "id": "r3", "title": "PDF: Pricing Your Work", "description": "The guide to confident pricing.", "type": "pdf", "size": "14 pages" }
+      ]
+    },
+    "thrive": {
+      "metrics": [
+        { "label": "Wellness Sessions", "value": "10", "detail": "Restorative and reset experiences" },
+        { "label": "Balance Check-ins", "value": "42", "detail": "Weekly accountability" },
+        { "label": "Self-care Wins", "value": "26", "detail": "Habits formed" },
+        { "label": "Community Quotes", "value": "73", "detail": "Inspiration shared" }
+      ],
+      "notifications": [
+        { "id": "thrive-1", "title": "Relaxation retreat coming", "description": "Save your spot for the upcoming self-care weekend.", "time": "4d ago", "unread": false }
+      ],
+      "feed": [
+        {
+          "id": "post-thrive-1",
+          "author": { "name": "Rania", "avatar": "/images/member-4.png", "rank": "Wellness Coach" },
+          "content": "We are sharing simple daily rituals to bring more peace and energy.",
+          "timestamp": "1 hour ago",
+          "likes": 15,
+          "comments": 3,
+          "liked": false
+        }
+      ],
+      "members": [
+        { "id": "m7", "name": "Lina", "avatar": "/images/avatar-7.jpg", "title": "Life Coach", "city": "Nairobi", "rank": "Guide" },
+        { "id": "m8", "name": "Asha", "avatar": "/images/avatar-8.jpg", "title": "Wellness Mentor", "city": "Kampala", "rank": "Member" }
+      ],
+      "events": [
+        { "id": "e4", "title": "Rest + Reset Retreat", "date": "2026-07-25", "time": "09:00", "location": "Nairobi", "type": "retreat", "attendees": 48 }
+      ],
+      "challenges": [
+        { "id": "c4", "title": "Mindful Morning Challenge", "description": "Build a calm start to every day.", "reward": "Wellness badge", "progress": 30, "completed": false, "badge": "mindful" }
+      ],
+      "resources": [
+        { "id": "r4", "title": "Guide: Daily Energy Practices", "description": "Quick routines for focus and rest.", "type": "guide", "size": "10 pages" }
+      ]
+    }
+  }
+}

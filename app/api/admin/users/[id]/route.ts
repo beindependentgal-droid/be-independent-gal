@@ -42,7 +42,7 @@ export async function PATCH(
     }
 
     const { data, error } = await supabase
-      .from("user_profiles")
+      .from("profiles")
       .update(updates)
       .eq("id", id)
       .select("id, first_name, last_name, email, member_level, created_at")

@@ -211,7 +211,7 @@ export default function EditProfilePage() {
 
       setSuccess(true)
       setTimeout(() => {
-        router.push('/profile')
+        router.push('/auth/profile')
       }, 1500)
     } catch (err: any) {
       setError(err?.message || 'An error occurred while saving')
@@ -282,10 +282,19 @@ export default function EditProfilePage() {
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-200 p-8 space-y-8">
           {/* Avatar Section */}
           <div className="space-y-4">
-            <Label className="text-lg font-bold">Profile Picture</Label>
-            <div className="flex gap-6 items-start">
-              {/* Avatar Preview */}
-              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden flex-shrink-0 border-2 border-gray-200">
+            <div className="flex items-center justify-between">
+              <Label className="text-lg font-bold">Profile Picture</Label>
+              <button
+                type="button"
+                onClick={removeAvatar}
+                className="inline-flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700"
+              >
+                <Trash2 className="h-4 w-4" />
+                Remove photo
+              </button>
+            </div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="relative w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden flex-shrink-0 border-2 border-gray-200">
                 {avatarPreview ? (
                   <img
                     src={avatarPreview}
@@ -296,16 +305,13 @@ export default function EditProfilePage() {
                 ) : (
                   <span className="text-3xl">👤</span>
                 )}
-              </div>
 
-              {/* Avatar Upload Input */}
-              <div className="flex-1">
-                <Label htmlFor="avatar_file" className="text-sm font-medium block mb-2">
-                  Upload or change profile picture
-                </Label>
-                <label className="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 text-sm font-medium text-gray-700 transition hover:bg-gray-100">
-                  <Upload className="h-4 w-4" />
-                  {isUploadingImage ? 'Uploading...' : 'Choose image'}
+                <label
+                  htmlFor="avatar_file"
+                  className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-slate-900/40 text-white transition hover:bg-slate-900/55"
+                  title="Upload profile picture"
+                >
+                  <Upload className="h-5 w-5" />
                   <input
                     id="avatar_file"
                     name="avatar_file"
@@ -315,14 +321,12 @@ export default function EditProfilePage() {
                     className="hidden"
                   />
                 </label>
-                <button
-                  type="button"
-                  onClick={removeAvatar}
-                  className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Remove photo
-                </button>
+              </div>
+
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-700">
+                  {isUploadingImage ? 'Uploading...' : 'Tap the icon to change your profile picture'}
+                </p>
                 <p className="text-xs text-gray-500 mt-2">
                   Upload a clear photo from your device. Recommended size: 500x500px.
                 </p>
@@ -504,7 +508,7 @@ export default function EditProfilePage() {
             <Button
               type="submit"
               disabled={isSaving}
-              className="px-8 py-3 bg-secondary- hover:bg-secondary- disabled:bg-gray-400 text-white font-bold rounded-full h-auto flex items-center gap-2"
+              className="px-8 py-3 bg-gradient-to-r from-pink-600 to-violet-700 hover:from-violet-700 hover:to-pink-600 disabled:bg-gray-400 text-white font-bold rounded-full h-auto flex items-center gap-2 shadow-md"
             >
               {isSaving && <Loader className="w-4 h-4 animate-spin" />}
               {isSaving ? 'Saving...' : 'Save Changes'}

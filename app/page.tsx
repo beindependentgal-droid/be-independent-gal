@@ -126,26 +126,30 @@ export default function HomePage() {
 
       {/* About section */}
       <section className="py-20 bg-white px-6 sm:px-12 lg:px-16">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div className="max-w-6xl mx-auto grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
           {/* Left - Image */}
           <div className="relative">
-            <div className="aspect-square rounded-3xl overflow-hidden shadow-2xl">
-              <FallbackImage
-                src="/images/together.jpg"
-                alt="Be Independent Gal Community"
-                width={600}
-                height={600}
-                className="w-full h-full object-cover"
-                fallbackSrc="/images/placeholder.jpg"
-              />
+            <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+              <div className="aspect-[4/3] sm:aspect-square">
+                <FallbackImage
+                  src="/images/together.jpg"
+                  alt="Be Independent Gal Community"
+                  width={900}
+                  height={900}
+                  className="h-full w-full object-cover"
+                  fallbackSrc="/images/placeholder.svg"
+                />
+              </div>
             </div>
           </div>
 
           {/* Right - Content */}
-          <div className="space-y-6">
+          <div className="space-y-6 sm:space-y-8">
             <div>
-              <p className="text-secondary- font-bold text-sm uppercase tracking-wide mb-3">About BIG</p>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              <p className="text-secondary font-bold text-sm uppercase tracking-[0.2em] mb-3">
+                About BIG
+              </p>
+              <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl lg:text-5xl">
                 A movement of women building independent futures
               </h2>
             </div>
@@ -161,7 +165,7 @@ export default function HomePage() {
 
             <div className="pt-6">
               <Link href="/about">
-                <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 w-fit">
+                <Button className="bg-secondary hover:bg-secondary/90 text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 w-fit">
                   Read Our Story
                   <ArrowRight className="w-4 h-4" />
                 </Button>
@@ -180,15 +184,16 @@ export default function HomePage() {
             description="From learning to belonging, we&apos;ve got you covered"
           />
 
-          {trustItems.map((item, idx) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-12">
+            {trustItems.map((item, idx) => {
               const Icon = item.icon
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl p-8 border border-gray-200 hover:border-secondary- hover:shadow-lg transition-all"
+                  className="bg-white rounded-2xl p-8 border border-gray-200 hover:border-secondary hover:shadow-lg transition-all"
                 >
-                  <div className="w-12 h-12 rounded-lg bg-secondary- flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-secondary-" />
+                  <div className="w-12 h-12 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center mb-4">
+                    <Icon className="w-6 h-6" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{item.description}</p>
@@ -196,6 +201,7 @@ export default function HomePage() {
               )
             })}
           </div>
+        </div>
       </section>
 
       {/* The Four Pillars */}
@@ -213,10 +219,10 @@ export default function HomePage() {
               return (
                 <div
                   key={idx}
-                  className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200 hover:border-secondary- hover:shadow-lg transition-all text-center"
+                  className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200 hover:border-secondary hover:shadow-lg transition-all text-center"
                 >
-                  <div className="w-16 h-16 rounded-full bg-white border-2 border-secondary- flex items-center justify-center mx-auto mb-4">
-                    <Icon className="w-8 h-8 text-secondary-" />
+                  <div className="w-16 h-16 rounded-full bg-white border-2 border-secondary flex items-center justify-center mx-auto mb-4">
+                    <Icon className="w-8 h-8 text-secondary" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-3">{pillar.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{pillar.desc}</p>
@@ -246,11 +252,11 @@ export default function HomePage() {
                       alt={post.title}
                       fill
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      fallbackSrc="/images/placeholder.jpg"
+                      fallbackSrc="/images/placeholder.svg"
                     />
                   </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-secondary- transition-colors">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-secondary transition-colors">
                     {post.title}
                   </h3>
                   <p className="text-gray-600 leading-relaxed">{post.desc}</p>
@@ -272,7 +278,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
             {academyPrograms.map((program, idx) => (
-              <div key={idx} className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary- hover:shadow-xl transition-all">
+              <div key={idx} className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary hover:shadow-xl transition-all">
                 {/* Image */}
                 <div className="relative aspect-video overflow-hidden">
                   <FallbackImage
@@ -280,7 +286,7 @@ export default function HomePage() {
                     alt={program.title}
                     fill
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    fallbackSrc="/images/placeholder.jpg"
+                    fallbackSrc="/images/placeholder.svg"
                   />
                 </div>
 
@@ -290,7 +296,7 @@ export default function HomePage() {
                   <p className="text-gray-600 leading-relaxed mb-6">{program.desc}</p>
 
                   <Link href="/circles">
-                    <Button variant="outline" className="w-full rounded-full h-10 border-secondary- text-secondary- hover:bg-secondary- font-bold">
+                    <Button variant="outline" className="w-full rounded-full h-10 border-secondary text-secondary hover:bg-secondary font-bold">
                       Learn More
                     </Button>
                   </Link>
@@ -302,7 +308,7 @@ export default function HomePage() {
       </section>
 
       {/* Sister Circles CTA */}
-      <section className="py-16 bg-gradient-to-r from-primary- to-secondary- text-white px-6 sm:px-12 lg:px-16">
+      <section className="py-16 bg-gradient-to-r from-primary to-secondary text-white px-6 sm:px-12 lg:px-16">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <h2 className="text-4xl font-bold">Sister Circles</h2>
           <p className="text-xl text-white/90 leading-relaxed">
@@ -310,7 +316,7 @@ export default function HomePage() {
             together through life&apos;s seasons.
           </p>
           <Link href="/circles">
-            <Button className="bg-white text-secondary- hover:bg-gray-100 font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
+            <Button className="bg-white text-secondary hover:bg-gray-100 font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
               Explore Sister Circles
               <ArrowRight className="w-4 h-4" />
             </Button>
@@ -327,7 +333,7 @@ export default function HomePage() {
             themselves and each other.
           </p>
           <Link href="/events">
-            <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
+            <Button className="bg-secondary hover:bg-secondary text-white font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
               See Upcoming Events
               <ArrowRight className="w-4 h-4" />
             </Button>

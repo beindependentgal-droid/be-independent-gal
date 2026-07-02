@@ -100,9 +100,10 @@ export const dynamic = 'force-dynamic' // Ensure dynamic rendering for params
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id?: string }>
 }): Promise<Metadata> {
-  const { id } = params
+  const resolvedParams = await params
+  const id = resolvedParams?.id || 'learn'
   const circle = circleInfo[id]
 
   return {
@@ -129,9 +130,11 @@ export async function generateStaticParams() {
 export default async function CircleJoinPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id?: string }>
 }) {
-  const { id } = params
+  const resolvedParams = await params
+  const rawId = resolvedParams?.id
+  const id = rawId && rawId !== 'undefined' ? rawId : 'learn'
   const circle = circleInfo[id]
 
   if (!circle) {

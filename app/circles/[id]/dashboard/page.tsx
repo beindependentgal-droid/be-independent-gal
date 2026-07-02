@@ -75,7 +75,7 @@ const defaultTab: TabId = 'feed'
 export default function CircleDashboardPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -85,7 +85,19 @@ export default function CircleDashboardPage({
   const [activeTab, setActiveTab] = useState<TabId>(defaultTab)
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const { id } = params
+  const [fetchError, setFetchError] = useState<string | null>(null)
+  const [circleId, setCircleId] = useState('')
+
+  useEffect(() => {
+    const loadParams = async () => {
+      const resolvedParams = await params
+      const rawId = resolvedParams?.id
+      const normalizedId = rawId && rawId !== 'undefined' ? rawId : 'learn'
+      setCircleId(normalizedId)
+    }
+
+    void loadParams()
+  }, [params])
 
   // Sync active tab with URL search params
   useEffect(() => {
@@ -95,31 +107,35 @@ export default function CircleDashboardPage({
     }
   }, [searchParams])
 
-  // Fetch dashboard data
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      if (!isAuthenticated || authLoading) return
+  const fetchDashboardData = async () => {
+    if (!isAuthenticated || authLoading || !circleId) return
 
-      setIsLoading(true)
-      try {
-        const response = await fetch(`/api/circles/${id}/dashboard`) // Your API endpoint
-        if (!response.ok) {
-          throw new Error('Failed to load dashboard data')
-        }
-        const data: DashboardData = await response.json()
-        setDashboardData(data)
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error)
-        // Handle error state appropriately, e.g., show a message to the user
-      } finally {
-        setIsLoading(false)
+    setIsLoading(true)
+    setFetchError(null)
+
+    try {
+      const response = await fetch(`/api/circles/${circleId}/dashboard`)
+      if (!response.ok) {
+        const body = await response.text()
+        console.error('Dashboard API error body:', body)
+        throw new Error(`Failed to load dashboard data: ${response.status} ${body}`)
       }
+      const data: DashboardData = await response.json()
+      setDashboardData(data)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error while loading dashboard data.'
+      setFetchError(message)
+      console.error('Error fetching dashboard data:', error)
+    } finally {
+      setIsLoading(false)
     }
+  }
 
+  useEffect(() => {
     if (!authLoading) {
-      fetchDashboardData()
+      void fetchDashboardData()
     }
-  }, [id, isAuthenticated, authLoading])
+  }, [circleId, isAuthenticated, authLoading])
 
   const handleTabChange = (tab: TabId) => {
     if (tab === activeTab) return
@@ -128,13 +144,15 @@ export default function CircleDashboardPage({
   }
 
   const handleCreatePost = async (content: string) => {
-    const response = await fetch(`/api/circles/${id}/dashboard`, {
+    const response = await fetch(`/api/circles/${circleId}/dashboard`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content }),
     })
 
     if (!response.ok) {
+      const body = await response.text()
+      console.error('Create post API error body:', body)
       throw new Error('Failed to create post')
     }
 
@@ -150,7 +168,7 @@ export default function CircleDashboardPage({
   }
 
   // Check if circle exists
-  const circle = circleInfo[id]
+  const circle = circleInfo[circleId]
   if (!circle) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white px-6">
@@ -270,10 +288,35 @@ export default function CircleDashboardPage({
             })}
           </div>
 
+          {fetchError ? (
+            <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-semibold">Unable to load dashboard content.</p>
+                  <p className="mt-1">{fetchError}</p>
+                </div>
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-auto rounded-full border-rose-300 text-rose-900 hover:bg-rose-100"
+                  onClick={() => void fetchDashboardData()}
+                >
+                  Retry
+                </Button>
+              </div>
+            </div>
+          ) : null}
+
           {/* Metrics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {(dashboardData?.metrics ?? []).map((metric, idx) => (
-              <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-secondary- hover:shadow-lg transition-all">
+              <div
+                key={idx}
+                className={`bg-white rounded-3xl p-6 transition-all ${
+                  idx % 2 === 0
+                    ? 'border border-gray-200 hover:border-secondary- hover:shadow-lg'
+                    : 'shadow-sm hover:shadow-lg'
+                }`}
+              >
                 <p className="text-sm text-gray-600 mb-2">{metric.label}</p>
                 <div className="text-3xl font-bold text-gray-900 mb-1">{metric.value}</div>
                 <p className="text-xs text-gray-500">{metric.detail}</p>

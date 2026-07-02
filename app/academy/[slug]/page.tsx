@@ -7,9 +7,9 @@ import { SectionHeading } from '@/components/section-heading'
 import { AuthGatedButton } from '@/components/auth/auth-gated-button'
 
 interface AcademyCoursePageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export async function generateStaticParams() {
@@ -17,7 +17,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: AcademyCoursePageProps): Promise<Metadata> {
-  const course = getCourseBySlug(params.slug)
+  const { slug } = await params
+  const course = getCourseBySlug(slug)
 
   if (!course) {
     return {
@@ -32,8 +33,9 @@ export async function generateMetadata({ params }: AcademyCoursePageProps): Prom
   }
 }
 
-export default function AcademyCoursePage({ params }: AcademyCoursePageProps) {
-  const course = getCourseBySlug(params.slug)
+export default async function AcademyCoursePage({ params }: AcademyCoursePageProps) {
+  const { slug } = await params
+  const course = getCourseBySlug(slug)
 
   if (!course) {
     return (

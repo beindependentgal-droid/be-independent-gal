@@ -73,8 +73,8 @@ export default function ProfilePage() {
     setExperience(getStringValue(data.experience))
     setWhyJoining(getStringValue(data.why_joining))
     setLevel(getStringValue(data.level))
-    setPoints(getNumberValue(data.points))
-    setPrimaryCircle(getStringValue(data.circle))
+    setPoints(getNumberValue(data.total_points ?? data.points))
+    setPrimaryCircle(getStringValue(data.primary_circle ?? data.circle))
     setJoinedAt(getStringValue(data.joined_at))
     setSkills(Array.isArray(data.skills) ? data.skills.filter(Boolean).map(String) : [])
     setInterests(Array.isArray(data.interests) ? data.interests.filter(Boolean).map(String) : [])
@@ -95,7 +95,7 @@ export default function ProfilePage() {
       const fetchUserProfiles = async () => {
         return supabase
           .from('user_profiles')
-          .select('full_name,bio,avatar_url,profession,industry,business,city,phone,experience,why_joining,points,level,circle,joined_at,skills,interests,mentoring_areas')
+          .select('full_name,bio,avatar_url,profession,industry,business,city,phone,experience,why_joining,total_points,level,joined_at,skills,interests,mentoring_areas')
           .eq('user_id', user.id)
           .maybeSingle()
       }
@@ -111,7 +111,7 @@ export default function ProfilePage() {
       const fetchUserActivity = async () => {
         return supabase
           .from('user_activity')
-          .select('activity_type, action_description, points_earned, metadata, created_at')
+          .select('activity_type, action, points_earned, metadata, created_at')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
           .limit(20)
@@ -137,7 +137,15 @@ export default function ProfilePage() {
 
         const userPreferences = userPreferencesResult?.data
         const userActivity = Array.isArray(userActivityResult?.data)
-          ? userActivityResult.data
+          ? userActivityResult.data.map((item: Record<string, unknown>) => ({
+              activity_type: getStringValue(item.activity_type),
+              action_description: getStringValue(item.action) || getStringValue((item as Record<string, unknown>).action_description),
+              points_earned: typeof item.points_earned === 'number' ? item.points_earned : 0,
+              metadata: typeof item.metadata === 'object' && item.metadata && !Array.isArray(item.metadata)
+                ? (item.metadata as Record<string, unknown>)
+                : {},
+              created_at: getStringValue(item.created_at),
+            }))
           : []
 
         setSelectedCircles(
@@ -150,7 +158,7 @@ export default function ProfilePage() {
         data = userProfilesResult.data
         error = userProfilesResult.error
 
-        if (error && error.code === 'PGRST205') {
+        if (error && (error.code === 'PGRST205' || error.code === '42703')) {
           const profilesResult = await fetchProfiles()
           data = profilesResult.data
           error = profilesResult.error
@@ -389,84 +397,88 @@ export default function ProfilePage() {
   })()
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900">
-      <div className="relative overflow-hidden bg-slate-950 text-white">
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,#5B21B6_0%,#7C3AED_35%,#EC4899_100%)]" />
-        <div className="relative mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 lg:px-8">
-          <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-4 shadow-2xl shadow-slate-950/40 backdrop-blur-sm sm:rounded-[2rem] sm:p-6">
-            <div className="overflow-hidden rounded-[1.25rem] border border-white/10 bg-slate-900/70 sm:rounded-[1.75rem]">
-              <div className="h-40 sm:h-56 bg-[radial-gradient(circle_at_top_left,rgba(244,114,182,0.35),transparent_55%),linear-gradient(135deg,#111827_0%,#312e81_100%)]" />
-              <div className="relative px-4 pb-6 pt-5 sm:px-8 sm:pb-8 sm:pt-6 lg:px-10">
-                <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                  <div className="flex flex-col gap-5 sm:flex-row sm:items-end">
-                    <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-[1.5rem] border-4 border-white/20 bg-slate-200 shadow-2xl sm:h-32 sm:w-32 sm:rounded-[2rem]">
-                      {avatarSrc ? (
-                        <Image
-                          src={avatarSrc}
-                          alt={displayName}
-                          width={128}
-                          height={128}
-                          className="h-full w-full object-cover"
-                          unoptimized
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-slate-300 text-4xl font-bold text-slate-900">
-                          {displayName.charAt(0).toUpperCase()}
-                        </div>
-                      )}
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(236,72,153,0.14),_transparent_42%),linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_100%)] text-slate-900">
+      <div className="mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 lg:px-8">
+        <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_80px_-32px_rgba(15,23,42,0.32)]">
+          <div className="h-44 bg-[radial-gradient(circle_at_top_left,_rgba(244,114,182,0.35),_transparent_55%),linear-gradient(135deg,_#111827_0%,_#312e81_100%)] sm:h-56" />
+          <div className="px-4 pb-8 pt-0 sm:px-8 lg:px-10">
+            <div className="relative -mt-16 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-end">
+                <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-[1.75rem] border-4 border-white bg-slate-200 shadow-2xl sm:h-36 sm:w-36">
+                  {avatarSrc ? (
+                    <Image
+                      src={avatarSrc}
+                      alt={displayName}
+                      width={144}
+                      height={144}
+                      className="h-full w-full object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-300 to-slate-400 text-5xl font-bold text-slate-900">
+                      {displayName.charAt(0).toUpperCase()}
                     </div>
-                    <div className="max-w-2xl">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h1 className="text-4xl font-semibold text-white">{displayName}</h1>
-                        <span className="rounded-full border border-amber-300/30 bg-amber-400/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-amber-200">Verified</span>
-                      </div>
-                      <p className="mt-3 text-lg font-semibold text-slate-100">{profession || 'Member'}</p>
-                      <p className="mt-2 text-sm text-slate-300">{city || 'Location not set'}</p>
-                      {profileSummary ? (
-                        <p className="mt-4 text-sm leading-7 text-slate-300">{profileSummary}</p>
-                      ) : (
-                        <p className="mt-4 text-sm leading-7 text-slate-400 italic">No bio yet — <a href="/auth/onboarding/profile" className="underline">Add a bio</a></p>
-                      )}
-                        <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
-                          {joinedAtLabel ? (
-                            <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1">Member since {joinedAtLabel}</span>
-                          ) : (
-                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-slate-300">Member since —</span>
-                          )}
-                          {primaryCircle ? (
-                            <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1">{primaryCircle} Circle</span>
-                          ) : (
-                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-slate-300">No primary circle</span>
-                          )}
-                        </div>
-                      {profileTags.length > 0 && (
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {profileTags.map((tag) => (
-                            <span key={tag} className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">{tag}</span>
-                          ))}
-                        </div>
-                      )}
+                  )}
+                </div>
+                <div className="max-w-2xl">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">{displayName}</h1>
+                    <span className="rounded-full border border-amber-300/40 bg-amber-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-amber-700">Community leader</span>
+                  </div>
+                  <p className="mt-3 text-lg font-semibold text-slate-700">{profession || 'Member'}</p>
+                  <p className="mt-2 text-sm text-slate-500">{city || 'Location not set'}</p>
+                  {profileSummary ? (
+                    <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600">{profileSummary}</p>
+                  ) : (
+                    <p className="mt-4 text-sm leading-7 text-slate-500 italic">No bio yet — <Link href="/profile/edit" className="font-semibold text-secondary- underline-offset-2 hover:underline">Add one now</Link></p>
+                  )}
+                  <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-500">
+                    {joinedAtLabel ? (
+                      <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1">Member since {joinedAtLabel}</span>
+                    ) : (
+                      <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1">Member since —</span>
+                    )}
+                    {primaryCircle ? (
+                      <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1">{primaryCircle} Circle</span>
+                    ) : (
+                      <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1">No primary circle</span>
+                    )}
+                  </div>
+                  {profileTags.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {profileTags.map((tag) => (
+                        <span key={tag} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600">{tag}</span>
+                      ))}
                     </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 sm:gap-3">
-                    <Link href="/auth/onboarding/profile" className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/15">✏️ Edit Profile</Link>
-                    <Link href="/circles" className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/15">🤝 View Circles</Link>
-                    <button className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/15">💬 Message</button>
-                    <button className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/15">📅 Invite</button>
-                  </div>
+                  )}
                 </div>
+              </div>
 
-                <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-white/10 pt-6">
-                  <div className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-slate-200">{bigStats[0].label}: {bigStats[0].value}</div>
-                  <div className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-slate-200">{bigStats[1].label}: {bigStats[1].value}</div>
-                  <div className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-slate-200">{bigStats[2].label}: {bigStats[2].value}</div>
-                  <div className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-slate-200">{bigStats[3].label}: {bigStats[3].value}</div>
-                </div>
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                <Link href="/profile/edit" className="rounded-full bg-gradient-to-r from-pink-600 to-violet-700 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-pink-200 transition hover:from-violet-700 hover:to-pink-600">✏️ Edit profile</Link>
+                <Link href="/circles" className="rounded-full border border-slate-200 bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gradient-to-r hover:from-pink-600 hover:to-violet-700 hover:text-white">🤝 My circles</Link>
+                <button className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-gradient-to-r hover:from-pink-600 hover:to-violet-700 hover:text-white">💬 Message</button>
               </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-2 rounded-[1.25rem] border border-white/10 bg-white/10 p-2 sm:rounded-full">
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-[1.25rem] border border-slate-200 bg-slate-50 p-4">
+                <p className="text-sm font-semibold text-slate-500">Points</p>
+                <p className="mt-2 text-2xl font-semibold text-slate-900">{points || 0}</p>
+              </div>
+              <div className="rounded-[1.25rem] border border-slate-200 bg-slate-50 p-4">
+                <p className="text-sm font-semibold text-slate-500">Circle</p>
+                <p className="mt-2 text-2xl font-semibold text-slate-900">{primaryCircle || 'Open'}</p>
+              </div>
+              <div className="rounded-[1.25rem] border border-slate-200 bg-slate-50 p-4">
+                <p className="text-sm font-semibold text-slate-500">Profile strength</p>
+                <p className="mt-2 text-2xl font-semibold text-slate-900">{profileStrength}%</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-slate-200 bg-slate-50/80 px-4 py-4 sm:px-8 lg:px-10">
+            <div className="flex flex-wrap gap-2 rounded-full border border-slate-200 bg-white p-2 shadow-sm">
               {profileTabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -794,21 +806,21 @@ export default function ProfilePage() {
               </div>
 
               <aside className="space-y-4 sm:space-y-6">
-                <div className="rounded-[1.5rem] bg-white p-4 shadow-sm ring-1 ring-slate-100 sm:rounded-[2rem] sm:p-6">
-                  <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Profile Strength</p>
-                  <div className="mt-4 rounded-3xl bg-slate-100 p-4">
-                    <div className="flex items-center justify-between text-sm text-slate-700">
+                <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-[2rem] sm:p-6">
+                  <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Profile strength</p>
+                  <div className="mt-4 rounded-[1.25rem] bg-gradient-to-r from-slate-900 to-violet-700 p-4 text-white">
+                    <div className="flex items-center justify-between text-sm text-white/80">
                       <span>{profileStrength}%</span>
-                      <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">Complete Profile</span>
+                      <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white">Complete profile</span>
                     </div>
-                    <div className="mt-3 h-3 overflow-hidden rounded-full bg-slate-200">
-                      <div className="h-full rounded-full bg-linear-to-r from-primary via-violet-500 to-secondary" style={{ width: `${profileStrength}%` }} />
+                    <div className="mt-3 h-3 overflow-hidden rounded-full bg-white/20">
+                      <div className="h-full rounded-full bg-gradient-to-r from-pink-400 via-fuchsia-400 to-amber-300" style={{ width: `${profileStrength}%` }} />
                     </div>
                   </div>
                 </div>
 
-                <div className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100">
-                  <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Upcoming Events</p>
+                <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+                  <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Upcoming events</p>
                   <div className="mt-4 space-y-3">
                     {events.map((event) => (
                       <div key={event} className="rounded-3xl border border-slate-200 bg-slate-50 p-4 text-sm font-semibold text-slate-700">{event}</div>
@@ -816,8 +828,8 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100">
-                  <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Suggested Members</p>
+                <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+                  <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Suggested members</p>
                   <div className="mt-4 space-y-3">
                     {suggestedMembersFinal.map((member) => (
                       <div key={member} className="rounded-3xl border border-slate-200 bg-slate-50 p-4 text-sm font-semibold text-slate-700">{member}</div>
@@ -825,8 +837,8 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100">
-                  <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Trending Topics</p>
+                <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+                  <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Trending topics</p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {trendingTopics.map((topic) => (
                       <span key={topic} className="rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-700">{topic}</span>

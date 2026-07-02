@@ -98,7 +98,7 @@ export default function ProgramsPage() {
         description="Discover our carefully curated programs and upcoming events designed to support every stage of your journey."
         cta1={{ text: 'Explore Programs', href: '#programs' }}
         cta2={{ text: 'View Events', href: '#events' }}
-        imageSrc="/images/programs-hero.jpg"
+        imageSrc="/images/hero-placeholder.svg"
       />
 
       {/* Programs Section */}
@@ -230,7 +230,7 @@ export default function ProgramsPage() {
                       alt={event.title}
                       fill
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      fallbackSrc="/images/placeholder.jpg"
+                      fallbackSrc="/images/placeholder.svg"
                     />
 
                     {/* Tag */}

@@ -37,16 +37,16 @@ export function SectionHeading({
           <span className="h-px w-6 bg-accent" />
         </div>
       )}
-      <h2 className="mt-4 text-section-heading font-heading font-bold uppercase tracking-tight text-secondary">
+      <h2 className="mt-4 text-3xl font-heading font-bold uppercase tracking-tight text-secondary sm:text-4xl md:text-5xl">
         {title}
       </h2>
       {subtitle && (
-        <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
           {subtitle}
         </p>
       )}
       {description && (
-        <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
           {description}
         </p>
       )}

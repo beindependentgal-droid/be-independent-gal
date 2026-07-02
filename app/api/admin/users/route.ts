@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     await logAuditAction(
       userId,
       "Unauthorized attempt to list users",
-      "admin_users_list_fail"
+      "admin_users_list_fail",
     );
     return errorResponse("Unauthorized access to admin resource.", 403);
   }
@@ -39,10 +39,8 @@ export async function GET(request: NextRequest) {
 
   try {
     // 3. Construct Supabase Query
-    let query = supabase
-      .from("user_profiles")
-      .select(
-        `
+    let query = supabase.from("profiles").select(
+      `
         id,
         first_name,
         last_name,
@@ -54,14 +52,14 @@ export async function GET(request: NextRequest) {
         points,
         created_at
         `, // Explicitly select relevant columns
-        { count: "exact" } // Request exact count for pagination metadata
-      );
+      { count: "exact" }, // Request exact count for pagination metadata
+    );
 
     // Apply search filter if provided
     if (search) {
       const searchLower = search.toLowerCase();
       query = query.or(
-        `first_name.ilike.%${searchLower}%,last_name.ilike.%${searchLower}%,email.ilike.%${searchLower}%`
+        `first_name.ilike.%${searchLower}%,last_name.ilike.%${searchLower}%,email.ilike.%${searchLower}%`,
       );
     }
 
@@ -85,13 +83,17 @@ export async function GET(request: NextRequest) {
       await logAuditAction(
         userId,
         `Failed to list users: ${error.message}`,
-        "admin_users_list_error"
+        "admin_users_list_error",
       );
       throw new Error(`Database error: ${error.message}`);
     }
 
     // 5. Log Successful Action
-    await logAuditAction(userId, "Listed users successfully", "admin_users_list_success");
+    await logAuditAction(
+      userId,
+      "Listed users successfully",
+      "admin_users_list_success",
+    );
 
     // 6. Return Success Response with Pagination Metadata
     return successResponse({

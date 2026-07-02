@@ -63,7 +63,7 @@ export function HomeHero() {
           Africa&apos;s Premium Women&apos;s Community
         </div>
 
-        <h1 className="mt-8 max-w-5xl text-hero font-heading font-black uppercase tracking-hero">
+        <h1 className="mt-8 mx-auto max-w-4xl text-4xl font-heading font-black uppercase tracking-tight leading-tight text-white sm:text-5xl lg:text-6xl">
           <span className="block">Be Independent.</span>
           <span className="mt-2 block text-[#f7d36b]">Be Unstoppable.</span>
         </h1>
