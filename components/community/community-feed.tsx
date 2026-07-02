@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
@@ -22,36 +22,137 @@ import {
   BadgeCheck,
   Paperclip,
   ChevronLeft,
-  Pause,
   Play,
+  Pause,
+  Briefcase,
+  TrendingUp,
+  Trophy,
+  Star,
+  Clock,
 } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import type { Post } from '@/lib/db'
 
-const navItems = [
-  { label: 'Home', icon: Home, href: '/' },
+const topTabs = [
   { label: 'Community', icon: Users, href: '/community' },
-  { label: 'Messages', icon: MessageCircle, href: '/messages' },
+  { label: 'Circles', icon: Grid, href: '/circles' },
+  { label: 'Mentors', icon: UserCircle, href: '/mentorship' },
   { label: 'Events', icon: CalendarDays, href: '/events' },
-  { label: 'Saved', icon: Bookmark, href: '/saved' },
-  { label: 'Profile', icon: UserCircle, href: '/profile' },
+  { label: 'Academy', icon: Sparkles, href: '/academy' },
+  { label: 'Opportunities', icon: Briefcase, href: '/opportunities' },
+]
+
+const navItems = [
+  { label: 'Community', icon: Users, href: '/community' },
+  { label: 'Academy', icon: Sparkles, href: '/academy' },
+  { label: 'Circles', icon: Grid, href: '/circles' },
+  { label: 'Events', icon: CalendarDays, href: '/events' },
+  { label: 'Opportunities', icon: Briefcase, href: '/opportunities' },
 ]
 
 const mobileBottomNav = [
-  { label: 'Home', icon: Home },
-  { label: 'Community', icon: Users },
-  { label: 'Academy', icon: Sparkles },
-  { label: 'Circles', icon: Grid },
+  { label: 'Community', icon: Home },
+  { label: 'Explore', icon: Search },
+  { label: 'New', icon: Plus },
+  { label: 'Messages', icon: MessageCircle },
   { label: 'Profile', icon: UserCircle },
 ]
 
+type ApiCommunityPost = {
+  id: string
+  profile?: {
+    first_name?: string | null
+    last_name?: string | null
+    avatar_url?: string | null
+    profession?: string | null
+  }
+  content?: string
+  media?: Array<{ url?: string }>
+  created_at?: string
+  reactions?: unknown
+  comments_count?: number
+}
+
+const feedTabs = [
+  { label: 'For You', value: 'for_you', icon: Home },
+  { label: 'Following', value: 'following', icon: Users },
+  { label: 'Trending', value: 'trending', icon: TrendingUp },
+  { label: 'Newest', value: 'newest', icon: Clock },
+  { label: 'Business Wins', value: 'business_win', icon: Trophy },
+  { label: 'Questions', value: 'question', icon: Star },
+  { label: 'Celebrations', value: 'celebration', icon: Sparkles },
+  { label: 'Funding', value: 'opportunity', icon: Briefcase },
+  { label: 'Academy', value: 'academy', icon: Bookmark },
+]
+
 const storyItems = [
-  { name: 'Your Story', label: 'Share your story', time: 'Now', category: 'Celebration', primary: true, accent: 'from-violet-700 via-fuchsia-600 to-pink-500', online: true, seen: false },
-  { name: 'Sharon', label: 'Business win', time: '2h', category: 'Business Win', accent: 'from-amber-400 to-orange-500', online: true, seen: false },
-  { name: 'Faith', label: 'Graduation milestone', time: 'Today', category: 'Graduation', accent: 'from-emerald-500 to-teal-500', online: false, seen: true },
-  { name: 'Pauline', label: 'Launch day', time: '4h', category: 'Launch', accent: 'from-sky-500 to-cyan-500', online: true, seen: false },
-  { name: 'Mercy', label: 'Funding circle', time: '6h', category: 'Funding', accent: 'from-pink-500 to-rose-500', online: false, seen: true },
-  { name: 'Grace', label: 'Community retreat', time: '1d', category: 'Community', accent: 'from-violet-500 to-indigo-500', online: false, seen: false },
+  {
+    name: 'Your Story',
+    label: 'Create a story',
+    time: 'Now',
+    category: 'Celebration',
+    primary: true,
+    accent: 'from-violet-700 via-fuchsia-600 to-pink-500',
+    online: true,
+    seen: false,
+    progress: 0,
+    live: true,
+  },
+  {
+    name: 'Sharon',
+    label: 'Business win',
+    time: '2h',
+    category: 'Business Win',
+    accent: 'from-amber-400 to-orange-500',
+    online: true,
+    seen: false,
+    progress: 0.4,
+    live: false,
+  },
+  {
+    name: 'Faith',
+    label: 'Graduation milestone',
+    time: 'Today',
+    category: 'Graduation',
+    accent: 'from-emerald-500 to-teal-500',
+    online: false,
+    seen: true,
+    progress: 0.8,
+    live: false,
+  },
+  {
+    name: 'Pauline',
+    label: 'Launch day',
+    time: '4h',
+    category: 'Launch',
+    accent: 'from-sky-500 to-cyan-500',
+    online: true,
+    seen: false,
+    progress: 0.2,
+    live: false,
+  },
+  {
+    name: 'Mercy',
+    label: 'Funding circle',
+    time: '6h',
+    category: 'Funding',
+    accent: 'from-pink-500 to-rose-500',
+    online: false,
+    seen: true,
+    progress: 1,
+    live: false,
+  },
+  {
+    name: 'Grace',
+    label: 'Community retreat',
+    time: '1d',
+    category: 'Community',
+    accent: 'from-violet-500 to-indigo-500',
+    online: false,
+    seen: false,
+    progress: 0.6,
+    live: false,
+  },
 ]
 
 const storyBadges = [
@@ -65,24 +166,59 @@ const storyBadges = [
 ]
 
 const upcomingEvents = [
-  { title: "Women's Retreat", location: 'Naivasha', date: '12 August' },
-  { title: 'Funding Circle', location: 'Nairobi', date: '22 August' },
+  {
+    title: "Women's Leadership Retreat",
+    location: 'Naivasha',
+    date: '12 Aug',
+    time: '9:00 AM',
+    attendees: 74,
+    image: '/images/event-1.jpg',
+    circle: 'Founder Circle',
+  },
+  {
+    title: 'Funding Circle Showcase',
+    location: 'Nairobi',
+    date: '22 Aug',
+    time: '2:00 PM',
+    attendees: 98,
+    image: '/images/event-2.jpg',
+    circle: 'Funding Circle',
+  },
 ]
 
-const trendingTopics = ['Business', 'Funding', 'Jobs', 'Academy', 'WomenInTech']
+const trendingTopics = [
+  { topic: 'Funding', conversations: 245, trend: '+18%' },
+  { topic: 'WomenInTech', conversations: 182, trend: '+12%' },
+  { topic: 'Mentoring', conversations: 134, trend: '+9%' },
+]
 
 const suggestedMembers = [
-  { name: 'Pauline', role: 'Fashion Designer', mutual: 3 },
-  { name: 'Faith', role: 'Lawyer', mutual: 2 },
-  { name: 'Mercy', role: 'Community Builder', mutual: 4 },
+  {
+    name: 'Pauline',
+    role: 'Fashion Designer',
+    circle: 'Founder Circle',
+    mutual: 3,
+  },
+  {
+    name: 'Faith',
+    role: 'Corporate Lawyer',
+    circle: 'Mentor Circle',
+    mutual: 2,
+  },
+  {
+    name: 'Mercy',
+    role: 'Community Builder',
+    circle: 'Growth Circle',
+    mutual: 4,
+  },
 ]
 
 const notifications = [
-  { title: 'Pauline liked your post', time: '2m' },
-  { title: 'Sharon followed you', time: '15m' },
-  { title: 'BIG invited you', time: 'Yesterday' },
-  { title: 'Silas commented', time: 'Yesterday' },
-  { title: 'You earned a Community Badge', time: '2d' },
+  { icon: '❤️', title: 'Pauline celebrated your win', time: '2m' },
+  { icon: '👤', title: 'Sharon followed you', time: '15m' },
+  { icon: '🎓', title: 'Academy certificate ready', time: 'Yesterday' },
+  { icon: '💼', title: 'New opportunity posted', time: 'Yesterday' },
+  { icon: '🏆', title: 'Badge unlocked: Community Champion', time: '2d' },
 ]
 
 export default function CommunityFeed() {
@@ -100,6 +236,7 @@ export default function CommunityFeed() {
   const [searchQuery, setSearchQuery] = useState('')
   const [fabOpen, setFabOpen] = useState(false)
   const [bottomNavActive, setBottomNavActive] = useState('Community')
+  const [selectedFeedTab, setSelectedFeedTab] = useState('for_you')
   const [activeStoryIndex, setActiveStoryIndex] = useState(0)
   const [storyPaused, setStoryPaused] = useState(false)
   const [composerExpanded, setComposerExpanded] = useState(false)
@@ -116,24 +253,58 @@ export default function CommunityFeed() {
   const currentUserDisplayName = [user?.first_name, user?.last_name].filter(Boolean).join(' ') || user?.email || 'You'
   const activeStory = storyItems[activeStoryIndex] ?? storyItems[0]
 
-  const fetchFeed = async () => {
+  const fetchFeed = useCallback(async () => {
     setIsLoading(true)
     setError(null)
 
     try {
-      const response = await fetch('/api/community/feed')
+      const params = new URLSearchParams()
+      if (searchQuery.trim()) {
+        params.set('query', searchQuery.trim())
+      }
+      if (selectedFeedTab && selectedFeedTab !== 'for_you') {
+        const filter = selectedFeedTab === 'funding' ? 'opportunity' : selectedFeedTab
+        params.set('filter', filter)
+      }
+
+      const response = await fetch(`/api/community/posts?${params.toString()}`)
       if (!response.ok) {
         throw new Error('Unable to load community feed')
       }
 
-      const data = (await response.json()) as Post[]
-      setFeedPosts(data)
+      const data = await response.json()
+      const posts = Array.isArray(data.posts) ? (data.posts as ApiCommunityPost[]) : []
+
+      const mappedPosts = posts.map((post) => {
+        const profile = post.profile ?? {}
+        const createdAt = typeof post.created_at === 'string' ? post.created_at : ''
+        const reactions = Array.isArray(post.reactions) ? post.reactions : []
+        return {
+          id: post.id,
+          author: {
+            name: [profile.first_name, profile.last_name].filter(Boolean).join(' ') || 'Member',
+            avatar: profile.avatar_url || '',
+            rank: profile.profession || 'Member',
+          },
+          content: typeof post.content === 'string' ? post.content : '',
+          image: post.media?.[0]?.url,
+          timestamp: createdAt
+            ? new Date(createdAt).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+              })
+            : '',
+          likes: reactions.length,
+          comments: post.comments_count ?? 0,
+        }
+      }) as Post[]
+      setFeedPosts(mappedPosts)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong while loading community posts.')
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [searchQuery, selectedFeedTab])
 
   const handlePost = async () => {
     const content = draft.trim()
@@ -143,7 +314,7 @@ export default function CommunityFeed() {
     setError(null)
 
     try {
-      const response = await fetch('/api/community/feed', {
+      const response = await fetch('/api/community/posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -156,7 +327,24 @@ export default function CommunityFeed() {
         throw new Error(data?.error || 'Failed to publish post')
       }
 
-      const post = (await response.json()) as Post
+      const data = await response.json()
+      const post = {
+        id: data.id,
+        author: {
+          name: [data.profile?.first_name, data.profile?.last_name].filter(Boolean).join(' ') || 'Member',
+          avatar: data.profile?.avatar_url || '',
+          rank: data.profile?.profession || 'Member',
+        },
+        content: data.content,
+        image: data.media?.[0]?.url,
+        timestamp: new Date(data.created_at).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        }),
+        likes: Array.isArray(data.reactions) ? data.reactions.length : 0,
+        comments: data.comments_count ?? 0,
+      } as Post
+
       setFeedPosts((current) => [post, ...current])
       setDraft('')
     } catch (err: unknown) {
@@ -179,7 +367,7 @@ export default function CommunityFeed() {
     }
 
     void loadFeed()
-  }, [isAuthenticated, loading, router])
+  }, [isAuthenticated, loading, router, selectedFeedTab, searchQuery, fetchFeed])
 
   const openStory = (index: number) => {
     setActiveStoryIndex(index)
@@ -244,13 +432,6 @@ export default function CommunityFeed() {
               </div>
             </div>
 
-            <div className="hidden items-center gap-3 xl:flex">
-              <button className="rounded-full px-4 py-2 text-sm font-semibold text-slate-700 transition hover:text-violet-700">Community</button>
-              <button className="rounded-full px-4 py-2 text-sm font-semibold text-slate-700 transition hover:text-violet-700">Academy</button>
-              <button className="rounded-full px-4 py-2 text-sm font-semibold text-slate-700 transition hover:text-violet-700">Circles</button>
-              <button className="rounded-full px-4 py-2 text-sm font-semibold text-slate-700 transition hover:text-violet-700">Events</button>
-            </div>
-
             <div className="flex items-center gap-3">
               <button className="inline-flex h-11 w-11 items-center justify-center rounded-3xl border border-slate-200/80 bg-white text-slate-600 shadow-sm transition duration-200 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700 hover:shadow-md focus-visible:outline-2 focus-visible:outline-violet-200 active:scale-[0.98]">
                 <Bell className="h-5 w-5" />
@@ -263,24 +444,26 @@ export default function CommunityFeed() {
               </button>
             </div>
           </div>
+        </div>
 
-          <div className="flex flex-col gap-3 border-t border-slate-200/70 pt-3 xl:flex-row xl:items-center xl:justify-between">
-            <nav className="flex flex-wrap items-center gap-3 xl:gap-4">
-              <button className="rounded-full px-4 py-2 text-sm font-semibold text-slate-700 transition hover:text-violet-700">Community</button>
-              <button className="rounded-full px-4 py-2 text-sm font-semibold text-slate-700 transition hover:text-violet-700">Academy</button>
-              <button className="rounded-full px-4 py-2 text-sm font-semibold text-slate-700 transition hover:text-violet-700">Circles</button>
-              <button className="rounded-full px-4 py-2 text-sm font-semibold text-slate-700 transition hover:text-violet-700">Mentors</button>
-              <button className="rounded-full px-4 py-2 text-sm font-semibold text-slate-700 transition hover:text-violet-700">Events</button>
-            </nav>
-
-            <div className="relative w-full max-w-md xl:w-1/3">
-              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input
-                type="search"
-                placeholder="Search BIG..."
-                className="w-full rounded-full border border-slate-200 bg-slate-100/95 py-3 pl-11 pr-4 text-sm text-slate-700 outline-none transition focus:border-violet-200 focus:bg-white"
-              />
-            </div>
+        <div className="border-t border-slate-200/70 bg-white/95 px-4 py-3 shadow-sm shadow-slate-200/10 md:px-6 lg:px-8">
+          <div className="mx-auto flex max-w-7xl gap-3 overflow-x-auto pb-1">
+            {topTabs.map((tab) => {
+              const Icon = tab.icon
+              const active = tab.label === 'Community'
+              return (
+                <Link
+                  key={tab.label}
+                  href={tab.href}
+                  className={`inline-flex min-w-[10rem] items-center gap-2 rounded-full border px-4 py-3 text-sm font-semibold transition ${
+                    active ? 'border-violet-200 bg-violet-50 text-violet-700 shadow-sm shadow-violet-100' : 'border-slate-200 bg-white text-slate-600 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {tab.label}
+                </Link>
+              )
+            })}
           </div>
         </div>
       </header>
@@ -343,6 +526,26 @@ export default function CommunityFeed() {
                 <div className="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-xs text-slate-600">
                   <span className="font-semibold text-violet-700">Live</span> Today
                 </div>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                {feedTabs.map((tab) => {
+                  const Icon = tab.icon
+                  const active = selectedFeedTab === tab.value
+                  return (
+                    <button
+                      key={tab.value}
+                      type="button"
+                      onClick={() => setSelectedFeedTab(tab.value)}
+                      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                        active ? 'bg-violet-100 text-violet-700 shadow-sm shadow-violet-100' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {tab.label}
+                    </button>
+                  )
+                })}
               </div>
 
               <div className="mt-5 w-full overflow-x-auto pb-2">
@@ -655,8 +858,8 @@ export default function CommunityFeed() {
               <p className="text-sm font-semibold text-slate-900">Trending Topics</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {trendingTopics.map((topic) => (
-                  <button key={topic} className="rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-700 transition hover:bg-violet-50 hover:text-violet-700">
-                    #{topic}
+                  <button key={topic.topic} className="rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-700 transition hover:bg-violet-50 hover:text-violet-700">
+                    #{topic.topic}
                   </button>
                 ))}
               </div>

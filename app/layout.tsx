@@ -18,8 +18,21 @@ const inter = Inter({
   weight: ['400', '500', '600', '700'],
 })
 
+const getMetadataBase = () => {
+  const rawUrl = process.env.NEXT_PUBLIC_VERCEL_URL?.trim()
+  if (!rawUrl) {
+    return new URL('http://localhost:3000')
+  }
+
+  if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) {
+    return new URL(rawUrl)
+  }
+
+  return new URL(`https://${rawUrl}`)
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_VERCEL_URL || 'http://localhost:3000'),
+  metadataBase: getMetadataBase(),
   title: {
     default: 'Be Independent Gal (BIG) | Women\'s Community & Growth Platform',
     template: '%s | BIG',
