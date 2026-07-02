@@ -59,11 +59,11 @@ export default function ResetPage() {
           <div className="flex justify-center">
             <Link href="/">
               <FallbackImage
-                src="/icon.svg"
+                src="/images/biglogo.png"
                 alt="BIG Logo"
                 width={48}
                 height={48}
-                fallbackSrc="/favicon.svg"
+                fallbackSrc="/images/big-logo.jpeg"
                 className="h-12 w-12"
               />
             </Link>

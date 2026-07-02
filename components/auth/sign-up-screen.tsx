@@ -68,12 +68,12 @@ export default function SignUpScreen({ searchParams }: SignUpScreenProps) {
           {/* Logo */}
           <div className="flex justify-center">
             <Image
-              src="/icon.svg"
+              src="/images/biglogo.png"
               alt="BIG Logo"
               width={48}
               height={48}
               onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = '/favicon.svg'
+                (e.currentTarget as HTMLImageElement).src = '/images/big-logo.jpeg'
               }}
               className="h-12 w-12"
             />

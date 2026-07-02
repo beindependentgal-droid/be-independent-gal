@@ -60,9 +60,9 @@ export const metadata: Metadata = {
   applicationName: 'Be Independent Gal',
   referrer: 'strict-origin-when-cross-origin',
   icons: {
-    icon: '/icon.svg',
-    shortcut: '/icon.svg',
-    apple: '/icon.svg',
+    icon: '/images/bigFavicon.png',
+    shortcut: '/images/bigFavicon.png',
+    apple: '/images/bigFavicon.png',
   },
   openGraph: {
     type: 'website',

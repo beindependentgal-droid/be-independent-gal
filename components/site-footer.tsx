@@ -39,7 +39,7 @@ export function SiteFooter() {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3">
               <img
-                src="/icon.svg"
+                src="/images/big-logo.jpeg"
                 alt="Be Independent Gal logo"
                 className="h-14 w-14 rounded-full object-cover shadow-sm"
               />
