@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
   const country = url.searchParams.get("country");
   const remote = url.searchParams.get("remote");
   const featured = url.searchParams.get("featured");
+  const status = url.searchParams.get("status");
   const { pageSize, offset } = getPaginationParams(request);
 
   try {
@@ -42,11 +43,18 @@ export async function GET(request: NextRequest) {
       query = query.eq("featured", featured === "true");
     }
 
+    if (status && status !== "Any") {
+      query = query.eq("status", status);
+    }
+
     const {
       data: opportunities,
       error,
       count,
     } = await query
+      .order("featured", { ascending: false })
+      .order("featured_order", { ascending: true, nulls: "last" })
+      .order("published_at", { ascending: false })
       .order("created_at", { ascending: false })
       .range(offset, offset + pageSize - 1);
 

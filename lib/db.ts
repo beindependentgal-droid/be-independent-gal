@@ -240,3 +240,61 @@ export async function addCommunityPost(content: string) {
 
   return newPost;
 }
+
+export async function updateCommunityPost(id: string, content: string) {
+  const database = await readDatabase();
+  if (!database) {
+    return null;
+  }
+
+  const currentFeed =
+    database.communityFeed ??
+    Object.values(database.circleDashboard).flatMap(
+      (circle) => circle.feed ?? [],
+    );
+
+  let found = false;
+  const updatedFeed = currentFeed.map((post) => {
+    if (post.id === id) {
+      found = true;
+      return {
+        ...post,
+        content,
+        timestamp: "Updated just now",
+      };
+    }
+    return post;
+  });
+
+  if (!found) {
+    return null;
+  }
+
+  database.communityFeed = updatedFeed;
+  await writeDatabase(database);
+
+  return updatedFeed.find((post) => post.id === id) ?? null;
+}
+
+export async function deleteCommunityPost(id: string) {
+  const database = await readDatabase();
+  if (!database) {
+    return false;
+  }
+
+  const currentFeed =
+    database.communityFeed ??
+    Object.values(database.circleDashboard).flatMap(
+      (circle) => circle.feed ?? [],
+    );
+
+  const updatedFeed = currentFeed.filter((post) => post.id !== id);
+  if (updatedFeed.length === currentFeed.length) {
+    return false;
+  }
+
+  database.communityFeed = updatedFeed;
+  await writeDatabase(database);
+
+  return true;
+}

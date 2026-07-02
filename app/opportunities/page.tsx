@@ -1,8 +1,13 @@
+"use client"
+
+import { useState } from 'react'
 import OpportunitiesHero from '@/components/opportunities/hero'
 import OpportunityFilters from '@/components/opportunities/filters'
 import OpportunitiesList from '@/components/opportunities/list'
 
 export default function OpportunitiesPage() {
+  const [filters, setFilters] = useState<Record<string, any>>({})
+
   return (
     <main className="min-h-screen bg-slate-50">
       <OpportunitiesHero />
@@ -10,7 +15,7 @@ export default function OpportunitiesPage() {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid gap-6 lg:grid-cols-4">
           <div className="lg:col-span-1">
-            <OpportunityFilters onChange={() => { /* handled by list component via URL params */ }} />
+            <OpportunityFilters onChange={setFilters} />
             <div className="mt-6 hidden sm:block rounded-2xl border border-slate-100 bg-white p-4">
               <h4 className="text-sm font-semibold text-slate-900">Featured Categories</h4>
               <div className="mt-3 grid gap-2">
@@ -26,7 +31,7 @@ export default function OpportunitiesPage() {
 
           <div className="lg:col-span-3">
             <div>
-              <OpportunitiesList />
+              <OpportunitiesList initialFilters={filters} />
             </div>
           </div>
         </div>

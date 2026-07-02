@@ -48,6 +48,71 @@ export const articleCommentSchema = z.object({
 
 export type ArticleCommentInput = z.infer<typeof articleCommentSchema>;
 
+export const postSchema = z.object({
+  content: z.string().min(1).max(5000),
+  post_type: z
+    .enum([
+      "text",
+      "image",
+      "video",
+      "link",
+      "location",
+      "poll",
+      "event",
+      "opportunity",
+      "academy",
+      "celebration",
+      "question",
+      "business_win",
+    ])
+    .default("text"),
+  visibility: z
+    .enum(["public", "private", "connections", "circles"])
+    .default("public"),
+  location: z.string().max(255).nullable(),
+  link: z.string().url().nullable(),
+  metadata: z.record(z.any()).optional(),
+  hashtags: z.array(z.string()).optional(),
+});
+
+export type PostInput = z.infer<typeof postSchema>;
+
+export const commentSchema = z.object({
+  post_id: z.string().uuid(),
+  parent_comment_id: z.string().uuid().nullable(),
+  content: z.string().min(1).max(2000),
+  user_id: z.string().uuid(),
+});
+
+export const postUpdateSchema = postSchema.partial();
+
+export type CommentInput = z.infer<typeof commentSchema>;
+
+export const reactionSchema = z.object({
+  post_id: z.string().uuid(),
+  user_id: z.string().uuid(),
+  reaction: z.enum(["👏", "❤️", "🔥", "💡", "🎉"]),
+});
+
+export type ReactionInput = z.infer<typeof reactionSchema>;
+
+export const bookmarkSchema = z.object({
+  post_id: z.string().uuid(),
+  user_id: z.string().uuid(),
+});
+
+export type BookmarkInput = z.infer<typeof bookmarkSchema>;
+
+export const reportSchema = z.object({
+  reported_by: z.string().uuid(),
+  post_id: z.string().uuid().nullable(),
+  comment_id: z.string().uuid().nullable(),
+  reason: z.enum(["Spam", "Harassment", "Abuse", "Fake", "Other"]),
+  details: z.string().max(1000).optional(),
+});
+
+export type ReportInput = z.infer<typeof reportSchema>;
+
 // Event Validators
 export const eventSchema = z.object({
   title: z.string().min(5).max(255),
