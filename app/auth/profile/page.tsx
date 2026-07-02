@@ -397,10 +397,10 @@ export default function ProfilePage() {
   })()
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(236,72,153,0.14),_transparent_42%),linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_100%)] text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       <div className="mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_80px_-32px_rgba(15,23,42,0.32)]">
-          <div className="h-44 bg-[radial-gradient(circle_at_top_left,_rgba(244,114,182,0.35),_transparent_55%),linear-gradient(135deg,_#111827_0%,_#312e81_100%)] sm:h-56" />
+          <div className="h-44 bg-slate-900 sm:h-56" />
           <div className="px-4 pb-8 pt-0 sm:px-8 lg:px-10">
             <div className="relative -mt-16 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-end">
@@ -415,7 +415,7 @@ export default function ProfilePage() {
                       unoptimized
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-300 to-slate-400 text-5xl font-bold text-slate-900">
+                    <div className="flex h-full w-full items-center justify-center bg-slate-300 text-5xl font-bold text-slate-900">
                       {displayName.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -455,9 +455,9 @@ export default function ProfilePage() {
               </div>
 
               <div className="flex flex-wrap gap-2 sm:gap-3">
-                <Link href="/profile/edit" className="rounded-full bg-gradient-to-r from-pink-600 to-violet-700 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-pink-200 transition hover:from-violet-700 hover:to-pink-600">✏️ Edit profile</Link>
-                <Link href="/circles" className="rounded-full border border-slate-200 bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gradient-to-r hover:from-pink-600 hover:to-violet-700 hover:text-white">🤝 My circles</Link>
-                <button className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-gradient-to-r hover:from-pink-600 hover:to-violet-700 hover:text-white">💬 Message</button>
+                <Link href="/profile/edit" className="rounded-full bg-pink-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-pink-200 transition hover:bg-pink-700">✏️ Edit profile</Link>
+                <Link href="/circles" className="rounded-full border border-slate-200 bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 hover:text-white">🤝 My circles</Link>
+                <button className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900">💬 Message</button>
               </div>
             </div>
 
@@ -639,8 +639,8 @@ export default function ProfilePage() {
                     </div>
                     <div className="mt-6 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                       {galleryItems.map((item) => (
-                        <div key={item.title} className={`aspect-square overflow-hidden rounded-3xl bg-gradient-to-br ${item.tone} p-4`}>
-                          <div className="flex h-full flex-col justify-between rounded-[1.25rem] border border-white/30 bg-white/15 p-4 text-white backdrop-blur-sm">
+                          <div key={item.title} className="aspect-square overflow-hidden rounded-3xl bg-slate-900 p-4">
+                            <div className="flex h-full flex-col justify-between rounded-[1.25rem] border border-white/30 bg-slate-900/95 p-4 text-white backdrop-blur-sm">
                             <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/80">{item.category}</span>
                             <div>
                               <p className="text-lg font-semibold">{item.title}</p>
@@ -808,13 +808,13 @@ export default function ProfilePage() {
               <aside className="space-y-4 sm:space-y-6">
                 <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-[2rem] sm:p-6">
                   <p className="text-sm uppercase tracking-[0.35em] text-slate-500">Profile strength</p>
-                  <div className="mt-4 rounded-[1.25rem] bg-gradient-to-r from-slate-900 to-violet-700 p-4 text-white">
+                  <div className="mt-4 rounded-[1.25rem] bg-slate-900 p-4 text-white">
                     <div className="flex items-center justify-between text-sm text-white/80">
                       <span>{profileStrength}%</span>
                       <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white">Complete profile</span>
                     </div>
                     <div className="mt-3 h-3 overflow-hidden rounded-full bg-white/20">
-                      <div className="h-full rounded-full bg-gradient-to-r from-pink-400 via-fuchsia-400 to-amber-300" style={{ width: `${profileStrength}%` }} />
+                      <div className="h-full rounded-full bg-pink-500" style={{ width: `${profileStrength}%` }} />
                     </div>
                   </div>
                 </div>

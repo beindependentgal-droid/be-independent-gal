@@ -26,7 +26,7 @@ const fundTypes = [
       'Non-dilutive funding for business ideas, education, and personal development. No repayment required.',
     amount: 'Up to KES 500,000',
     eligibility: 'Community members with 3+ months activity',
-    color: 'from-primary to-primary',
+    color: 'bg-primary',
   },
   {
     icon: Zap,
@@ -35,7 +35,7 @@ const fundTypes = [
       'Structured program with funding, mentorship, and network access for early-stage founders.',
     amount: 'KES 1M - KES 5M',
     eligibility: 'Registered businesses with traction',
-    color: 'from-blue-600 to-blue-800',
+    color: 'bg-secondary',
   },
   {
     icon: TrendingUp,
@@ -44,7 +44,7 @@ const fundTypes = [
       'Capital for scaling established women-owned businesses. Flexible terms and supportive partners.',
     amount: 'KES 2.5M - KES 12.5M',
     eligibility: '2+ years operating, KES 5M+ annual revenue',
-    color: 'from-emerald-600 to-emerald-800',
+    color: 'bg-accent',
   },
   {
     icon: Users,
@@ -53,7 +53,7 @@ const fundTypes = [
       'Strategic equity investment with hands-on support from experienced venture partners.',
     amount: 'KES 12.5M+',
     eligibility: 'High-growth potential, proven team',
-    color: 'from-rose-600 to-rose-800',
+    color: 'bg-secondary',
   },
 ]
 
@@ -90,29 +90,29 @@ const successStories = [
     business: 'TechHer Academy',
     amount: 'KES 3.75M',
     outcome: 'Trained 5,000+ women in tech, KES 50M ARR',
-    image: '/images/founder-1.jpg',
+    image: '/images/member-1.png',
   },
   {
     name: 'Maya Patel',
     business: 'Sustainable Fashion Line',
     amount: 'KES 1.875M',
     outcome: 'Expanded to 15 stores, 50+ employees',
-    image: '/images/founder-2.jpg',
+    image: '/images/member-2.png',
   },
   {
     name: 'Amara Johnson',
     business: 'Health Tech Platform',
     amount: 'KES 6.25M',
     outcome: 'Raised Series A, serving 100k+ users',
-    image: '/images/founder-3.jpg',
+    image: '/images/member-3.png',
   },
 ]
 
 const stats = [
-  { value: 'KES 125M+', label: 'Funded to date' },
-  { value: '500+', label: 'Entrepreneurs supported' },
-  { value: '87%', label: 'Success rate' },
-  { value: '200+', label: 'Businesses thriving' },
+  { value: '0+', label: 'Funded to date' },
+  { value: '100+', label: 'Women supported' },
+  { value: '30+', label: 'Students supported' },
+  { value: '50+', label: 'Businesses thriving' },
 ]
 
 const requirements = [
@@ -134,7 +134,7 @@ export default function FundPage() {
         description="Access capital, mentorship, and community support to grow your business and create impact. From grants to venture investment, we have options for every stage."
         cta1={{ text: 'Apply Now', href: '/fund/apply' }}
         cta2={{ text: 'Learn More', href: '#fund-types' }}
-        imageSrc="/images/fund-hero.jpg"
+        imageSrc="/images/hero-women3.jpg"
       />
 
       {/* Stats Section */}
@@ -166,10 +166,10 @@ export default function FundPage() {
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary hover:shadow-xl transition-all"
+                  className="bg-white rounded-2xl border border-border overflow-hidden hover:border-secondary hover:shadow-xl transition-all"
                 >
                   {/* Header with gradient */}
-                  <div className={`bg-gradient-to-r ${fund.color} p-8 text-white`}>
+                  <div className={`${fund.color} p-8 text-white`}>
                     <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-4">
                       <Icon className="w-7 h-7" />
                     </div>
@@ -178,22 +178,22 @@ export default function FundPage() {
 
                   {/* Content */}
                   <div className="p-8 space-y-6">
-                    <p className="text-gray-600 leading-relaxed">{fund.description}</p>
+                    <p className="text-muted-foreground leading-relaxed">{fund.description}</p>
 
                     {/* Details */}
-                    <div className="space-y-4 border-t border-gray-200 pt-6">
+                    <div className="space-y-4 border-t border-border pt-6">
                       <div>
-                        <p className="text-xs font-bold text-gray-500 uppercase mb-1">
+                        <p className="text-xs font-bold text-muted-foreground uppercase mb-1">
                           Funding Amount
                         </p>
-                        <p className="text-lg font-bold text-gray-900">{fund.amount}</p>
+                        <p className="text-lg font-bold text-foreground">{fund.amount}</p>
                       </div>
 
                       <div>
-                        <p className="text-xs font-bold text-gray-500 uppercase mb-1">
+                        <p className="text-xs font-bold text-muted-foreground uppercase mb-1">
                           Who Qualifies
                         </p>
-                        <p className="text-sm text-gray-700">{fund.eligibility}</p>
+                        <p className="text-sm text-foreground/80">{fund.eligibility}</p>
                       </div>
                     </div>
 
@@ -212,7 +212,7 @@ export default function FundPage() {
       </section>
 
       {/* Funding Process */}
-      <section className="py-20 bg-gray-50 px-6 sm:px-12 lg:px-16">
+      <section className="py-20 bg-background px-6 sm:px-12 lg:px-16">
         <div className="max-w-6xl mx-auto">
           <SectionHeading
             title="How It Works"
@@ -224,13 +224,13 @@ export default function FundPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {fundingProcess.map((item, idx) => (
                 <div key={idx} className="relative">
-                  <div className="bg-white rounded-2xl border border-gray-200 p-8 h-full">
+                  <div className="bg-white rounded-2xl border border-border p-8 h-full">
                     {/* Step number */}
                     <div className="text-5xl font-bold text-secondary mb-4">{item.step}</div>
 
                     {/* Content */}
-                    <h4 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
+                    <h4 className="text-xl font-bold text-foreground mb-3">{item.title}</h4>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
                   </div>
 
                   {/* Arrow connector */}
@@ -247,7 +247,7 @@ export default function FundPage() {
       </section>
 
       {/* Success Stories */}
-      <section className="py-20 bg-white px-6 sm:px-12 lg:px-16">
+      <section className="py-20 bg-background px-6 sm:px-12 lg:px-16">
         <div className="max-w-6xl mx-auto">
           <SectionHeading
             title="Success Stories"
@@ -259,16 +259,16 @@ export default function FundPage() {
             {successStories.map((story, idx) => (
               <div
                 key={idx}
-                className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200 overflow-hidden hover:border-secondary hover:shadow-xl transition-all"
+                className="bg-secondary-50 rounded-2xl border border-border overflow-hidden hover:border-secondary hover:shadow-xl transition-all"
               >
                 {/* Image */}
-                <div className="relative aspect-square overflow-hidden bg-gray-300">
+                <div className="relative aspect-square overflow-hidden bg-secondary-100">
                   <FallbackImage
                     src={story.image}
                     alt={story.name}
                     fill
                     className="w-full h-full object-cover"
-                    fallbackSrc="/images/founder-placeholder.jpg"
+                    fallbackSrc="/images/member-placeholder.svg"
                   />
                 </div>
 
@@ -278,10 +278,10 @@ export default function FundPage() {
                     {story.amount} funded
                   </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">{story.name}</h3>
+                  <h3 className="text-xl font-bold text-foreground mb-1">{story.name}</h3>
                   <p className="text-secondary font-semibold mb-4">{story.business}</p>
 
-                  <p className="text-gray-700 text-sm leading-relaxed italic">
+                  <p className="text-foreground/80 text-sm leading-relaxed italic">
                     "{story.outcome}"
                   </p>
                 </div>
@@ -292,7 +292,7 @@ export default function FundPage() {
       </section>
 
       {/* Requirements */}
-      <section className="py-20 bg-gray-50 px-6 sm:px-12 lg:px-16">
+      <section className="py-20 bg-background px-6 sm:px-12 lg:px-16">
         <div className="max-w-4xl mx-auto">
           <SectionHeading
             title="What We Look For"
@@ -302,9 +302,9 @@ export default function FundPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
             {requirements.map((req, idx) => (
-              <div key={idx} className="flex items-start gap-4 p-6 bg-white rounded-2xl border border-gray-200 hover:border-secondary transition-colors">
-                <CheckCircle2 className="w-6 h-6 text-secondary flex-shrink-0 mt-1" />
-                <span className="font-medium text-gray-900">{req}</span>
+              <div key={idx} className="flex items-start gap-4 p-6 bg-white rounded-2xl border border-border hover:border-secondary transition-colors">
+                <CheckCircle2 className="w-6 h-6 text-secondary shrink-0 mt-1" />
+                <span className="font-medium text-foreground">{req}</span>
               </div>
             ))}
           </div>
@@ -314,7 +314,7 @@ export default function FundPage() {
       {/* FAQ Preview */}
       <section className="py-20 bg-white px-6 sm:px-12 lg:px-16">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+          <h2 className="text-3xl font-bold text-foreground text-center mb-12">
             Common Questions
           </h2>
 
@@ -335,13 +335,13 @@ export default function FundPage() {
             ].map((item, idx) => (
               <details
                 key={idx}
-                className="bg-gray-50 rounded-2xl border border-gray-200 p-6 hover:border-secondary transition-colors cursor-pointer group"
+                className="bg-background rounded-2xl border border-border p-6 hover:border-secondary transition-colors cursor-pointer group"
               >
-                <summary className="flex items-center justify-between font-bold text-gray-900 select-none">
+                <summary className="flex items-center justify-between font-bold text-foreground select-none">
                   {item.q}
                   <span className="text-secondary group-open:rotate-180 transition-transform">+</span>
                 </summary>
-                <p className="text-gray-600 mt-4 leading-relaxed">{item.a}</p>
+                <p className="text-muted-foreground mt-4 leading-relaxed">{item.a}</p>
               </details>
             ))}
           </div>
@@ -371,7 +371,7 @@ export default function FundPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Link href="/fund/apply">
-              <Button className="bg-white text-secondary hover:bg-gray-100 font-bold rounded-full h-12 px-12 flex items-center gap-2 w-full sm:w-auto justify-center">
+              <Button className="bg-white text-secondary hover:bg-secondary-100 font-bold rounded-full h-12 px-12 flex items-center gap-2 w-full sm:w-auto justify-center">
                 Start Your Application
                 <ArrowRight className="w-4 h-4" />
               </Button>

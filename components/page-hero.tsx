@@ -36,7 +36,7 @@ export function PageHero({
   return (
     <section
       className={cn(
-        'relative overflow-hidden bg-secondary py-16 text-secondary-foreground sm:py-20',
+        'relative overflow-hidden bg-secondary py-16 text-white sm:py-20',
         className,
       )}
     >
@@ -55,16 +55,16 @@ export function PageHero({
               {eyebrow}
             </span>
           )}
-          <h1 className="mt-4 text-balance font-heading text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">
+          <h1 className="mt-4 text-balance font-heading text-4xl font-extrabold uppercase tracking-tight text-white sm:text-5xl">
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-6 text-xl font-semibold text-secondary-foreground/90">
+            <p className="mt-6 text-xl font-semibold text-white">
               {subtitle}
             </p>
           )}
           {description && (
-            <p className="mx-auto mt-5 max-w-2xl text-pretty leading-relaxed text-secondary-foreground/80">
+            <p className="mx-auto mt-5 max-w-2xl text-pretty leading-relaxed text-white/90">
               {description}
             </p>
           )}
@@ -81,7 +81,7 @@ export function PageHero({
         </div>
 
         {imageSrc && (
-          <div className="relative h-72 w-full overflow-hidden rounded-[2rem] bg-gray-900/10 lg:h-[420px] lg:w-1/2">
+          <div className="relative h-72 w-full overflow-hidden rounded-[2rem] bg-white/10 lg:h-105 lg:w-1/2">
             <Image
               src={imageSrc}
               alt={title}

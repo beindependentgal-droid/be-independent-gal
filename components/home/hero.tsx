@@ -53,8 +53,8 @@ export function HomeHero() {
             />
           </div>
         ))}
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(91,33,182,0.8),rgba(236,72,153,0.68))]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_35%)]" />
+        <div className="absolute inset-0 bg-primary/80" />
+        <div className="absolute inset-0 bg-secondary/20" />
       </div>
 
       <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center px-4 py-24 text-center text-white sm:px-6 lg:px-8">

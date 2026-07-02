@@ -89,7 +89,7 @@ export default function AboutPage() {
           fill
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(91,33,182,0.72),rgba(236,72,153,0.72))]" />
+        <div className="absolute inset-0 bg-black/40" />
         <div className="relative mx-auto flex min-h-[70vh] sm:min-h-[80vh] max-w-5xl flex-col items-center justify-center px-4 text-center text-white sm:px-6 lg:px-8">
           <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.24em] text-white/90 backdrop-blur-md">
             ✨ More Than a Community
@@ -163,7 +163,7 @@ export default function AboutPage() {
           />
           <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             <div className="rounded-[2rem] border border-slate-200/70 bg-white/95 p-8 text-center shadow-[0_20px_50px_-20px_rgba(15,23,42,0.12)] transition duration-300 hover:-translate-y-1 hover:bg-[#f8f5ff] hover:shadow-[0_24px_80px_-28px_rgba(15,23,42,0.16)]">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#ede9fe] to-[#fdf2f8] text-[#5B21B6]">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-secondary-50 text-secondary">
                 <BookOpen className="h-6 w-6" />
               </div>
               <p className="mt-6 text-sm uppercase tracking-[0.2em] text-[#5B21B6]">Learn</p>
@@ -217,7 +217,7 @@ export default function AboutPage() {
               const Icon = item.icon
               return (
                 <div key={item.title} className="rounded-[2rem] border border-slate-200/70 bg-white/95 p-6 shadow-[0_18px_45px_-18px_rgba(15,23,42,0.1)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_60px_-24px_rgba(15,23,42,0.14)]">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-[#ede9fe] to-[#fdf2f8] text-[#5B21B6]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary-50 text-secondary">
                     <Icon className="h-5 w-5" />
                   </div>
                   <h3 className="mt-5 text-xl font-semibold text-slate-900">{item.title}</h3>
@@ -256,7 +256,7 @@ export default function AboutPage() {
               const Icon = item.icon
               return (
                 <div key={item.title} className="rounded-[2rem] border border-slate-200/70 bg-white/95 p-6 shadow-[0_18px_45px_-18px_rgba(15,23,42,0.1)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_60px_-24px_rgba(15,23,42,0.14)]">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-[#ede9fe] to-[#fdf2f8] text-[#5B21B6]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary-50 text-secondary">
                     <Icon className="h-5 w-5" />
                   </div>
                   <h3 className="mt-5 text-xl font-semibold text-slate-900">{item.title}</h3>
@@ -344,8 +344,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-linear-to-r from-[#5B21B6] via-[#7c3aed] to-[#ec4899] py-24 text-white">
-        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.25),transparent_35%)]" />
+      <section className="relative overflow-hidden bg-violet-700 py-24 text-white">
+        <div className="absolute inset-0 opacity-20 bg-white/10" />
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.32em] text-white/80">Your Journey Starts Today</p>
           <h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Whether you're a student, entrepreneur, professional, creative, or simply looking for a place where you belong, BIG is here to help you learn, connect, earn, and thrive.</h2>

@@ -97,7 +97,7 @@ export function SiteHeader() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Logo onLight={!isTransparentHero} />
+        <Logo onLight={!isTransparentHero} showText={false} />
 
         <nav className="hidden items-center gap-1 lg:flex">
           {menuLinks.map((link) => {

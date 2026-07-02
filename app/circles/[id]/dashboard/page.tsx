@@ -289,7 +289,7 @@ export default function CircleDashboardPage({
           </div>
 
           {fetchError ? (
-            <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900">
+            <div className="mb-6 rounded-2xl border border-rose-500 bg-rose-600 p-4 text-sm text-white">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="font-semibold">Unable to load dashboard content.</p>
@@ -297,7 +297,7 @@ export default function CircleDashboardPage({
                 </div>
                 <Button
                   variant="outline"
-                  className="w-full sm:w-auto rounded-full border-rose-300 text-rose-900 hover:bg-rose-100"
+                  className="w-full sm:w-auto rounded-full border border-white/30 bg-white/10 text-white hover:bg-white/20"
                   onClick={() => void fetchDashboardData()}
                 >
                   Retry

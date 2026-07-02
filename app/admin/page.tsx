@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Activity, ShieldCheck, Users, AlertTriangle, ArrowRight, CheckCircle2, XCircle, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from '@/lib/auth-context'
+import OpportunitiesAdmin from '@/components/admin/opportunities-admin'
 import { getAccessToken } from '@/lib/auth-utils'
 
 interface PlatformAnalyticsItem {
@@ -229,19 +230,34 @@ export default function AdminDashboardPage() {
     )
   }
 
+  const handleRetry = async () => {
+    await loadDashboard()
+  }
+
   if (error) {
     return (
       <main className="min-h-screen bg-slate-50 px-6 py-16">
         <div className="mx-auto max-w-7xl rounded-3xl border border-rose-200 bg-rose-50 p-8 text-rose-700">
           <p className="font-semibold">Unable to load admin dashboard</p>
           <p className="mt-2 text-sm">{error}</p>
+          <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:gap-3">
+            <Button
+              className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8"
+              onClick={handleRetry}
+            >
+              Retry
+            </Button>
+            <Link href="/auth/login" className="mt-3 sm:mt-0 text-sm font-semibold text-secondary- underline underline-offset-2">
+              Sign in again
+            </Link>
+          </div>
         </div>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(247,30,108,0.12),_transparent_30%),linear-gradient(135deg,_#f8fafc_0%,_#fdf2f8_100%)] px-6 py-8 sm:px-8 lg:px-10">
+    <main className="min-h-screen bg-slate-50 px-6 py-8 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl space-y-6">
         <section className="overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white/80 p-8 shadow-[0_25px_70px_-28px_rgba(15,23,42,0.22)] backdrop-blur">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -414,6 +430,10 @@ export default function AdminDashboardPage() {
                   ))
                 )}
               </div>
+            </div>
+
+            <div className="mt-6">
+              <OpportunitiesAdmin />
             </div>
           </div>
         </div>
