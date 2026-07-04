@@ -36,15 +36,68 @@ export default function MessagesPage() {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [filteredConversations, setFilteredConversations] = useState<Conversation[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isStartingConversation, setIsStartingConversation] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [searchParamsString, setSearchParamsString] = useState('')
+  const [startUserId, setStartUserId] = useState<string | null>(null)
 
   // Redirect if not authenticated
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const params = new URLSearchParams(window.location.search)
+    setSearchParamsString(params.toString())
+    setStartUserId(params.get('start'))
+  }, [])
+
+  useEffect(() => {
+    const redirectPath = `${pathname}${searchParamsString ? `?${searchParamsString}` : ''}`
+
     if (!authLoading && !isAuthenticated) {
-      router.push(`/auth/login?redirect=${encodeURIComponent(pathname ?? '/messages')}`)
+      router.push(`/auth/login?redirect=${encodeURIComponent(redirectPath)}`)
     }
-  }, [authLoading, isAuthenticated, router, pathname])
+  }, [authLoading, isAuthenticated, router, pathname, searchParamsString])
+
+  useEffect(() => {
+    const startConversation = async () => {
+      if (!startUserId) return
+      setIsStartingConversation(true)
+      setError(null)
+
+      try {
+        const res = await fetch('/api/messages/conversations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ otherUserId: startUserId }),
+        })
+
+        if (!res.ok) {
+          const errorData = await res.json()
+          throw new Error(errorData?.error || 'Failed to start conversation')
+        }
+
+        const data = await res.json()
+        const conversationId = data.id || data.conversation?.id
+
+        if (!conversationId) {
+          throw new Error('Unable to start conversation')
+        }
+
+        router.replace(`/messages/${conversationId}`)
+      } catch (err: any) {
+        setError(err?.message || 'Unable to start conversation')
+      } finally {
+        setIsStartingConversation(false)
+      }
+    }
+
+    if (startUserId && isAuthenticated) {
+      startConversation()
+    }
+  }, [startUserId, isAuthenticated, router])
 
   // Fetch conversations
   useEffect(() => {
@@ -53,7 +106,7 @@ export default function MessagesPage() {
         setIsLoading(true)
         setError(null)
 
-        const res = await fetch('/api/conversations')
+        const res = await fetch('/api/messages/conversations')
 
         if (!res.ok) {
           throw new Error('Failed to load conversations')
@@ -105,7 +158,7 @@ export default function MessagesPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-secondary-"></div>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-secondary"></div>
           <p className="text-gray-600 font-medium">Loading...</p>
         </div>
       </div>
@@ -128,7 +181,7 @@ export default function MessagesPage() {
             </div>
 
             <Link href="/members">
-              <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8 flex items-center gap-2">
+              <Button className="bg-secondary hover:bg-secondary/90 text-white font-bold rounded-full h-12 px-8 flex items-center gap-2">
                 <Plus className="w-4 h-4" />
                 New Message
               </Button>
@@ -143,7 +196,7 @@ export default function MessagesPage() {
               placeholder="Search conversations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-12 rounded-full bg-gray-100 border-0 focus:bg-white focus:ring-2 focus:ring-secondary- placeholder-gray-500"
+              className="pl-12 h-12 rounded-full bg-gray-100 border-0 focus:bg-white focus:ring-2 focus:ring-secondary placeholder-gray-500"
             />
           </div>
         </div>
@@ -198,7 +251,7 @@ export default function MessagesPage() {
               Start a new conversation by finding someone in the member directory and sending them a message.
             </p>
             <Link href="/members">
-              <Button className="bg-secondary- hover:bg-secondary- text-white font-bold rounded-full h-12 px-8">
+              <Button className="bg-secondary hover:bg-secondary/90 text-white font-bold rounded-full h-12 px-8">
                 Go to Member Directory
               </Button>
             </Link>

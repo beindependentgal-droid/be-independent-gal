@@ -301,6 +301,8 @@ export default function EditProfilePage() {
                     src={avatarPreview}
                     alt="Avatar preview"
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                     onError={() => setAvatarPreview(null)}
                   />
                 ) : (

@@ -18,33 +18,20 @@
   ],
   "icons": [
     {
-      "src": "/images/icon-192.png",
+      "src": "/images/biglogo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/images/icon-512.png",
+      "src": "/images/biglogo.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/images/maskable-icon.png",
+      "src": "/images/biglogo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/images/screenshot-home.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    },
-    {
-      "src": "/images/screenshot-mobile.png",
-      "sizes": "540x720",
-      "type": "image/png"
     }
   ]
 }

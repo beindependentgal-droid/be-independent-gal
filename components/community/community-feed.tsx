@@ -281,7 +281,7 @@ export default function CommunityFeed() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-6 lg:px-8 xl:pb-24">
+      <main className="mx-auto max-w-7xl px-4 py-6 pb-28 lg:px-8 lg:pb-24 xl:pb-24">
         <div className="grid gap-6 xl:grid-cols-[240px_minmax(0,1.75fr)_320px]">
           <aside className="hidden xl:block xl:sticky xl:top-6 xl:self-start">
             <div className="space-y-4 rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/50">

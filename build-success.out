@@ -1,0 +1,122 @@
+
+> be-independent-gal@0.1.0 build
+> next build
+
+▲ Next.js 16.2.6 (Turbopack)
+- Environments: .env.local
+- Experiments (use with caution):
+  · optimizePackageImports
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 14.6s
+  Skipping validation of types
+  Finished TypeScript config validation in 29ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/68) ...
+  Generating static pages using 7 workers (17/68) 
+  Generating static pages using 7 workers (34/68) 
+  Generating static pages using 7 workers (51/68) 
+✓ Generating static pages using 7 workers (68/68) in 2.6s
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ○ /academy
+├ ● /academy/[slug]
+│ ├ /academy/money-mastery-budget-save-invest
+│ ├ /academy/launch-your-side-hustle
+│ ├ /academy/own-the-interview-room
+│ └ [+3 more paths]
+├ ○ /admin
+├ ƒ /api/academy/current
+├ ƒ /api/admin/forms
+├ ƒ /api/admin/moderation/[id]
+├ ƒ /api/admin/users
+├ ƒ /api/admin/users/[id]
+├ ƒ /api/analytics/dashboard
+├ ƒ /api/articles
+├ ƒ /api/articles/[slug]
+├ ƒ /api/auth/callback
+├ ƒ /api/auth/circles
+├ ƒ /api/auth/preferences
+├ ƒ /api/auth/profile
+├ ƒ /api/circles
+├ ƒ /api/circles/[id]/dashboard
+├ ƒ /api/community/feed
+├ ƒ /api/community/feed/[id]
+├ ƒ /api/community/post-bookmarks
+├ ƒ /api/community/posts
+├ ƒ /api/community/posts/[id]
+├ ƒ /api/community/posts/[id]/comments
+├ ƒ /api/community/posts/[id]/reactions
+├ ƒ /api/community/reports
+├ ƒ /api/contact
+├ ƒ /api/dashboard/loader
+├ ƒ /api/directory/search
+├ ƒ /api/events
+├ ƒ /api/events/register
+├ ƒ /api/forms/google-form
+├ ƒ /api/gamification/challenges
+├ ƒ /api/gamification/leaderboard
+├ ƒ /api/mentorship/requests
+├ ƒ /api/messages/[conversationId]
+├ ƒ /api/messages/conversations
+├ ƒ /api/notifications
+├ ƒ /api/notifications/[id]/read
+├ ƒ /api/opportunities
+├ ƒ /api/opportunities/[id]
+├ ƒ /api/opportunity-categories
+├ ƒ /api/profiles
+├ ƒ /api/profiles/[id]
+├ ƒ /api/profiles/[id]/activities
+├ ƒ /api/profiles/suggested
+├ ○ /auth/callback
+├ ƒ /auth/login
+├ ○ /auth/onboarding/circles
+├ ○ /auth/onboarding/preferences
+├ ○ /auth/onboarding/profile
+├ ○ /auth/profile
+├ ○ /auth/reset
+├ ƒ /auth/sign-up
+├ ƒ /auth/sign-up/wizard
+├ ƒ /blog
+├ ƒ /blog/[slug]
+├ ○ /challenges
+├ ○ /circles
+├ ● /circles/[id]
+│ ├ /circles/learn
+│ ├ /circles/connect
+│ ├ /circles/earn
+│ └ /circles/thrive
+├ ƒ /circles/[id]/dashboard
+├ ƒ /circles/[id]/join
+├ ƒ /circles/join/[id]
+├ ƒ /community
+├ ○ /contact
+├ ○ /dashboard
+├ ○ /directory
+├ ○ /events
+├ ○ /fund
+├ ○ /fund/apply
+├ ○ /fund/faq
+├ ○ /get-involved
+├ ○ /google-form
+├ ○ /join
+├ ○ /leaderboard
+├ ○ /messages
+├ ƒ /messages/[conversationId]
+├ ○ /opportunities
+├ ƒ /opportunities/[id]
+├ ○ /opportunities/saved
+├ ○ /profile
+├ ƒ /profile/[id]
+├ ○ /profile/edit
+└ ○ /programs
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+

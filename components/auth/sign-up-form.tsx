@@ -29,6 +29,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -53,6 +54,10 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
     }
     if (password.length < 6) {
       setError('Password must be at least 6 characters')
+      return false
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match. Please reenter your password.')
       return false
     }
     if (!acceptedTerms) {
@@ -216,6 +221,13 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
         </div>
       </div>
 
+      <div className="mt-5 space-y-2">
+        <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700">
+          Confirm password
+        </Label>
+        <Input id="confirmPassword" type={showPassword ? 'text' : 'password'} value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} placeholder="Reenter your password" disabled={loading} className="h-12 rounded-2xl border border-slate-200 px-4" />
+      </div>
+
       {googleReturn ? (
         <div className="mt-5 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
           <p className="font-semibold">Finishing Google sign up</p>
@@ -236,7 +248,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
         </div>
       ) : null}
 
-      <Button type="submit" disabled={loading} className="mt-6 h-12 w-full rounded-full bg-secondary- font-semibold text-white hover:bg-secondary-">
+      <Button type="submit" disabled={loading} className="mt-6 h-12 w-full rounded-full bg-secondary text-white font-semibold hover:bg-secondary/90">
         {loading ? 'Creating account...' : 'Create account'}
       </Button>
 

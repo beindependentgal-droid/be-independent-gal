@@ -22,20 +22,22 @@ export async function GET(
   const { pageSize, offset } = getPaginationParams(request);
 
   try {
-    // Verify user is participant
-    const { data: conversation, error: convError } = await supabase
+    // Verify user is participant and load conversation details
+    const { data: conversationDetails, error: convError } = await supabase
       .from("conversations")
-      .select("*")
+      .select(
+        `id, participant_1_id, participant_2_id, participant_1:participant_1_id(id, first_name, last_name, avatar_url), participant_2:participant_2_id(id, first_name, last_name, avatar_url)`
+      )
       .eq("id", conversationId)
       .single();
 
-    if (convError || !conversation) {
+    if (convError || !conversationDetails) {
       return errorResponse("Conversation not found", 404);
     }
 
     if (
-      conversation.participant_1_id !== userId &&
-      conversation.participant_2_id !== userId
+      conversationDetails.participant_1_id !== userId &&
+      conversationDetails.participant_2_id !== userId
     ) {
       return errorResponse("Unauthorized", 403);
     }
@@ -56,7 +58,19 @@ export async function GET(
 
     if (messagesError) throw messagesError;
 
+    const otherParticipant =
+      conversationDetails.participant_1_id === userId
+        ? conversationDetails.participant_2
+        : conversationDetails.participant_1;
+    const conversation = {
+      id: conversationDetails.id,
+      participant_1_id: conversationDetails.participant_1_id,
+      participant_2_id: conversationDetails.participant_2_id,
+      otherParticipant,
+    };
+
     return successResponse({
+      conversation,
       messages: messages?.reverse(),
       total: count,
       page: Math.floor(offset / pageSize) + 1,
@@ -77,10 +91,22 @@ export async function POST(
   if (authResult instanceof Response) return authResult;
 
   const { userId } = authResult;
-  const { content } = await request.json();
+  const contentType = request.headers.get("content-type") || "";
+  let content = "";
+  let attachment: File | null = null;
 
-  if (!content?.trim()) {
-    return errorResponse("Message content is required", 400);
+  if (contentType.includes("multipart/form-data")) {
+    const formData = await request.formData();
+    content = String(formData.get("content") || "");
+    const attachmentEntry = formData.get("attachment");
+    attachment = attachmentEntry instanceof File ? attachmentEntry : null;
+  } else {
+    const body = await request.json();
+    content = String(body.content || "");
+  }
+
+  if (!content.trim() && !attachment) {
+    return errorResponse("Message content or attachment is required", 400);
   }
 
   try {
@@ -102,7 +128,7 @@ export async function POST(
       return errorResponse("Unauthorized", 403);
     }
 
-    // Insert message
+    // Insert message and include sender metadata
     const { data: message, error: insertError } = await supabase
       .from("messages")
       .insert({
@@ -110,7 +136,7 @@ export async function POST(
         sender_id: userId,
         content: content.trim(),
       })
-      .select()
+      .select("*, sender:sender_id(id, first_name, last_name, avatar_url)")
       .single();
 
     if (insertError) throw insertError;

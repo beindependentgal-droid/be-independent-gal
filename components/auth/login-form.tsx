@@ -156,7 +156,7 @@ export default function LoginForm({ redirect = DEFAULT_AUTH_REDIRECT, googleRetu
       <Button
         type="submit"
         disabled={loading}
-        className="w-full rounded-full bg-fuchsia-700 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-fuchsia-700/30 transition hover:bg-fuchsia-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500"
+        className="w-full rounded-full !bg-fuchsia-700 px-4 py-3 text-sm font-semibold !text-white shadow-sm shadow-fuchsia-700/30 transition hover:bg-fuchsia-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500"
       >
         {loading ? 'Signing in...' : 'Sign In'}
       </Button>

@@ -1,10 +1,12 @@
 'use client'
 
+import Image, { type ImageProps } from 'next/image'
 import * as React from 'react'
 
-interface FallbackImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface FallbackImageProps extends Omit<ImageProps, 'src'> {
+  src: string
   fallbackSrc?: string
-  fill?: boolean
+  quality?: number
 }
 
 export default function FallbackImage({
@@ -14,15 +16,15 @@ export default function FallbackImage({
   className,
   fill = false,
   style,
+  loading,
+  quality = 65,
   ...props
 }: FallbackImageProps) {
-  const [currentSrc, setCurrentSrc] = React.useState(() =>
-    typeof src === 'string' ? src : src?.toString() ?? ''
-  )
+  const [currentSrc, setCurrentSrc] = React.useState(src)
   const [hasError, setHasError] = React.useState(false)
 
   React.useEffect(() => {
-    setCurrentSrc(typeof src === 'string' ? src : src?.toString() ?? '')
+    setCurrentSrc(src)
     setHasError(false)
   }, [src])
 
@@ -33,12 +35,32 @@ export default function FallbackImage({
     }
   }
 
+  const isLocal = currentSrc.startsWith('/')
+
+  if (isLocal) {
+    return (
+      <Image
+        {...props}
+        src={currentSrc}
+        alt={alt}
+        fill={fill}
+        className={className}
+        style={style}
+        loading={loading ?? 'lazy'}
+        quality={quality}
+        onError={handleError}
+      />
+    )
+  }
+
   return (
     <img
       {...props}
       src={currentSrc}
       alt={alt}
       className={className}
+      loading={loading ?? 'lazy'}
+      decoding="async"
       style={fill ? { ...style, position: 'absolute', inset: 0, width: '100%', height: '100%' } : style}
       onError={handleError}
     />

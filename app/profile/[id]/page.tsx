@@ -207,7 +207,10 @@ export default function ProfilePage() {
             {/* Action Buttons */}
             {!isOwnProfile && (
               <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-3">
-                <Button className="w-full bg-gradient-to-r from-pink-600 to-violet-700 text-white font-bold rounded-full h-11 flex items-center justify-center gap-2 shadow-lg shadow-pink-200 hover:from-violet-700 hover:to-pink-600">
+                <Button
+                  onClick={() => router.push(`/messages?start=${profileId}`)}
+                  className="w-full bg-gradient-to-r from-pink-600 to-violet-700 text-white font-bold rounded-full h-11 flex items-center justify-center gap-2 shadow-lg shadow-pink-200 hover:from-violet-700 hover:to-pink-600"
+                >
                   <MessageCircle className="w-4 h-4" />
                   Send Message
                 </Button>

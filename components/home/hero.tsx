@@ -49,6 +49,8 @@ export function HomeHero() {
               alt={slide.alt}
               fill
               priority={index === 0}
+              sizes="100vw"
+              quality={60}
               className="object-cover"
             />
           </div>

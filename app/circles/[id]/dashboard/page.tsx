@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { ElementType } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   BookOpen,
   Users,
@@ -101,11 +101,20 @@ export default function CircleDashboardPage({
 
   // Sync active tab with URL search params
   useEffect(() => {
-    const tab = searchParams.get('tab') as TabId | null
-    if (tab && validTabs.includes(tab)) {
-      setActiveTab(tab)
+    if (typeof window === 'undefined') return
+
+    const updateTab = () => {
+      const params = new URLSearchParams(window.location.search)
+      const tab = params.get('tab') as TabId | null
+      if (tab && validTabs.includes(tab)) {
+        setActiveTab(tab)
+      }
     }
-  }, [searchParams])
+
+    updateTab()
+    window.addEventListener('popstate', updateTab)
+    return () => window.removeEventListener('popstate', updateTab)
+  }, [])
 
   const fetchDashboardData = async () => {
     if (!isAuthenticated || authLoading || !circleId) return

@@ -36,7 +36,7 @@ interface Conversation {
 export default function ConversationPage() {
   const params = useParams()
   const router = useRouter()
-  const { user } = useAuth()
+  const { user, isAuthenticated, loading: authLoading } = useAuth()
   const conversationId = params.conversationId as string
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -55,31 +55,26 @@ export default function ConversationPage() {
     scrollToBottom()
   }, [messages])
 
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push(`/auth/login?redirect=${encodeURIComponent(`/messages/${conversationId}`)}`)
+    }
+  }, [authLoading, isAuthenticated, router, conversationId])
+
   // Fetch messages and conversation data
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true)
+        const res = await fetch(`/api/messages/${conversationId}?pageSize=50`)
 
-        // Fetch conversation details
-        const conversationRes = await fetch(`/api/conversations/${conversationId}`)
-
-        if (!conversationRes.ok) {
+        if (!res.ok) {
           throw new Error('Failed to load conversation')
         }
 
-        const conversationData = await conversationRes.json()
-        setConversation(conversationData)
-
-        // Fetch messages
-        const messagesRes = await fetch(`/api/conversations/${conversationId}/messages?pageSize=50`)
-
-        if (!messagesRes.ok) {
-          throw new Error('Failed to load messages')
-        }
-
-        const messagesData = await messagesRes.json()
-        setMessages(messagesData.messages || [])
+        const data = await res.json()
+        setConversation(data.conversation)
+        setMessages(data.messages || [])
       } catch (err: any) {
         setError(err?.message || 'Failed to load conversation')
       } finally {
@@ -96,21 +91,25 @@ export default function ConversationPage() {
     }
   }, [conversationId])
 
-  const handleSendMessage = async (content: string) => {
-    if (!content.trim()) return
+  const handleSendMessage = async (content: string, attachment?: File | null) => {
+    if (!content.trim() && !attachment) return
 
     setIsSending(true)
     try {
-      const res = await fetch(`/api/conversations/${conversationId}/messages`, {
+      const formData = new FormData()
+      formData.append('content', content.trim())
+      if (attachment) {
+        formData.append('attachment', attachment)
+      }
+
+      const res = await fetch(`/api/messages/${conversationId}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ content: content.trim() }),
+        body: formData,
       })
 
       if (!res.ok) {
-        throw new Error('Failed to send message')
+        const json = await res.json().catch(() => null)
+        throw new Error(json?.error || 'Failed to send message')
       }
 
       const newMessage = await res.json()
@@ -127,7 +126,7 @@ export default function ConversationPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-secondary-"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-secondary"></div>
           <p className="text-gray-600 font-medium">Loading conversation...</p>
         </div>
       </div>
@@ -143,7 +142,7 @@ export default function ConversationPage() {
           <p className="text-gray-600">{error}</p>
           <button
             onClick={() => router.push('/messages')}
-            className="px-6 py-2 bg-secondary- hover:bg-secondary- text-white rounded-lg font-medium transition-colors"
+            className="px-6 py-2 bg-secondary hover:bg-secondary/90 text-white rounded-lg font-medium transition-colors"
           >
             Back to Messages
           </button>

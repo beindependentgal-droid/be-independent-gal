@@ -3,6 +3,7 @@
 import { useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
+import { Paperclip } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -14,6 +15,7 @@ interface Message {
     last_name: string;
     avatar_url?: string;
   };
+  attachment_url?: string;
   created_at: string;
   read_at?: string;
 }
@@ -85,6 +87,22 @@ export function MessageThread({ messages, currentUserId, isLoading }: MessageThr
                 <p className="break-words whitespace-pre-wrap text-sm">
                   {message.content}
                 </p>
+                {message.attachment_url && (
+                  <div className="mt-3 rounded-2xl border border-gray-200 bg-white p-3 text-sm text-gray-900">
+                    <div className="flex items-center gap-2 font-medium text-gray-900">
+                      <Paperclip className="h-4 w-4 text-gray-500" />
+                      <span>Attachment</span>
+                    </div>
+                    <a
+                      href={message.attachment_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 block text-sm font-medium text-secondary hover:underline"
+                    >
+                      Open file
+                    </a>
+                  </div>
+                )}
               </div>
               <p className="text-xs text-gray-500 mt-1">
                 {formatDistanceToNow(new Date(message.created_at), {

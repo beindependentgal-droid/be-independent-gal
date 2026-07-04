@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-client'
 import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
@@ -60,8 +60,7 @@ export default function SignUpWizard() {
   const router = useRouter()
   const { signUp, signIn, signInWithProvider } = useAuth()
   const supabase = createClient()
-  const searchParams = useSearchParams()
-  const initialEmail = searchParams.get('email') ?? ''
+  const [initialEmail, setInitialEmail] = useState('')
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
