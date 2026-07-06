@@ -92,10 +92,6 @@ export default function DashboardShell() {
 
       <div className="fixed inset-x-0 bottom-0 z-40 block lg:hidden border-t border-slate-200 bg-white/95 backdrop-blur-lg">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-          <Link href="/dashboard" className="inline-flex flex-col items-center gap-1 text-xs text-slate-700 hover:text-violet-700">
-            <Home className="h-5 w-5" />
-            Dashboard
-          </Link>
           <Link href="/community" className="inline-flex flex-col items-center gap-1 text-xs text-slate-700 hover:text-violet-700">
             <Users className="h-5 w-5" />
             Community
