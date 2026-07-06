@@ -84,10 +84,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [supabase]);
 
   const signUp = async (email: string, password: string, metadata?: { first_name?: string; last_name?: string }) => {
+    const confirmationUrl = new URL('/auth/onboarding/profile', typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: metadata ? { data: metadata } : undefined,
+      options: {
+        data: metadata,
+        emailRedirectTo: confirmationUrl.toString(),
+      },
     });
 
     if (error) throw error;
