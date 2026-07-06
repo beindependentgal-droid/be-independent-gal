@@ -324,7 +324,7 @@ export default function CommunityFeed() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-3 py-4 sm:px-4 md:px-6 lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:px-8 lg:py-6">
+      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-3 py-4 sm:px-4 md:px-6 lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:gap-8 lg:px-8 lg:py-6">
         <aside className="hidden lg:block">
           <div className="sticky top-24 space-y-4">
             <div className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
@@ -383,8 +383,8 @@ export default function CommunityFeed() {
           </div>
         </aside>
 
-        <main className="space-y-5">
-          <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-5">
+        <main className="space-y-6">
+          <section className="rounded-[26px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-6">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-lg font-semibold text-slate-900">Stories</p>
@@ -395,12 +395,12 @@ export default function CommunityFeed() {
               </button>
             </div>
 
-            <div className="mt-4 flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="mt-5 flex gap-3 overflow-x-auto pb-2 sm:gap-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {storyCards.map((story) => (
                 <button
                   key={story.name}
                   type="button"
-                  className="group flex min-w-[92px] flex-col items-center gap-2 rounded-[20px] px-2 py-2 text-center transition duration-300 hover:-translate-y-1"
+                  className="group flex min-w-[96px] flex-col items-center gap-2 rounded-[20px] px-2.5 py-3 text-center transition duration-300 hover:-translate-y-1"
                 >
                   <div className="relative">
                     <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${story.accent} ${story.live ? 'animate-pulse' : ''}`} />
@@ -415,7 +415,7 @@ export default function CommunityFeed() {
             </div>
           </section>
 
-          <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-5">
+          <section className="rounded-[26px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-6">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-500 text-base font-semibold text-white">
                 {user?.first_name?.charAt(0) ?? 'C'}
@@ -434,7 +434,7 @@ export default function CommunityFeed() {
               <span className="text-sm text-slate-400">What&apos;s inspiring you today?</span>
             </button>
 
-            <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-4 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
               {quickActions.map((action) => {
                 const Icon = action.icon
                 return (
@@ -442,7 +442,7 @@ export default function CommunityFeed() {
                     key={action.label}
                     type="button"
                     onClick={() => setComposerOpen(true)}
-                    className={`flex items-center gap-2 rounded-[18px] border border-transparent bg-gradient-to-r px-3 py-3 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 hover:shadow-sm ${action.className}`}
+                    className={`flex items-center gap-2 rounded-[18px] border border-transparent bg-gradient-to-r px-3.5 py-3.5 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 hover:shadow-sm ${action.className}`}
                   >
                     <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-white/80">
                       <Icon className="h-4 w-4" />
@@ -484,7 +484,7 @@ export default function CommunityFeed() {
             ) : null}
           </section>
 
-          <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-5">
+          <section className="rounded-[26px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-lg font-semibold text-slate-900">Community feed</p>
@@ -507,7 +507,7 @@ export default function CommunityFeed() {
             </div>
           </section>
 
-          <section className="space-y-4">
+          <section className="space-y-5">
             {feedLoading ? (
               Array.from({ length: 3 }).map((_, index) => (
                 <div key={index} className="animate-pulse rounded-[24px] border border-slate-200/80 bg-white p-5 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
@@ -526,7 +526,7 @@ export default function CommunityFeed() {
                 </div>
               ))
             ) : visibleFeed.length === 0 ? (
-              <div className="rounded-[24px] border border-slate-200/80 bg-white px-6 py-12 text-center shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
+              <div className="rounded-[26px] border border-slate-200/80 bg-white px-6 py-12 text-center shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
                 <p className="text-sm font-semibold text-slate-900">No posts yet</p>
                 <p className="mt-2 text-sm text-slate-600">Create the first post and invite your circle into the conversation.</p>
                 <button type="button" onClick={() => setComposerOpen(true)} className="mt-5 inline-flex items-center gap-2 rounded-full bg-violet-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-800">
@@ -540,7 +540,7 @@ export default function CommunityFeed() {
                 const media = getPostMedia(post)
                 const avatarSrc = getAuthorAvatar(post.author.name)
                 return (
-                  <article key={post.id} className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgba(124,58,237,0.35)] sm:p-5">
+                  <article key={post.id} className="rounded-[26px] border border-slate-200/80 bg-white p-5 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgba(124,58,237,0.35)] sm:p-6">
                     <div className="flex items-start gap-3">
                       <div className="relative h-12 w-12 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
                         <Image src={avatarSrc} alt={post.author.name} width={48} height={48} className="h-full w-full object-cover" />
@@ -559,7 +559,7 @@ export default function CommunityFeed() {
                           </button>
                         </div>
                         <p className="mt-3 text-sm leading-7 text-slate-700">{post.content}</p>
-                        <div className="mt-3 overflow-hidden rounded-[20px] border border-slate-200 bg-slate-100">
+                        <div className="mt-4 overflow-hidden rounded-[22px] border border-slate-200 bg-slate-100">
                           <div className="relative">
                             <Image src={media.src} alt="Post media" width={900} height={500} className="h-[240px] w-full object-cover sm:h-[280px]" />
                             {media.type === 'video' ? (
@@ -576,7 +576,7 @@ export default function CommunityFeed() {
                           </div>
                         </div>
 
-                        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3 text-sm text-slate-600">
+                        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 text-sm text-slate-600">
                           <div className="flex items-center gap-2">
                             <button type="button" onClick={() => toggleLike(post.id)} className={`inline-flex items-center gap-2 rounded-full px-3 py-2 transition ${liked ? 'bg-violet-50 text-violet-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
                               <Heart className="h-4 w-4" />
@@ -613,8 +613,8 @@ export default function CommunityFeed() {
         </main>
 
         <aside className="hidden lg:block">
-          <div className="sticky top-24 space-y-4">
-            <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
+          <div className="sticky top-24 space-y-5">
+            <section className="rounded-[26px] border border-slate-200/80 bg-white p-5 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
               <div className="flex items-center justify-between gap-2">
                 <div>
                   <p className="text-sm font-semibold text-slate-900">Upcoming events</p>
@@ -644,7 +644,7 @@ export default function CommunityFeed() {
               </div>
             </section>
 
-            <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
+            <section className="rounded-[26px] border border-slate-200/80 bg-white p-5 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
               <div className="flex items-center justify-between gap-2">
                 <div>
                   <p className="text-sm font-semibold text-slate-900">Trending topics</p>
@@ -658,7 +658,7 @@ export default function CommunityFeed() {
               </div>
             </section>
 
-            <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
+            <section className="rounded-[26px] border border-slate-200/80 bg-white p-5 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
               <div className="flex items-center justify-between gap-2">
                 <div>
                   <p className="text-sm font-semibold text-slate-900">Suggested members</p>
@@ -686,7 +686,7 @@ export default function CommunityFeed() {
             </section>
 
             {isAuthenticated && (notificationsState.loading || notificationsState.data.length > 0) && (
-              <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
+              <section className="rounded-[26px] border border-slate-200/80 bg-white p-5 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-sm font-semibold text-slate-900">Notifications</p>
                   <Bell className="h-4 w-4 text-violet-500" />
