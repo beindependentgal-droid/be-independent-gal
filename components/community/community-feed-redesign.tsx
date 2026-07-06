@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { type ChangeEvent, type DragEvent, useEffect, useMemo, useRef, useState } from 'react'
 import {
   BarChart3,
   Bell,
@@ -44,15 +44,46 @@ const navLinks = [
   { label: 'Saved', icon: Bookmark, href: '/community?saved=1' },
 ]
 
-const storyCards = [
-  { name: 'Your Story', image: '/images/member-1.png', live: false, accent: 'from-violet-500 to-fuchsia-500', isYou: true },
-  { name: 'Sharon', image: '/images/female1.jpg', live: true, accent: 'from-rose-400 to-orange-400' },
-  { name: 'Faith', image: '/images/member-2.png', live: false, accent: 'from-sky-500 to-cyan-500' },
-  { name: 'Pauline', image: '/images/member-3.png', live: false, accent: 'from-emerald-500 to-teal-500' },
-  { name: 'Mercy', image: '/images/posing.jpg', live: true, accent: 'from-violet-600 to-pink-500' },
-]
+const buildStoryCards = (user: { first_name?: string; last_name?: string } | null | undefined, members: Member[]) => {
+  const profileName = [user?.first_name, user?.last_name].filter(Boolean).join(' ').trim() || 'You'
+  const entries = members.slice(0, 4).map((member, index) => ({
+    name: member.name,
+    image: member.avatar || '/images/member-1.png',
+    live: index === 1 || index === 3,
+    accent: index % 2 === 0 ? 'from-violet-500 to-fuchsia-500' : 'from-sky-500 to-cyan-500',
+  }))
 
-const sampleMediaImages = ['/images/together.jpg', '/images/sister.jpg', '/images/female1.jpg', '/images/posing.jpg', '/images/wm.jpg']
+  return [
+    { name: profileName === 'You' ? 'Your Story' : profileName, image: '/images/member-1.png', live: false, accent: 'from-violet-500 to-fuchsia-500', isYou: true },
+    ...entries,
+  ].slice(0, 5)
+}
+
+const mapCommunityPost = (post: any): Post => {
+  const profile = post.profile ?? {}
+  const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(' ').trim() || 'Community member'
+  const avatar = profile.avatar_url || post.author?.avatar || '/images/member-1.png'
+  const rank = profile.profession || post.author?.rank || 'Community member'
+  const text = `${post.content ?? ''} ${fullName}`.toLowerCase()
+  const image = post.image || post.media?.[0]?.url || undefined
+
+  return {
+    id: post.id,
+    author: {
+      name: fullName,
+      avatar,
+      rank,
+    },
+    content: post.content ?? '',
+    image,
+    timestamp: post.created_at
+      ? new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      : post.timestamp ?? 'Recently posted',
+    likes: Number(post.likes ?? post.reaction_summary?.['❤️'] ?? 0),
+    comments: Number(post.comments ?? post.comments_count ?? 0),
+    liked: Boolean(post.liked ?? false),
+  }
+}
 
 const getPostMedia = (post: Post) => {
   const text = `${post.content ?? ''} ${post.author.name ?? ''}`.toLowerCase()
@@ -62,24 +93,18 @@ const getPostMedia = (post: Post) => {
   }
 
   if (/(video|live|session|podcast|webinar|watch)/.test(text)) {
-    return { type: 'video' as const, src: sampleMediaImages[2] }
+    return { type: 'video' as const, src: '/images/member-1.png' }
   }
 
-  if (/(fund|launch|business|client|promotion|award|career|pitch)/.test(text)) {
-    return { type: 'image' as const, src: sampleMediaImages[3] }
-  }
-
-  if (/(academy|learning|course|mentor|circle|community|sister)/.test(text)) {
-    return { type: 'image' as const, src: sampleMediaImages[1] }
-  }
-
-  return { type: 'image' as const, src: sampleMediaImages[0] }
+  return null
 }
 
-const getAuthorAvatar = (name: string) => {
+const getAuthorAvatar = (name: string, fallback?: string) => {
+  if (fallback) return fallback
+
   const normalized = name.toLowerCase()
   if (normalized.includes('you') || normalized.includes('wawesh')) return '/images/member-1.png'
-  if (normalized.includes('sharon') || normalized.includes('faith')) return '/images/member-2.png'
+  if (normalized.includes('faith') || normalized.includes('sharon')) return '/images/member-2.png'
   if (normalized.includes('pauline') || normalized.includes('mercy')) return '/images/member-3.png'
   return '/images/female1.jpg'
 }
@@ -120,20 +145,53 @@ export default function CommunityFeed() {
   const [selectedTab, setSelectedTab] = useState('for_you')
   const [composerOpen, setComposerOpen] = useState(false)
   const [composerText, setComposerText] = useState('')
+  const [composerVisibility, setComposerVisibility] = useState<'public' | 'circle' | 'private'>('public')
+  const [attachedMedia, setAttachedMedia] = useState<Array<{ type: 'image' | 'video'; src: string; name: string }>>([])
+  const [isDraggingFiles, setIsDraggingFiles] = useState(false)
+  const [showDraftRestore, setShowDraftRestore] = useState(false)
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
+  const [isMobileView, setIsMobileView] = useState(false)
+  const [draftText, setDraftText] = useState<string | null>(null)
+  const [storyComposerOpen, setStoryComposerOpen] = useState(false)
+  const [storyText, setStoryText] = useState('')
+  const [storyPhotoPreview, setStoryPhotoPreview] = useState<string | null>(null)
+  const [storyPhotoName, setStoryPhotoName] = useState('')
   const [feedLoading, setFeedLoading] = useState(true)
   const [isPublishing, setIsPublishing] = useState(false)
+  const [isUpdatingPost, setIsUpdatingPost] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [visiblePosts, setVisiblePosts] = useState(6)
   const [likes, setLikes] = useState<Record<string, boolean>>({})
+  const [editingPostId, setEditingPostId] = useState<string | null>(null)
+  const [editingPostText, setEditingPostText] = useState('')
+  const [menuPostId, setMenuPostId] = useState<string | null>(null)
   const [saved, setSaved] = useState<Record<string, boolean>>({})
   const [stats, setStats] = useState({ posts: 0, friends: 0, circles: 5 })
+  const [localStories, setLocalStories] = useState<Array<{ name: string; image: string; live: boolean; accent: string; isYou?: boolean; preview?: string }>>([])
+  const [activeStory, setActiveStory] = useState<{ name: string; image: string; preview?: string } | null>(null)
+  const [viewedStories, setViewedStories] = useState<string[]>([])
 
   const canLoadMore = posts.length > visiblePosts
   const observerRef = useRef<IntersectionObserver | null>(null)
   const loadMoreRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const composerRef = useRef<HTMLDivElement | null>(null)
+  const imageInputRef = useRef<HTMLInputElement | null>(null)
+  const storyInputRef = useRef<HTMLInputElement | null>(null)
+  const videoInputRef = useRef<HTMLInputElement | null>(null)
+  const COMPOSER_DRAFT_KEY = 'big-community-composer-draft'
 
   const visibleFeed = useMemo(() => posts.slice(0, visiblePosts), [posts, visiblePosts])
   const profileCompletion = Math.min(100, 28 + (user?.first_name ? 28 : 0) + (user?.last_name ? 24 : 0) + (user?.email ? 20 : 0))
+  const storyCards = useMemo(() => {
+    const baseStories = buildStoryCards(user, membersState.data)
+    return [...localStories, ...baseStories].slice(0, 6)
+  }, [user, membersState.data, localStories])
+
+  const openStory = (story: { name: string; image: string; preview?: string }) => {
+    setActiveStory(story)
+    setViewedStories((current) => (current.includes(story.name) ? current : [...current, story.name]))
+  }
 
   const quickActions = [
     { label: 'Camera', icon: Camera, className: 'from-emerald-500/15 to-emerald-500/5 text-emerald-700' },
@@ -143,6 +201,91 @@ export default function CommunityFeed() {
     { label: 'Opportunity', icon: Briefcase, className: 'from-orange-500/15 to-orange-500/5 text-orange-700' },
     { label: 'Poll', icon: BarChart3, className: 'from-sky-500/15 to-sky-500/5 text-sky-700' },
   ]
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedDraft = window.localStorage.getItem(COMPOSER_DRAFT_KEY)
+      if (savedDraft) {
+        setDraftText(savedDraft)
+      }
+
+      const updateMobileView = () => setIsMobileView(window.innerWidth < 768)
+      updateMobileView()
+      window.addEventListener('resize', updateMobileView)
+      return () => window.removeEventListener('resize', updateMobileView)
+    }
+  }, [COMPOSER_DRAFT_KEY])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    if (composerText.trim()) {
+      window.localStorage.setItem(COMPOSER_DRAFT_KEY, composerText.trim())
+      setDraftText(composerText.trim())
+    }
+  }, [composerText, COMPOSER_DRAFT_KEY])
+
+  useEffect(() => {
+    if (!composerOpen) return
+    textareaRef.current?.focus()
+  }, [composerOpen])
+
+  useEffect(() => {
+    if (!composerOpen) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        event.preventDefault()
+        void handlePublish()
+      }
+
+      if (event.key === 'Escape' && !composerText.trim()) {
+        event.preventDefault()
+        collapseComposer()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [composerOpen, composerText])
+
+  useEffect(() => {
+    if (!composerOpen) return
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (composerRef.current && !composerRef.current.contains(event.target as Node)) {
+        if (composerText.trim()) {
+          setShowDiscardConfirm(true)
+        } else {
+          collapseComposer()
+        }
+      }
+    }
+
+    document.addEventListener('mousedown', handlePointerDown)
+    return () => document.removeEventListener('mousedown', handlePointerDown)
+  }, [composerOpen, composerText])
+
+  useEffect(() => {
+    if (!menuPostId) return
+
+    const handlePointerDown = (event: MouseEvent) => {
+      const target = event.target as Node | null
+      if (target && !(target instanceof Element)) return
+      if (target instanceof Element && target.closest('[data-post-menu]')) return
+      setMenuPostId(null)
+    }
+
+    document.addEventListener('mousedown', handlePointerDown)
+    return () => document.removeEventListener('mousedown', handlePointerDown)
+  }, [menuPostId])
+
+  useEffect(() => {
+    const element = textareaRef.current
+    if (!element) return
+    element.style.height = 'auto'
+    element.style.height = `${Math.min(element.scrollHeight, 240)}px`
+  }, [composerText])
 
   useEffect(() => {
     let active = true
@@ -155,7 +298,7 @@ export default function CommunityFeed() {
       setNotificationsState({ data: [], loading: true, failed: false })
 
       try {
-        const feedPromise = fetchJson<Post[]>('/api/community/feed', { cache: 'no-store' }).catch(() => [])
+        const feedPromise = fetchJson<{ posts: any[]; count: number }>('/api/community/posts?pageSize=8', { cache: 'no-store' }).catch(() => ({ posts: [], count: 0 }))
       const eventsPromise = fetchJson<{ events: any[] }>('/api/events?upcoming=1&pageSize=4', {
         cache: 'force-cache',
         next: { revalidate: 1800 },
@@ -183,9 +326,10 @@ export default function CommunityFeed() {
         Promise.allSettled([eventsPromise, membersPromise, notificationsPromise]),
       ])
       if (!active) return
-        setPosts(feedRes ?? [])
+        const mappedFeed = (feedRes.posts ?? []).map(mapCommunityPost)
+        setPosts(mappedFeed)
         setStats({
-          posts: (feedRes ?? []).length,
+          posts: feedRes.count ?? mappedFeed.length,
           friends:
             membersRes.status === 'fulfilled'
               ? (membersRes.value.members?.length ?? 0)
@@ -284,6 +428,52 @@ export default function CommunityFeed() {
     return () => observerRef.current?.disconnect()
   }, [canLoadMore, posts.length])
 
+  const collapseComposer = () => {
+    setComposerOpen(false)
+    setShowDiscardConfirm(false)
+    setShowDraftRestore(false)
+    setIsDraggingFiles(false)
+  }
+
+  const clearComposerState = () => {
+    setComposerText('')
+    setComposerVisibility('public')
+    setAttachedMedia([])
+    setShowDiscardConfirm(false)
+    setShowDraftRestore(false)
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(COMPOSER_DRAFT_KEY)
+    }
+    setDraftText(null)
+  }
+
+  const openComposer = () => {
+    setComposerOpen(true)
+    if (!composerText.trim() && draftText) {
+      setShowDraftRestore(true)
+    }
+  }
+
+  const handleRestoreDraft = () => {
+    if (draftText) {
+      setComposerText(draftText)
+    }
+    setShowDraftRestore(false)
+    setDraftText(null)
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(COMPOSER_DRAFT_KEY)
+    }
+    setTimeout(() => textareaRef.current?.focus(), 50)
+  }
+
+  const handleDiscardDraft = () => {
+    setShowDraftRestore(false)
+    setDraftText(null)
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(COMPOSER_DRAFT_KEY)
+    }
+  }
+
   const handlePublish = async () => {
     if (!composerText.trim()) return
 
@@ -291,10 +481,10 @@ export default function CommunityFeed() {
     setError(null)
 
     try {
-      const response = await fetch('/api/community/feed', {
+      const response = await fetch('/api/community/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: composerText.trim() }),
+        body: JSON.stringify({ content: composerText.trim(), post_type: 'text', visibility: composerVisibility }),
       })
 
       if (!response.ok) {
@@ -302,9 +492,20 @@ export default function CommunityFeed() {
         throw new Error(body?.error || 'Unable to publish post')
       }
 
-      const post = (await response.json()) as Post
-      setPosts((current) => [post, ...current])
-      setComposerText('')
+      const post = (await response.json()) as any
+      const newPost = mapCommunityPost({
+        ...post,
+        content: post.content ?? composerText.trim(),
+        created_at: post.created_at ?? new Date().toISOString(),
+        profile: {
+          first_name: user?.first_name ?? null,
+          last_name: user?.last_name ?? null,
+          avatar_url: undefined,
+          profession: null,
+        },
+      })
+      setPosts((current) => [newPost, ...current])
+      clearComposerState()
       setComposerOpen(false)
       setVisiblePosts((count) => count + 1)
     } catch (err) {
@@ -314,12 +515,162 @@ export default function CommunityFeed() {
     }
   }
 
+  const insertComposerMarker = (marker: string) => {
+    setComposerText((current) => `${current}${current ? '\n' : ''}${marker}`)
+    setTimeout(() => textareaRef.current?.focus(), 50)
+  }
+
+  const handleMediaSelection = async (files: FileList | File[], type: 'image' | 'video') => {
+    const selectedFiles = Array.from(files).slice(0, 4)
+    const nextMedia = await Promise.all(
+      selectedFiles.map((file) => {
+        if (type === 'image') {
+          return new Promise<{ type: 'image' | 'video'; src: string; name: string }>((resolve) => {
+            const reader = new FileReader()
+            reader.onload = () => resolve({ type: 'image', src: reader.result as string, name: file.name })
+            reader.readAsDataURL(file)
+          })
+        }
+
+        return Promise.resolve({ type: 'video' as const, src: URL.createObjectURL(file), name: file.name })
+      }),
+    )
+
+    setAttachedMedia((current) => [...current, ...nextMedia].slice(0, 4))
+  }
+
+  const handleImageInputChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files?.length) {
+      await handleMediaSelection(event.target.files, 'image')
+    }
+    event.target.value = ''
+  }
+
+  const handleVideoInputChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files?.length) {
+      await handleMediaSelection(event.target.files, 'video')
+    }
+    event.target.value = ''
+  }
+
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    setIsDraggingFiles(true)
+  }
+
+  const handleDrop = async (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    setIsDraggingFiles(false)
+    const files = event.dataTransfer.files
+    if (!files.length) return
+
+    const imageFiles = Array.from(files).filter((file) => file.type.startsWith('image/'))
+    const videoFiles = Array.from(files).filter((file) => file.type.startsWith('video/'))
+
+    if (imageFiles.length) {
+      await handleMediaSelection(imageFiles, 'image')
+    }
+    if (videoFiles.length) {
+      await handleMediaSelection(videoFiles, 'video')
+    }
+  }
+
   const toggleLike = (id: string) => {
     setLikes((current) => ({ ...current, [id]: !current[id] }))
   }
 
   const toggleSave = (id: string) => {
     setSaved((current) => ({ ...current, [id]: !current[id] }))
+  }
+
+  const startEditingPost = (post: Post) => {
+    setEditingPostId(post.id)
+    setEditingPostText(post.content)
+    setMenuPostId(null)
+  }
+
+  const cancelEditingPost = () => {
+    setEditingPostId(null)
+    setEditingPostText('')
+  }
+
+  const handleUpdatePost = async (postId: string) => {
+    if (!editingPostText.trim()) return
+
+    setIsUpdatingPost(true)
+    setError(null)
+
+    try {
+      const response = await fetch(`/api/community/posts/${postId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: editingPostText.trim(), post_type: 'text', visibility: 'public' }),
+      })
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null)
+        throw new Error(body?.error || 'Unable to update post')
+      }
+
+      setPosts((current) => current.map((post) => (post.id === postId ? { ...post, content: editingPostText.trim(), timestamp: 'Updated just now' } : post)))
+      cancelEditingPost()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to update post')
+    } finally {
+      setIsUpdatingPost(false)
+    }
+  }
+
+  const handleDeletePost = async (postId: string) => {
+    if (!window.confirm('Delete this post?')) return
+
+    setError(null)
+
+    try {
+      const response = await fetch(`/api/community/posts/${postId}`, { method: 'DELETE' })
+      if (!response.ok) {
+        const body = await response.json().catch(() => null)
+        throw new Error(body?.error || 'Unable to delete post')
+      }
+
+      setPosts((current) => current.filter((post) => post.id !== postId))
+      setMenuPostId(null)
+      cancelEditingPost()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to delete post')
+    }
+  }
+
+  const handleStoryPhotoSelection = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      setStoryPhotoPreview(reader.result as string)
+      setStoryPhotoName(file.name)
+    }
+    reader.readAsDataURL(file)
+    event.target.value = ''
+  }
+
+  const handlePublishStory = () => {
+    if (!storyPhotoPreview) return
+
+    const newStory = {
+      name: displayName || 'You',
+      image: storyPhotoPreview,
+      live: false,
+      accent: 'from-violet-500 to-fuchsia-500',
+      isYou: true,
+      preview: 'Photo story',
+    }
+
+    setLocalStories((current) => [newStory, ...current])
+    setStoryText('')
+    setStoryPhotoPreview(null)
+    setStoryPhotoName('')
+    setStoryComposerOpen(false)
   }
 
   return (
@@ -390,99 +741,206 @@ export default function CommunityFeed() {
                 <p className="text-lg font-semibold text-slate-900">Stories</p>
                 <p className="text-sm text-slate-500">Moments from your circle.</p>
               </div>
-              <button type="button" className="rounded-full px-3 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-50">
-                View all
+              <button type="button" onClick={() => setStoryComposerOpen(true)} className="rounded-full px-3 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-50">
+                Post Story
               </button>
             </div>
 
-            <div className="mt-5 flex gap-3 overflow-x-auto pb-2 sm:gap-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              {storyCards.map((story) => (
-                <button
-                  key={story.name}
-                  type="button"
-                  className="group flex min-w-[96px] flex-col items-center gap-2 rounded-[20px] px-2.5 py-3 text-center transition duration-300 hover:-translate-y-1"
-                >
-                  <div className="relative">
-                    <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${story.accent} ${story.live ? 'animate-pulse' : ''}`} />
-                    <div className="relative m-[2px] flex h-16 w-16 overflow-hidden rounded-full border-2 border-white bg-slate-100">
-                      <Image src={story.image} alt={story.name} width={64} height={64} className="h-full w-full object-cover" />
+            {storyComposerOpen ? (
+              <div className="mt-4 space-y-3 rounded-[20px] border border-slate-200 bg-slate-50 p-4">
+                <div className="rounded-[18px] border border-dashed border-slate-300 bg-white p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">Upload a photo story</p>
+                      <p className="text-sm text-slate-500">Stories can only be shared as photos.</p>
                     </div>
-                    {story.live ? <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-white bg-rose-500" /> : null}
-                  </div>
-                  <p className="text-xs font-semibold text-slate-900">{story.name}</p>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <section className="rounded-[26px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-6">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-500 text-base font-semibold text-white">
-                {user?.first_name?.charAt(0) ?? 'C'}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-slate-900">{displayName}</p>
-                <p className="text-xs text-slate-500">Share what is inspiring you today.</p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setComposerOpen(true)}
-              className="mt-4 flex w-full items-start rounded-[20px] border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-500 transition hover:border-violet-200 hover:bg-violet-50/60"
-            >
-              <span className="text-sm text-slate-400">What&apos;s inspiring you today?</span>
-            </button>
-
-            <div className="mt-4 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
-              {quickActions.map((action) => {
-                const Icon = action.icon
-                return (
-                  <button
-                    key={action.label}
-                    type="button"
-                    onClick={() => setComposerOpen(true)}
-                    className={`flex items-center gap-2 rounded-[18px] border border-transparent bg-gradient-to-r px-3.5 py-3.5 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 hover:shadow-sm ${action.className}`}
-                  >
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-white/80">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    {action.label}
-                  </button>
-                )
-              })}
-            </div>
-
-            {composerOpen ? (
-              <div className="mt-4 space-y-4 rounded-[20px] border border-slate-200 bg-slate-50 p-4">
-                <textarea
-                  value={composerText}
-                  onChange={(event) => setComposerText(event.target.value)}
-                  rows={4}
-                  placeholder="What’s inspiring you today?"
-                  className="w-full rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
-                />
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <button type="button" className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm transition hover:text-violet-700">
-                      <Paperclip className="h-4 w-4" /> Attach
+                    <button type="button" onClick={() => storyInputRef.current?.click()} className="rounded-full bg-violet-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-800">
+                      Choose photo
                     </button>
                   </div>
+
+                  {storyPhotoPreview ? (
+                    <div className="mt-4 overflow-hidden rounded-[16px] border border-slate-200">
+                      <img src={storyPhotoPreview} alt={storyPhotoName || 'Selected story photo'} className="h-56 w-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="mt-4 flex min-h-[160px] items-center justify-center rounded-[16px] border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-500">
+                      Select a photo to publish as your story.
+                    </div>
+                  )}
+
+                  {storyPhotoName ? <p className="mt-3 text-xs text-slate-500">Selected: {storyPhotoName}</p> : null}
+                </div>
+
+                <input ref={storyInputRef} type="file" accept="image/*" hidden onChange={handleStoryPhotoSelection} />
+
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="text-xs text-slate-500">Photo stories only</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-500">{composerText.length}/500</span>
-                    <button
-                      type="button"
-                      onClick={handlePublish}
-                      disabled={!composerText.trim() || isPublishing}
-                      className="inline-flex items-center justify-center rounded-full bg-violet-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-800 disabled:cursor-not-allowed disabled:bg-slate-300"
-                    >
-                      {isPublishing ? 'Publishing…' : 'Post'}
+                    <button type="button" onClick={() => { setStoryComposerOpen(false); setStoryPhotoPreview(null); setStoryPhotoName(''); setStoryText('') }} className="rounded-full bg-white px-3 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:text-violet-700">
+                      Cancel
+                    </button>
+                    <button type="button" onClick={handlePublishStory} disabled={!storyPhotoPreview} className="rounded-full bg-violet-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-800 disabled:cursor-not-allowed disabled:bg-slate-300">
+                      Publish story
                     </button>
                   </div>
                 </div>
               </div>
             ) : null}
+
+            <div className="mt-5 flex gap-3 overflow-x-auto pb-2 sm:gap-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              {storyCards.map((story, index) => (
+                <button
+                  key={`${story.name}-${index}`}
+                  type="button"
+                  onClick={() => openStory({ name: story.name, image: story.image, preview: story.preview })}
+                  className="group flex min-w-[96px] flex-col items-center gap-2 rounded-[20px] px-2.5 py-3 text-center transition duration-300 hover:-translate-y-1"
+                >
+                  <div className="relative">
+                    <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${story.accent} ${story.live ? 'animate-pulse' : ''}`} />
+                    <div className={`relative m-[2px] flex h-16 w-16 overflow-hidden rounded-full border-2 bg-slate-100 ${viewedStories.includes(story.name) ? 'border-slate-300 opacity-70' : 'border-white'}`}>
+                      <Image src={story.image} alt={story.name} width={64} height={64} className="h-full w-full object-cover" />
+                    </div>
+                    {story.live ? <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-white bg-rose-500" /> : null}
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <p className={`text-xs font-semibold ${viewedStories.includes(story.name) ? 'text-slate-500' : 'text-slate-900'}`}>{story.name}</p>
+                    {story.preview ? <p className={`mt-1 max-w-[84px] truncate text-[10px] ${viewedStories.includes(story.name) ? 'text-slate-400' : 'text-slate-500'}`}>{story.preview}</p> : null}
+                  </div>
+                </button>
+              ))}
+            </div>
           </section>
+
+          <section ref={composerRef} className="rounded-[26px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-500 text-base font-semibold text-white">
+                {user?.first_name?.charAt(0) ?? 'C'}
+              </div>
+              <button
+                type="button"
+                onClick={openComposer}
+                className="flex min-w-0 flex-1 items-center rounded-[20px] border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-500 transition hover:border-violet-200 hover:bg-violet-50/60"
+              >
+                <span className="text-sm text-slate-400">What&apos;s inspiring you today?</span>
+              </button>
+            </div>
+
+            {showDraftRestore && draftText ? (
+              <div className="mt-4 rounded-[20px] border border-violet-200 bg-violet-50 p-4">
+                <p className="text-sm font-semibold text-violet-800">Restore your draft?</p>
+                <p className="mt-1 text-sm text-violet-700">We found a saved draft from your last session.</p>
+                <div className="mt-3 flex items-center gap-2">
+                  <button type="button" onClick={handleRestoreDraft} className="rounded-full bg-violet-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-800">Restore</button>
+                  <button type="button" onClick={handleDiscardDraft} className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:text-violet-700">Discard</button>
+                </div>
+              </div>
+            ) : null}
+
+            {showDiscardConfirm ? (
+              <div className="mt-4 rounded-[20px] border border-slate-200 bg-slate-50 p-4">
+                <p className="text-sm font-semibold text-slate-900">Discard this post?</p>
+                <div className="mt-3 flex items-center gap-2">
+                  <button type="button" onClick={() => setShowDiscardConfirm(false)} className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:text-violet-700">Continue Editing</button>
+                  <button type="button" onClick={() => { clearComposerState(); collapseComposer() }} className="rounded-full bg-violet-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-800">Discard</button>
+                </div>
+              </div>
+            ) : null}
+
+            <div className={`overflow-hidden transition-all duration-300 ease-out ${composerOpen ? 'mt-4 max-h-[900px] opacity-100' : 'mt-0 max-h-0 opacity-0'}`}>
+              <div className={`rounded-[22px] border border-slate-200 bg-slate-50 p-4 ${isMobileView ? 'space-y-4' : 'space-y-4'}`} onDragOver={handleDragOver} onDrop={handleDrop}>
+                <div className="flex flex-wrap gap-2">
+                  {quickActions.map((action) => {
+                    const Icon = action.icon
+                    return (
+                      <button
+                        key={action.label}
+                        type="button"
+                        onClick={() => insertComposerMarker(action.label)}
+                        className={`flex items-center gap-2 rounded-full border border-transparent bg-gradient-to-r px-3 py-2 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 hover:shadow-sm ${action.className}`}
+                      >
+                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/80">
+                          <Icon className="h-4 w-4" />
+                        </span>
+                        {action.label}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                <textarea
+                  ref={textareaRef}
+                  value={composerText}
+                  onChange={(event) => setComposerText(event.target.value)}
+                  rows={isMobileView ? 8 : 5}
+                  placeholder="What’s inspiring you today?"
+                  className="min-h-[120px] w-full resize-none rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                />
+
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button type="button" onClick={() => imageInputRef.current?.click()} className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm transition hover:text-violet-700">
+                      <Camera className="h-4 w-4" /> Photo
+                    </button>
+                    <button type="button" onClick={() => videoInputRef.current?.click()} className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm transition hover:text-violet-700">
+                      <Video className="h-4 w-4" /> Video
+                    </button>
+                    <button type="button" className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm transition hover:text-violet-700">
+                      <Sparkles className="h-4 w-4" /> Emoji
+                    </button>
+                    <button type="button" className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm transition hover:text-violet-700">
+                      <Paperclip className="h-4 w-4" /> Attach
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600">
+                      <select value={composerVisibility} onChange={(event) => setComposerVisibility(event.target.value as 'public' | 'circle' | 'private')} className="bg-transparent outline-none">
+                        <option value="public">Public</option>
+                        <option value="circle">Circle</option>
+                        <option value="private">Private</option>
+                      </select>
+                    </label>
+                    <button type="button" onClick={collapseComposer} className="rounded-full bg-white px-3 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:text-violet-700">Cancel</button>
+                    <button type="button" onClick={handlePublish} disabled={!composerText.trim() || isPublishing} className="rounded-full bg-violet-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-800 disabled:cursor-not-allowed disabled:bg-slate-300">{isPublishing ? 'Publishing…' : 'Publish'}</button>
+                  </div>
+                </div>
+
+                {attachedMedia.length > 0 ? (
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {attachedMedia.map((media, index) => (
+                      <div key={`${media.name}-${index}`} className="overflow-hidden rounded-[18px] border border-slate-200 bg-white">
+                        {media.type === 'image' ? (
+                          <img src={media.src} alt={media.name} className="h-36 w-full object-cover" />
+                        ) : (
+                          <video src={media.src} controls className="h-36 w-full object-cover" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+
+                {isDraggingFiles ? <p className="text-sm text-violet-700">Drop files to upload</p> : null}
+
+                <input ref={imageInputRef} type="file" accept="image/*" multiple hidden onChange={handleImageInputChange} />
+                <input ref={videoInputRef} type="file" accept="video/*" multiple hidden onChange={handleVideoInputChange} />
+              </div>
+            </div>
+          </section>
+
+          {activeStory ? (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-3 py-4 backdrop-blur-sm">
+              <div className="relative w-full max-w-2xl overflow-hidden rounded-[28px] border border-white/10 bg-slate-900 shadow-2xl">
+                <button type="button" onClick={() => setActiveStory(null)} className="absolute right-3 top-3 z-10 rounded-full bg-white/15 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/25">
+                  Close
+                </button>
+                <img src={activeStory.image} alt={activeStory.name} className="h-[70vh] w-full object-cover" />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent px-5 py-5 text-white">
+                  <p className="text-lg font-semibold">{activeStory.name}</p>
+                  {activeStory.preview ? <p className="mt-1 text-sm text-slate-200">{activeStory.preview}</p> : null}
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           <section className="rounded-[26px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -538,7 +996,7 @@ export default function CommunityFeed() {
                 const liked = likes[post.id] ?? post.liked ?? false
                 const savedPost = saved[post.id] ?? false
                 const media = getPostMedia(post)
-                const avatarSrc = getAuthorAvatar(post.author.name)
+                const avatarSrc = getAuthorAvatar(post.author.name, post.author.avatar)
                 return (
                   <article key={post.id} className="rounded-[26px] border border-slate-200/80 bg-white p-5 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgba(124,58,237,0.35)] sm:p-6">
                     <div className="flex items-start gap-3">
@@ -546,35 +1004,87 @@ export default function CommunityFeed() {
                         <Image src={avatarSrc} alt={post.author.name} width={48} height={48} className="h-full w-full object-cover" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                          <div>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
                             <div className="flex flex-wrap items-center gap-2">
                               <p className="truncate text-sm font-semibold text-slate-900">{post.author.name}</p>
                               <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-violet-700">{post.author.rank}</span>
                             </div>
                             <p className="mt-1 text-xs text-slate-500">{post.timestamp}</p>
                           </div>
-                          <button type="button" className="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </button>
-                        </div>
-                        <p className="mt-3 text-sm leading-7 text-slate-700">{post.content}</p>
-                        <div className="mt-4 overflow-hidden rounded-[22px] border border-slate-200 bg-slate-100">
-                          <div className="relative">
-                            <Image src={media.src} alt="Post media" width={900} height={500} className="h-[240px] w-full object-cover sm:h-[280px]" />
-                            {media.type === 'video' ? (
-                              <div className="absolute inset-0 flex items-center justify-center bg-slate-900/20">
-                                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-violet-700 shadow-lg">
-                                  <Video className="h-6 w-6" />
-                                </div>
+                          <div className="relative ml-auto shrink-0" data-post-menu>
+                            <button
+                              type="button"
+                              onClick={(event) => {
+                                event.stopPropagation()
+                                setMenuPostId((current) => (current === post.id ? null : post.id))
+                              }}
+                              className="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </button>
+                            {menuPostId === post.id ? (
+                              <div className="absolute right-0 top-10 z-20 w-[9rem] rounded-2xl border border-slate-200 bg-white p-2 shadow-lg sm:w-36" data-post-menu>
+                                <button
+                                  type="button"
+                                  onClick={(event) => {
+                                    event.stopPropagation()
+                                    startEditingPost(post)
+                                  }}
+                                  className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(event) => {
+                                    event.stopPropagation()
+                                    void handleDeletePost(post.id)
+                                  }}
+                                  className="mt-1 flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
+                                >
+                                  Delete
+                                </button>
                               </div>
                             ) : null}
                           </div>
-                          <div className="flex items-center justify-between border-t border-slate-200 bg-white/90 px-3 py-2 text-xs font-semibold text-slate-600">
-                            <span>{media.type === 'video' ? 'Video • Live now' : 'Community highlight'}</span>
-                            <span className="text-violet-700">View details</span>
-                          </div>
                         </div>
+                        {editingPostId === post.id ? (
+                          <div className="mt-4 rounded-[20px] border border-slate-200 bg-slate-50 p-3">
+                            <textarea
+                              value={editingPostText}
+                              onChange={(event) => setEditingPostText(event.target.value)}
+                              rows={4}
+                              className="w-full rounded-[16px] border border-slate-200 bg-white px-3 py-2 text-sm leading-6 text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                            />
+                            <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
+                              <button type="button" onClick={cancelEditingPost} className="rounded-full bg-white px-3 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:text-violet-700">Cancel</button>
+                              <button type="button" onClick={() => void handleUpdatePost(post.id)} disabled={!editingPostText.trim() || isUpdatingPost} className="rounded-full bg-violet-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-800 disabled:cursor-not-allowed disabled:bg-slate-300">
+                                {isUpdatingPost ? 'Saving…' : 'Save'}
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="mt-3 text-sm leading-7 text-slate-700">{post.content}</p>
+                        )}
+                        {media ? (
+                          <div className="mt-4 overflow-hidden rounded-[22px] border border-slate-200 bg-slate-100">
+                            <div className="relative">
+                              <Image src={media.src} alt="Post media" width={900} height={500} className="h-[240px] w-full object-cover sm:h-[280px]" />
+                              {media.type === 'video' ? (
+                                <div className="absolute inset-0 flex items-center justify-center bg-slate-900/20">
+                                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-violet-700 shadow-lg">
+                                    <Video className="h-6 w-6" />
+                                  </div>
+                                </div>
+                              ) : null}
+                            </div>
+                            <div className="flex items-center justify-between border-t border-slate-200 bg-white/90 px-3 py-2 text-xs font-semibold text-slate-600">
+                              <span>{media.type === 'video' ? 'Video • Live now' : 'Community highlight'}</span>
+                              <span className="text-violet-700">View details</span>
+                            </div>
+                          </div>
+                        ) : null}
 
                         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 text-sm text-slate-600">
                           <div className="flex items-center gap-2">

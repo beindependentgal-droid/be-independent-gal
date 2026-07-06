@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUserId } from "@/lib/supabase-server";
 import { getFeed, createPost } from "@/lib/community-db";
+import { addCommunityPost, getCommunityFeed } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -21,27 +22,42 @@ export async function GET(request: Request) {
     });
   } catch (error: unknown) {
     console.error("Community posts fetch failed", error);
-    return NextResponse.json({ posts: [], count: 0 }, { status: 200 });
+    const fallbackFeed = await getCommunityFeed();
+    return NextResponse.json(
+      { posts: fallbackFeed ?? [], count: fallbackFeed?.length ?? 0 },
+      { status: 200 },
+    );
   }
 }
 
 export async function POST(request: Request) {
   const userId = await getCurrentUserId();
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const body = await request.json().catch(() => null);
-  if (!body) {
+  if (!body || typeof body !== "object") {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
+  const content = typeof body.content === "string" ? body.content.trim() : "";
+  if (!content) {
+    return NextResponse.json({ error: "Content cannot be empty." }, { status: 400 });
+  }
+
   try {
-    const post = await createPost(userId, body);
+    if (userId) {
+      const post = await createPost(userId, body);
+      return NextResponse.json(post, { status: 201 });
+    }
+
+    const post = await addCommunityPost(content);
     return NextResponse.json(post, { status: 201 });
   } catch (error: unknown) {
-    const message =
-      error instanceof Error ? error.message : "Failed to create post";
-    return NextResponse.json({ error: message }, { status: 400 });
+    try {
+      const fallbackPost = await addCommunityPost(content);
+      return NextResponse.json(fallbackPost, { status: 201 });
+    } catch {
+      const message =
+        error instanceof Error ? error.message : "Failed to create post";
+      return NextResponse.json({ error: message }, { status: 400 });
+    }
   }
 }

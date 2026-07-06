@@ -391,6 +391,45 @@
   },
   "communityFeed": [
     {
+      "id": "5c42f9ab-bc31-4151-80bf-a758fb68641c",
+      "author": {
+        "name": "You",
+        "avatar": "/images/member-1.png",
+        "rank": "Community Champion"
+      },
+      "content": "Hi",
+      "timestamp": "Just now",
+      "likes": 0,
+      "comments": 0,
+      "liked": false
+    },
+    {
+      "id": "babc9f0e-f640-4a03-ab74-e2ab297386c5",
+      "author": {
+        "name": "You",
+        "avatar": "/images/member-1.png",
+        "rank": "Community Champion"
+      },
+      "content": "Hi",
+      "timestamp": "Just now",
+      "likes": 0,
+      "comments": 0,
+      "liked": false
+    },
+    {
+      "id": "b68f3641-d62a-49c9-b4be-66f21d1b7739",
+      "author": {
+        "name": "You",
+        "avatar": "/images/member-1.png",
+        "rank": "Community Champion"
+      },
+      "content": "Hey",
+      "timestamp": "Just now",
+      "likes": 0,
+      "comments": 0,
+      "liked": false
+    },
+    {
       "id": "46d1cc05-74b4-4e74-b584-fcf851de2810",
       "author": {
         "name": "You",
