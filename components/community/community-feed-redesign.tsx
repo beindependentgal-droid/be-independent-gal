@@ -396,23 +396,23 @@ export default function CommunityFeed() {
                 Share a quick thought with the community...
               </button>
 
-              <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                <button type="button" className="inline-flex items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
+              <div className="mt-4 flex flex-col gap-2">
+                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
                   <Camera className="h-4 w-4 text-slate-500" /> Photo
                 </button>
-                <button type="button" className="inline-flex items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
+                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
                   <Video className="h-4 w-4 text-slate-500" /> Video
                 </button>
-                <button type="button" className="inline-flex items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
+                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
                   <Sparkles className="h-4 w-4 text-slate-500" /> Celebration
                 </button>
-                <button type="button" className="inline-flex items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
+                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
                   <CalendarDays className="h-4 w-4 text-slate-500" /> Event
                 </button>
-                <button type="button" className="inline-flex items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
+                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
                   <Briefcase className="h-4 w-4 text-slate-500" /> Opportunity
                 </button>
-                <button type="button" className="inline-flex items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
+                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
                   <BarChart3 className="h-4 w-4 text-slate-500" /> Poll
                 </button>
               </div>
