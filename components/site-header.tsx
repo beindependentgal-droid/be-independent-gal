@@ -1,10 +1,10 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Menu, Moon, Sun, X } from 'lucide-react'
+import { Bell, ChevronDown, Menu, Moon, Search, Sun, X } from 'lucide-react'
 import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -30,14 +30,15 @@ const authNavLinks = [
   { href: '/opportunities', label: 'Opportunities' },
   { href: '/programs', label: 'Programs' },
   { href: '/fund', label: 'BIG Fund' },
-  { href: '/contact', label: 'Contact' },
 ]
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
+  const profileMenuRef = useRef<HTMLDivElement>(null)
   const { user, isAuthenticated, signOut } = useAuth()
   const redirectPath = pathname?.startsWith('/auth') ? '/dashboard' : pathname || '/dashboard'
   const menuLinks = isAuthenticated ? authNavLinks : guestNavLinks
@@ -60,6 +61,17 @@ export function SiteHeader() {
     handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setProfileMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
@@ -208,40 +220,41 @@ export function SiteHeader() {
                   Superadmin
                 </Link>
               ) : null}
-              <Link
-                href={profileHref}
-                className={cn(
-                  'inline-flex items-center gap-3 rounded-full border px-4 py-2 text-sm font-semibold transition hover:bg-muted',
-                  isTransparentHero
-                    ? 'border-white/30 bg-white/10 text-white backdrop-blur-sm'
-                    : 'border-border/70 bg-slate-100 text-slate-900',
-                )}
-              >
-                {user?.user_metadata?.avatar_url ? (
-                  <Image
-                    src={user.user_metadata.avatar_url}
-                    alt={userName}
-                    width={32}
-                    height={32}
-                    className="h-8 w-8 rounded-full object-cover"
-                  />
-                ) : (
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-700 text-xs font-bold text-white">
-                    {avatarLabel}
-                  </span>
-                )}
-                <div className="flex flex-col text-left">
-                  <span>Hey, {userName.split(' ')[0]}</span>
-                  <span className="text-[11px] uppercase tracking-[0.24em] text-slate-500">{userRole}</span>
-                </div>
-              </Link>
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="rounded-full border border-secondary/30 px-4 py-2 text-sm font-semibold text-secondary transition-colors hover:bg-secondary hover:text-secondary-foreground"
-              >
-                Sign Out
+              <button type="button" className="rounded-full border border-border/70 bg-background p-2.5 text-foreground transition hover:bg-muted" aria-label="Search">
+                <Search className="h-4 w-4" />
               </button>
+              <button type="button" className="rounded-full border border-border/70 bg-background p-2.5 text-foreground transition hover:bg-muted" aria-label="Notifications">
+                <Bell className="h-4 w-4" />
+              </button>
+              <div ref={profileMenuRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setProfileMenuOpen((value) => !value)}
+                  className={cn(
+                    'inline-flex items-center gap-3 rounded-full border px-3 py-2 text-sm font-semibold transition hover:bg-muted',
+                    isTransparentHero ? 'border-white/30 bg-white/10 text-white backdrop-blur-sm' : 'border-border/70 bg-slate-100 text-slate-900',
+                  )}
+                >
+                  {user?.user_metadata?.avatar_url ? (
+                    <Image src={user.user_metadata.avatar_url} alt={userName} width={32} height={32} className="h-8 w-8 rounded-full object-cover" />
+                  ) : (
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-700 text-xs font-bold text-white">{avatarLabel}</span>
+                  )}
+                  <span className="hidden sm:inline">{userName.split(' ')[0]}</span>
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+
+                {profileMenuOpen ? (
+                  <div className="absolute right-0 mt-2 w-44 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-200/60">
+                    <Link href={profileHref} onClick={() => setProfileMenuOpen(false)} className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                      View profile
+                    </Link>
+                    <button type="button" onClick={() => { setProfileMenuOpen(false); void handleSignOut() }} className="mt-1 flex w-full items-center rounded-xl px-3 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-50">
+                      Sign out
+                    </button>
+                  </div>
+                ) : null}
+              </div>
             </>
           ) : (
             <>

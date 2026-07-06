@@ -11,13 +11,18 @@ import {
   Briefcase,
   CalendarDays,
   Camera,
+  Compass,
+  Gift,
+  GraduationCap,
   Heart,
   Home,
   LayoutGrid,
   MapPin,
   MessageCircle,
+  MoreHorizontal,
   Paperclip,
   Plus,
+  Search,
   Share2,
   Sparkles,
   User,
@@ -40,11 +45,11 @@ const navLinks = [
 ]
 
 const storyCards = [
-  { name: 'Your Story', initials: 'Y', accent: 'from-violet-500 to-fuchsia-500', isYou: true },
-  { name: 'Sharon', initials: 'S', accent: 'from-rose-400 to-orange-400' },
-  { name: 'Faith', initials: 'F', accent: 'from-sky-500 to-cyan-500' },
-  { name: 'Pauline', initials: 'P', accent: 'from-emerald-500 to-teal-500' },
-  { name: 'Mercy', initials: 'M', accent: 'from-violet-600 to-pink-500' },
+  { name: 'Your Story', image: '/images/member-1.png', live: false, accent: 'from-violet-500 to-fuchsia-500', isYou: true },
+  { name: 'Sharon', image: '/images/member-2.png', live: true, accent: 'from-rose-400 to-orange-400' },
+  { name: 'Faith', image: '/images/member-3.png', live: false, accent: 'from-sky-500 to-cyan-500' },
+  { name: 'Pauline', image: '/images/member-1.png', live: false, accent: 'from-emerald-500 to-teal-500' },
+  { name: 'Mercy', image: '/images/member-2.png', live: true, accent: 'from-violet-600 to-pink-500' },
 ]
 
 const trendingTopics = ['Funding', 'Mentorship', 'Career Growth', 'Wellness', 'WomenInTech']
@@ -96,6 +101,16 @@ export default function CommunityFeed() {
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
   const visibleFeed = useMemo(() => posts.slice(0, visiblePosts), [posts, visiblePosts])
+  const profileCompletion = Math.min(100, 28 + (user?.first_name ? 28 : 0) + (user?.last_name ? 24 : 0) + (user?.email ? 20 : 0))
+
+  const quickActions = [
+    { label: 'Camera', icon: Camera, className: 'from-emerald-500/15 to-emerald-500/5 text-emerald-700' },
+    { label: 'Video', icon: Video, className: 'from-rose-500/15 to-rose-500/5 text-rose-700' },
+    { label: 'Celebration', icon: Gift, className: 'from-amber-500/15 to-amber-500/5 text-amber-700' },
+    { label: 'Event', icon: CalendarDays, className: 'from-violet-500/15 to-violet-500/5 text-violet-700' },
+    { label: 'Opportunity', icon: Briefcase, className: 'from-orange-500/15 to-orange-500/5 text-orange-700' },
+    { label: 'Poll', icon: BarChart3, className: 'from-sky-500/15 to-sky-500/5 text-sky-700' },
+  ]
 
   useEffect(() => {
     let active = true
@@ -276,34 +291,24 @@ export default function CommunityFeed() {
   }
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
-      <div className="mx-auto grid min-h-screen max-w-[1500px] gap-6 px-3 py-4 sm:px-4 md:px-6 lg:grid-cols-[260px_minmax(0,1.8fr)_320px] lg:py-6">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-3 py-4 sm:px-4 md:px-6 lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:px-8 lg:py-6">
         <aside className="hidden lg:block">
-          <div className="sticky top-6 space-y-5">
-            <div className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40">
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-3xl bg-violet-700 text-lg font-semibold text-white">
-                  C
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-slate-900">Community</p>
-                  <p className="text-xs text-slate-500">Your BIG activity hub</p>
-                </div>
-              </div>
-
-              <nav className="mt-6 space-y-2">
+          <div className="sticky top-24 space-y-4">
+            <div className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
+              <nav className="space-y-1.5">
                 {navLinks.map((item) => {
                   const Icon = item.icon
                   return (
                     <Link
                       key={item.label}
                       href={item.href}
-                      className="group flex items-center gap-3 rounded-3xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-violet-50 hover:text-violet-700"
+                      className="group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-semibold text-slate-600 transition-all duration-300 hover:-translate-y-0.5 hover:bg-violet-50 hover:text-violet-700"
                     >
-                      <span className="inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-slate-100 text-slate-600 transition group-hover:bg-violet-100 group-hover:text-violet-700">
-                        <Icon className="h-5 w-5" />
+                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition group-hover:bg-violet-100 group-hover:text-violet-700">
+                        <Icon className="h-4 w-4" />
                       </span>
-                      <span className="truncate">{item.label}</span>
+                      <span>{item.label}</span>
                     </Link>
                   )
                 })}
@@ -312,50 +317,48 @@ export default function CommunityFeed() {
               <button
                 type="button"
                 onClick={() => setComposerOpen(true)}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200/30 transition hover:opacity-95"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200/60 transition hover:scale-[1.01] hover:bg-violet-700"
               >
                 <Plus className="h-4 w-4" />
                 New Post
               </button>
             </div>
 
-            <section className="rounded-[20px] border border-slate-200 bg-slate-50 p-5 shadow-sm shadow-slate-200/40">
+            <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
               <div className="flex items-center gap-3">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-violet-700 text-xl font-semibold text-white">
+                <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 via-fuchsia-500 to-pink-500 text-lg font-semibold text-white">
                   {user?.first_name?.charAt(0) ?? 'C'}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">{user?.first_name ? `${user.first_name} ${user.last_name ?? ''}`.trim() : 'Community Member'}</p>
-                  <p className="text-xs text-slate-500">Community Champion</p>
+                  <p className="text-sm font-semibold text-slate-900">{displayName}</p>
+                  <p className="text-xs text-slate-500">Community level · 3</p>
                 </div>
               </div>
-              <div className="mt-4 space-y-3">
-                <div className="h-2 overflow-hidden rounded-full bg-slate-200">
-                  <div
-                    className="h-full rounded-full bg-violet-700 transition-all duration-500"
-                    style={{ width: `${Math.min(100, 20 + (user?.first_name ? 30 : 0) + (user?.last_name ? 25 : 0) + (user?.email ? 20 : 0))}%` }}
-                  />
-                </div>
+
+              <div className="mt-4">
                 <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Profile {Math.min(100, 20 + (user?.first_name ? 30 : 0) + (user?.last_name ? 25 : 0) + (user?.email ? 20 : 0))}% complete</span>
-                  <Link href="/auth/profile" className="font-semibold text-violet-700 hover:underline">
-                    Complete Profile →
-                  </Link>
+                  <span>Profile progress</span>
+                  <span className="font-semibold text-violet-700">{profileCompletion}%</span>
                 </div>
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
+                  <div className="h-full rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 transition-all duration-500" style={{ width: `${profileCompletion}%` }} />
+                </div>
+                <Link href="/auth/profile" className="mt-3 inline-flex items-center text-sm font-semibold text-violet-700 transition hover:text-violet-800">
+                  View Profile
+                </Link>
               </div>
             </section>
           </div>
         </aside>
 
-        <main className="space-y-8">
-          <section className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/40 sm:p-5">
-            <div className="flex items-center justify-between gap-4">
-              <p className="text-sm font-semibold text-slate-900">Stories</p>
-              <button
-                type="button"
-                onClick={() => setComposerOpen(true)}
-                className="rounded-full px-3 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-50"
-              >
+        <main className="space-y-5">
+          <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-lg font-semibold text-slate-900">Stories</p>
+                <p className="text-sm text-slate-500">Moments from your circle.</p>
+              </div>
+              <button type="button" className="rounded-full px-3 py-2 text-sm font-semibold text-violet-700 transition hover:bg-violet-50">
                 View all
               </button>
             </div>
@@ -365,10 +368,14 @@ export default function CommunityFeed() {
                 <button
                   key={story.name}
                   type="button"
-                  className="flex min-w-[86px] flex-col items-center gap-2 rounded-[18px] border border-slate-200 bg-white px-3 py-3 text-center transition hover:-translate-y-0.5 hover:shadow-sm"
+                  className="group flex min-w-[92px] flex-col items-center gap-2 rounded-[20px] px-2 py-2 text-center transition duration-300 hover:-translate-y-1"
                 >
-                  <div className={`flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br ${story.accent} text-lg font-semibold text-white`}>
-                    {story.initials}
+                  <div className="relative">
+                    <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${story.accent} ${story.live ? 'animate-pulse' : ''}`} />
+                    <div className="relative m-[2px] flex h-16 w-16 overflow-hidden rounded-full border-2 border-white bg-slate-100">
+                      <Image src={story.image} alt={story.name} width={64} height={64} className="h-full w-full object-cover" />
+                    </div>
+                    {story.live ? <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-white bg-rose-500" /> : null}
                   </div>
                   <p className="text-xs font-semibold text-slate-900">{story.name}</p>
                 </button>
@@ -376,84 +383,81 @@ export default function CommunityFeed() {
             </div>
           </section>
 
-          <section className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40\">
+          <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-violet-700 text-base font-semibold text-white">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-500 text-base font-semibold text-white">
                 {user?.first_name?.charAt(0) ?? 'C'}
               </div>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-slate-900">{displayName}</p>
-                <p className="text-xs text-slate-500">What's on your mind?</p>
+                <p className="text-xs text-slate-500">Share what is inspiring you today.</p>
               </div>
             </div>
 
-            <div className="mt-4 rounded-[24px] border border-slate-200 bg-slate-50 p-4 transition">
-              <button
-                type="button"
-                onClick={() => setComposerOpen(true)}
-                className="text-left text-sm font-medium leading-6 text-slate-600"
-              >
-                Share a quick thought with the community...
-              </button>
+            <button
+              type="button"
+              onClick={() => setComposerOpen(true)}
+              className="mt-4 flex w-full items-start rounded-[20px] border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-500 transition hover:border-violet-200 hover:bg-violet-50/60"
+            >
+              <span className="text-sm text-slate-400">What&apos;s inspiring you today?</span>
+            </button>
 
-              <div className="mt-4 flex flex-col gap-2">
-                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
-                  <Camera className="h-4 w-4 text-slate-500" /> Photo
-                </button>
-                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
-                  <Video className="h-4 w-4 text-slate-500" /> Video
-                </button>
-                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
-                  <Sparkles className="h-4 w-4 text-slate-500" /> Celebration
-                </button>
-                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
-                  <CalendarDays className="h-4 w-4 text-slate-500" /> Event
-                </button>
-                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
-                  <Briefcase className="h-4 w-4 text-slate-500" /> Opportunity
-                </button>
-                <button type="button" className="flex w-full items-center gap-2 rounded-3xl border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-700 transition hover:border-violet-200 hover:text-violet-700">
-                  <BarChart3 className="h-4 w-4 text-slate-500" /> Poll
-                </button>
-              </div>
+            <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+              {quickActions.map((action) => {
+                const Icon = action.icon
+                return (
+                  <button
+                    key={action.label}
+                    type="button"
+                    onClick={() => setComposerOpen(true)}
+                    className={`flex items-center gap-2 rounded-[18px] border border-transparent bg-gradient-to-r px-3 py-3 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 hover:shadow-sm ${action.className}`}
+                  >
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-white/80">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    {action.label}
+                  </button>
+                )
+              })}
+            </div>
 
-              {composerOpen ? (
-                <div className="mt-4 space-y-4">
+            {composerOpen ? (
+              <div className="mt-4 space-y-4 rounded-[20px] border border-slate-200 bg-slate-50 p-4">
                 <textarea
                   value={composerText}
                   onChange={(event) => setComposerText(event.target.value)}
                   rows={4}
                   placeholder="What’s inspiring you today?"
-                  className="w-full rounded-[20px] border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                  className="w-full rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                 />
-                <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
-                  <div className="flex flex-wrap gap-2">
-                    <button type="button" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <button type="button" className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm transition hover:text-violet-700">
                       <Paperclip className="h-4 w-4" /> Attach
                     </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={handlePublish}
-                    disabled={!composerText.trim() || isPublishing}
-                    className="inline-flex h-11 items-center justify-center rounded-3xl bg-violet-700 px-5 text-sm font-semibold text-white transition hover:bg-violet-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
-                  >
-                    {isPublishing ? 'Publishing…' : 'Post'}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-500">{composerText.length}/500</span>
+                    <button
+                      type="button"
+                      onClick={handlePublish}
+                      disabled={!composerText.trim() || isPublishing}
+                      className="inline-flex items-center justify-center rounded-full bg-violet-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+                    >
+                      {isPublishing ? 'Publishing…' : 'Post'}
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Visibility: Public</span>
-                  <span>{composerText.length}/500</span>
-                </div>
-                </div>
-              ) : null}
-            </div>
-            {error ? <p className="mt-3 text-sm text-rose-600">{error}</p> : null}
+              </div>
+            ) : null}
           </section>
 
-          <section className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/40 sm:p-5">
+          <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] sm:p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="text-sm font-semibold text-slate-900">For You</div>
+              <div>
+                <p className="text-lg font-semibold text-slate-900">Community feed</p>
+                <p className="text-sm text-slate-500">Fresh stories from women building together.</p>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {['for_you', 'following', 'trending'].map((tab) => (
                   <button
@@ -461,9 +465,7 @@ export default function CommunityFeed() {
                     type="button"
                     onClick={() => setSelectedTab(tab)}
                     className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                      selectedTab === tab
-                        ? 'bg-violet-700 text-white'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      selectedTab === tab ? 'bg-violet-700 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
                     {tab === 'for_you' ? 'For You' : tab === 'following' ? 'Following' : 'Trending'}
@@ -473,10 +475,10 @@ export default function CommunityFeed() {
             </div>
           </section>
 
-          <section className="space-y-5">
+          <section className="space-y-4">
             {feedLoading ? (
               Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className="animate-pulse rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40">
+                <div key={index} className="animate-pulse rounded-[24px] border border-slate-200/80 bg-white p-5 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
                   <div className="flex items-center gap-3">
                     <div className="h-12 w-12 rounded-full bg-slate-200" />
                     <div className="flex-1 space-y-2">
@@ -492,16 +494,11 @@ export default function CommunityFeed() {
                 </div>
               ))
             ) : visibleFeed.length === 0 ? (
-              <div className="rounded-[20px] border border-slate-200 bg-slate-50 px-6 py-12 text-center">
+              <div className="rounded-[24px] border border-slate-200/80 bg-white px-6 py-12 text-center shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
                 <p className="text-sm font-semibold text-slate-900">No posts yet</p>
                 <p className="mt-2 text-sm text-slate-600">Create the first post and invite your circle into the conversation.</p>
-                <button
-                  type="button"
-                  onClick={() => setComposerOpen(true)}
-                  className="mt-5 inline-flex items-center gap-2 rounded-3xl bg-violet-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-800"
-                >
-                  <Plus className="h-4 w-4" />
-                  Create Post
+                <button type="button" onClick={() => setComposerOpen(true)} className="mt-5 inline-flex items-center gap-2 rounded-full bg-violet-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-800">
+                  <Plus className="h-4 w-4" /> Create Post
                 </button>
               </div>
             ) : (
@@ -509,61 +506,47 @@ export default function CommunityFeed() {
                 const liked = likes[post.id] ?? post.liked ?? false
                 const savedPost = saved[post.id] ?? false
                 return (
-                  <article key={post.id} className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40 transition hover:-translate-y-0.5 hover:shadow-md">
+                  <article key={post.id} className="rounded-[24px] border border-slate-200/80 bg-white p-5 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgba(124,58,237,0.35)]">
                     <div className="flex items-start gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-base font-semibold text-white">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-500 text-base font-semibold text-white">
                         {post.author.name.charAt(0)}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="truncate text-sm font-semibold text-slate-900">{post.author.name}</p>
-                          <span className="text-xs text-slate-500">{post.author.rank}</span>
-                          <span className="text-xs text-slate-400">• {post.timestamp}</span>
+                        <div className="flex flex-wrap items-start justify-between gap-2">
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <p className="truncate text-sm font-semibold text-slate-900">{post.author.name}</p>
+                              <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-violet-700">{post.author.rank}</span>
+                            </div>
+                            <p className="mt-1 text-xs text-slate-500">{post.timestamp}</p>
+                          </div>
+                          <button type="button" className="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </button>
                         </div>
                         <p className="mt-4 text-sm leading-7 text-slate-700">{post.content}</p>
                         {post.image ? (
                           <div className="mt-4 overflow-hidden rounded-[18px] border border-slate-200 bg-slate-100">
-                            <Image
-                              src={post.image}
-                              alt="Post image"
-                              width={900}
-                              height={500}
-                              className="h-full w-full object-cover"
-                            />
+                            <Image src={post.image} alt="Post image" width={900} height={500} className="h-full w-full object-cover" />
                           </div>
                         ) : null}
 
-                        <div className="mt-5 grid gap-2 border-t border-slate-100 pt-3 text-sm text-slate-600 sm:grid-cols-2">
-                          <div className="flex items-center gap-3">
-                            <button
-                              type="button"
-                              onClick={() => toggleLike(post.id)}
-                              className={`inline-flex items-center gap-2 rounded-full px-3 py-2 transition ${liked ? 'bg-violet-50 text-violet-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
-                            >
+                        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3 text-sm text-slate-600">
+                          <div className="flex items-center gap-2">
+                            <button type="button" onClick={() => toggleLike(post.id)} className={`inline-flex items-center gap-2 rounded-full px-3 py-2 transition ${liked ? 'bg-violet-50 text-violet-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
                               <Heart className="h-4 w-4" />
                               {liked ? post.likes + 1 : post.likes}
                             </button>
-                            <button
-                              type="button"
-                              className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-slate-600 transition hover:bg-slate-200"
-                            >
+                            <button type="button" className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-slate-600 transition hover:bg-slate-200">
                               <MessageCircle className="h-4 w-4" />
                               {post.comments}
                             </button>
                           </div>
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              type="button"
-                              className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-slate-600 transition hover:bg-slate-200"
-                            >
-                              <Share2 className="h-4 w-4" />
-                              Share
+                          <div className="flex items-center gap-2">
+                            <button type="button" className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-slate-600 transition hover:bg-slate-200">
+                              <Share2 className="h-4 w-4" /> Share
                             </button>
-                            <button
-                              type="button"
-                              onClick={() => toggleSave(post.id)}
-                              className={`inline-flex items-center gap-2 rounded-full px-3 py-2 transition ${savedPost ? 'bg-violet-50 text-violet-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
-                            >
+                            <button type="button" onClick={() => toggleSave(post.id)} className={`inline-flex items-center gap-2 rounded-full px-3 py-2 transition ${savedPost ? 'bg-violet-50 text-violet-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
                               <Bookmark className="h-4 w-4" />
                               {savedPost ? 'Saved' : 'Save'}
                             </button>
@@ -577,7 +560,7 @@ export default function CommunityFeed() {
             )}
 
             {canLoadMore && !feedLoading ? (
-              <div ref={loadMoreRef} className="rounded-[20px] border border-slate-200 bg-white p-5 text-center text-sm text-slate-600">
+              <div ref={loadMoreRef} className="rounded-[24px] border border-slate-200/80 bg-white p-5 text-center text-sm text-slate-600 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
                 Loading more…
               </div>
             ) : null}
@@ -585,145 +568,99 @@ export default function CommunityFeed() {
         </main>
 
         <aside className="hidden lg:block">
-          <div className="sticky top-6 space-y-4">
-            <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40">
-              <div className="flex items-center justify-between gap-3">
+          <div className="sticky top-24 space-y-4">
+            <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
+              <div className="flex items-center justify-between gap-2">
                 <div>
                   <p className="text-sm font-semibold text-slate-900">Upcoming events</p>
-                  <p className="text-xs text-slate-500">Don’t miss the next community moments.</p>
+                  <p className="text-xs text-slate-500">Join what’s next.</p>
                 </div>
-                <Link href="/events" className="text-xs font-semibold text-violet-700 hover:underline">
-                  View all
-                </Link>
+                <Link href="/events" className="text-xs font-semibold text-violet-700 hover:underline">View all</Link>
               </div>
-              <div className="mt-4 space-y-3 text-sm text-slate-600">
-                {eventsState.loading
-                  ? Array.from({ length: 2 }).map((_, index) => (
-                      <div key={index} className="animate-pulse rounded-3xl border border-slate-100 bg-slate-50 p-3">
-                        <div className="h-4 w-24 rounded-full bg-slate-200" />
-                        <div className="mt-3 h-3 w-32 rounded-full bg-slate-200" />
+              <div className="mt-4 space-y-3">
+                {eventsState.loading ? (
+                  Array.from({ length: 2 }).map((_, index) => <div key={index} className="animate-pulse rounded-[20px] border border-slate-100 bg-slate-50 p-3"><div className="h-4 w-24 rounded-full bg-slate-200" /><div className="mt-3 h-3 w-28 rounded-full bg-slate-200" /></div>))
+                : eventsState.data.slice(0, 2).map((event) => (
+                  <div key={event.id} className="overflow-hidden rounded-[20px] border border-slate-100 bg-slate-50">
+                    <div className="h-20 bg-[radial-gradient(circle_at_top_left,_rgba(124,58,237,0.24),_transparent_70%)]" />
+                    <div className="p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-semibold text-slate-900">{event.title}</p>
+                        <span className="rounded-full bg-violet-100 px-2 py-1 text-[11px] font-semibold uppercase text-violet-700">{event.type}</span>
                       </div>
-                    ))
-                  : eventsState.data.slice(0, 2).map((event) => (
-                      <div key={event.id} className="rounded-3xl border border-slate-100 bg-slate-50 p-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-sm font-semibold text-slate-900">{event.title}</p>
-                          <span className="rounded-full bg-violet-100 px-2 py-1 text-[11px] font-semibold uppercase text-violet-700">{event.type}</span>
-                        </div>
-                        <p className="mt-2 text-xs text-slate-500">{event.date}</p>
-                        <p className="text-xs text-slate-500">{event.location}</p>
+                      <div className="mt-2 space-y-1 text-xs text-slate-500">
+                        <div className="flex items-center gap-2"><CalendarDays className="h-3.5 w-3.5" />{event.date} · {event.time}</div>
+                        <div className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" />{event.location}</div>
                       </div>
-                    ))}
-              </div>
-            </section>
-
-            <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-semibold text-slate-900">Trending topics</p>
-                  <p className="text-xs text-slate-500">Jump into the conversations that matter.</p>
-                </div>
-                <Link href="/community" className="text-xs font-semibold text-violet-700 hover:underline">
-                  View all
-                </Link>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2 text-sm">
-                {trendingTopics.map((topic) => (
-                  <span key={topic} className="rounded-full bg-gradient-to-r from-violet-50 to-fuchsia-50 px-3 py-2 text-xs font-semibold text-violet-700 shadow-sm">
-                    #{topic}
-                  </span>
+                      <button type="button" className="mt-3 inline-flex items-center rounded-full bg-violet-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-violet-800">Join</button>
+                    </div>
+                  </div>
                 ))}
               </div>
             </section>
 
-            {(!isAuthenticated || membersState.loading || membersState.data.length > 0) && (
-              <section className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-slate-900">
-                    {isAuthenticated ? 'Suggested for You' : 'Suggested members'}
-                  </p>
-                  {isAuthenticated ? (
-                    <Link href="/community" className="text-xs font-semibold text-violet-700 hover:underline">
-                      View all
-                    </Link>
-                  ) : null}
+            <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Trending topics</p>
+                  <p className="text-xs text-slate-500">Jump into the conversation.</p>
                 </div>
-                <div className="mt-4 space-y-3">
-                  {membersState.loading ? (
-                    Array.from({ length: 3 }).map((_, index) => (
-                      <div key={index} className="animate-pulse rounded-3xl border border-slate-100 bg-slate-50 p-4">
-                        <div className="h-4 w-24 rounded-full bg-slate-200" />
-                        <div className="mt-3 h-3 w-36 rounded-full bg-slate-200" />
-                        <div className="mt-2 h-3 w-20 rounded-full bg-slate-200" />
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {trendingTopics.map((topic) => (
+                  <button key={topic} type="button" className="rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-violet-50 hover:text-violet-700">#{topic}</button>
+                ))}
+              </div>
+            </section>
+
+            <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Suggested members</p>
+                  <p className="text-xs text-slate-500">Women you may want to connect with.</p>
+                </div>
+              </div>
+              <div className="mt-4 space-y-3">
+                {membersState.loading ? (
+                  Array.from({ length: 3 }).map((_, index) => <div key={index} className="animate-pulse rounded-[18px] border border-slate-100 bg-slate-50 p-3"><div className="h-4 w-24 rounded-full bg-slate-200" /><div className="mt-3 h-3 w-32 rounded-full bg-slate-200" /></div>))
+                : membersState.data.map((member) => (
+                  <div key={member.id} className="flex items-center justify-between gap-3 rounded-[18px] border border-slate-100 bg-slate-50 px-3 py-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-500 text-sm font-semibold text-white">
+                        {member.name.charAt(0)}
                       </div>
-                    ))
-                  ) : isAuthenticated ? (
-                    membersState.data.map((member) => (
-                      <div key={member.id} className="rounded-3xl border border-slate-100 bg-slate-50 px-4 py-4">
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-violet-100 text-sm font-semibold text-violet-700">
-                              {member.name.charAt(0)}
-                            </div>
-                            <div>
-                              <p className="text-sm font-semibold text-slate-900">{member.name}</p>
-                              <p className="text-xs text-slate-500">{member.title}</p>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            className="rounded-full bg-violet-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-violet-800"
-                          >
-                            Connect
-                          </button>
-                        </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">{member.name}</p>
+                        <p className="text-xs text-slate-500">{member.title}</p>
                       </div>
-                    ))
-                  ) : (
-                    <div className="space-y-4 rounded-3xl border border-slate-100 bg-slate-50 p-4">
-                      <p className="text-sm text-slate-900">Meet inspiring women in the BIG community.</p>
-                      <ul className="space-y-2 text-sm text-slate-700">
-                        {guestMemberSuggestions.map((person) => (
-                          <li key={person.name} className="flex items-center gap-2">
-                            <span className="text-violet-700">•</span>
-                            <span>{person.name}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <Link
-                        href="/auth/sign-up"
-                        className="inline-flex w-full items-center justify-center rounded-3xl bg-violet-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-800"
-                      >
-                        Join BIG
-                      </Link>
                     </div>
-                  )}
-                </div>
-              </section>
-            )}
+                    <button type="button" className="rounded-full bg-violet-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-violet-800">Connect</button>
+                  </div>
+                ))}
+              </div>
+            </section>
 
             {isAuthenticated && (notificationsState.loading || notificationsState.data.length > 0) && (
-              <section className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40">
-                <div className="flex items-center justify-between gap-3">
+              <section className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
+                <div className="flex items-center justify-between gap-2">
                   <p className="text-sm font-semibold text-slate-900">Notifications</p>
                   <Bell className="h-4 w-4 text-violet-500" />
                 </div>
                 <div className="mt-4 space-y-3">
-                  {notificationsState.loading
-                    ? Array.from({ length: 3 }).map((_, index) => (
-                        <div key={index} className="animate-pulse rounded-3xl border border-slate-100 bg-slate-50 px-4 py-3">
-                          <div className="h-4 w-28 rounded-full bg-slate-200" />
-                          <div className="mt-2 h-3 w-40 rounded-full bg-slate-200" />
-                          <div className="mt-2 h-3 w-20 rounded-full bg-slate-200" />
-                        </div>
-                      ))
-                    : notificationsState.data.map((note) => (
-                        <div key={note.id} className="rounded-3xl border border-slate-100 bg-slate-50 px-4 py-3">
+                  {notificationsState.loading ? (
+                    Array.from({ length: 3 }).map((_, index) => <div key={index} className="animate-pulse rounded-[18px] border border-slate-100 bg-slate-50 p-3"><div className="h-3 w-24 rounded-full bg-slate-200" /><div className="mt-2 h-3 w-32 rounded-full bg-slate-200" /></div>))
+                  : notificationsState.data.map((note) => (
+                    <div key={note.id} className="rounded-[18px] border border-slate-100 bg-slate-50 px-3 py-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
                           <p className="text-sm font-semibold text-slate-900">{note.title}</p>
                           <p className="mt-1 text-xs text-slate-500">{note.description}</p>
-                          <p className="mt-2 text-[11px] uppercase tracking-[0.24em] text-slate-400">{note.time}</p>
                         </div>
-                      ))}
+                        <span className="mt-1 h-2.5 w-2.5 rounded-full bg-violet-500" />
+                      </div>
+                      <p className="mt-2 text-[11px] uppercase tracking-[0.24em] text-slate-400">{note.time}</p>
+                    </div>
+                  ))}
                 </div>
               </section>
             )}
@@ -736,21 +673,13 @@ export default function CommunityFeed() {
           {bottomNav.map((item) => {
             const Icon = item.icon
             return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="flex flex-1 flex-col items-center justify-center gap-1 rounded-3xl px-3 py-2 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-violet-700"
-              >
+              <Link key={item.label} href={item.href} className="flex flex-1 flex-col items-center justify-center gap-1 rounded-3xl px-3 py-2 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-violet-700">
                 <Icon className="h-5 w-5" />
                 {item.label}
               </Link>
             )
           })}
-          <button
-            type="button"
-            onClick={() => setComposerOpen(true)}
-            className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-violet-700 text-white shadow-xl shadow-violet-200/40 transition hover:bg-violet-800"
-          >
+          <button type="button" onClick={() => setComposerOpen(true)} className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-violet-700 text-white shadow-xl shadow-violet-200/40 transition hover:bg-violet-800">
             <Plus className="h-5 w-5" />
           </button>
         </div>
