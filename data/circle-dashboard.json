@@ -391,6 +391,19 @@
   },
   "communityFeed": [
     {
+      "id": "46d1cc05-74b4-4e74-b584-fcf851de2810",
+      "author": {
+        "name": "You",
+        "avatar": "/images/member-1.png",
+        "rank": "Community Champion"
+      },
+      "content": "Hi",
+      "timestamp": "Just now",
+      "likes": 0,
+      "comments": 0,
+      "liked": false
+    },
+    {
       "id": "fe4c92db-e6c8-448c-987c-77ebae75c2f1",
       "author": {
         "name": "You",
