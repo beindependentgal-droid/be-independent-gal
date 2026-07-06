@@ -50,7 +50,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(mapSupabaseUser(data.session?.user));
         }
       } catch (error) {
+        // Handle refresh token errors - clear invalid session
         console.error('Auth check error:', error);
+        if (isMounted) {
+          setUser(null);
+          // Clear corrupted session
+          try {
+            await supabase.auth.signOut();
+          } catch (signOutError) {
+            console.error('Error clearing session:', signOutError);
+          }
+        }
       } finally {
         if (isMounted) {
           setLoading(false);

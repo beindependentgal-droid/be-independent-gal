@@ -38,6 +38,8 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
   const [resendMessage, setResendMessage] = useState('')
 
   const strength = passwordStrength(password)
+  const isValidRedirect = (path?: string) => path?.startsWith('/') && !path.startsWith('//')
+  const loginRedirect = isValidRedirect(redirect) && !redirect.startsWith('/auth/onboarding') ? redirect : '/dashboard'
 
   const validate = () => {
     if (!firstName.trim()) {
@@ -159,9 +161,6 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
       </div>
     )
   }
-
-  const isValidRedirect = (path?: string) => path?.startsWith('/') && !path.startsWith('//')
-  const loginRedirect = isValidRedirect(redirect) && !redirect.startsWith('/auth/onboarding') ? redirect : '/dashboard'
 
   return (
     <form onSubmit={handleSubmit} className="w-full rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">

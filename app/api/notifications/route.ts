@@ -14,13 +14,7 @@ export async function GET(request: NextRequest) {
   try {
     let query = supabase
       .from('notifications')
-      .select(
-        `
-        *,
-        related_user:related_user_id(id, first_name, last_name, avatar_url)
-      `,
-        { count: 'exact' }
-      )
+      .select('*', { count: 'exact' })
       .eq('user_id', userId);
 
     if (unreadOnly) {
@@ -31,16 +25,18 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false })
       .range(offset, offset + pageSize - 1);
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     return successResponse({
-      notifications,
-      total: count,
-      unread: count,
+      notifications: notifications ?? [],
+      total: count ?? 0,
+      unread: count ?? 0,
       page: Math.floor(offset / pageSize) + 1,
       pageSize,
     });
   } catch (error: any) {
-    return errorResponse(error.message, 500);
+    return errorResponse(error.message || 'Unable to load notifications', 500);
   }
 }
