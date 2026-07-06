@@ -9,9 +9,9 @@ import {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = params;
+  const { id } = await params;
   try {
     const { data, error } = await supabase
       .from("opportunities")
@@ -27,8 +27,9 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   const authResult = await requireAuth(request);
   if (authResult instanceof Response) return authResult;
   const { userId } = authResult;
@@ -41,7 +42,7 @@ export async function PATCH(
     const { data, error } = await supabase
       .from("opportunities")
       .update(body)
-      .eq("id", params.id)
+      .eq("id", id)
       .select()
       .single();
     if (error) throw error;
@@ -53,8 +54,9 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   const authResult = await requireAuth(request);
   if (authResult instanceof Response) return authResult;
   const { userId } = authResult;
@@ -66,7 +68,7 @@ export async function DELETE(
     const { error } = await supabase
       .from("opportunities")
       .delete()
-      .eq("id", params.id);
+      .eq("id", id);
     if (error) throw error;
     return successResponse({ deleted: true });
   } catch (err: any) {

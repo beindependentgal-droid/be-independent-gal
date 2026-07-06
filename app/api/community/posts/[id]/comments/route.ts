@@ -6,8 +6,9 @@ export const dynamic = "force-dynamic";
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   const userId = await getCurrentUserId();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,7 +20,7 @@ export async function POST(
   }
 
   try {
-    const comment = await createComment(userId, params.id, body);
+    const comment = await createComment(userId, id, body);
     return NextResponse.json(comment, { status: 201 });
   } catch (error: unknown) {
     const message =

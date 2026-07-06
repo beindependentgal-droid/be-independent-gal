@@ -6,8 +6,9 @@ export const dynamic = "force-dynamic";
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   const userId = await getCurrentUserId();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,7 +20,7 @@ export async function POST(
   }
 
   try {
-    const reaction = await addReaction(userId, params.id, body.reaction);
+    const reaction = await addReaction(userId, id, body.reaction);
     return NextResponse.json(reaction, { status: 201 });
   } catch (error: unknown) {
     const message =
@@ -30,15 +31,16 @@ export async function POST(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   const userId = await getCurrentUserId();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    await removeReaction(userId, params.id);
+    await removeReaction(userId, id);
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message =

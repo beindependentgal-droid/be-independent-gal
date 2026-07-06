@@ -2,7 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Outfit, Inter } from 'next/font/google'
 import { SiteHeader } from '@/components/site-header'
-import { SiteFooter } from '@/components/site-footer'
+import { FooterGuard } from '@/components/footer-guard'
 import { AuthProvider } from '@/lib/auth-context'
 import './globals.css'
 
@@ -148,7 +148,7 @@ export default function RootLayout({
             </main>
 
             {/* Footer */}
-            <SiteFooter />
+            <FooterGuard />
           </div>
         </AuthProvider>
 

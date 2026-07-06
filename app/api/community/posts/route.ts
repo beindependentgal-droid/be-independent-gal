@@ -15,11 +15,13 @@ export async function GET(request: Request) {
 
   try {
     const result = await getFeed({ query, filter, userId, page, pageSize });
-    return NextResponse.json(result);
+    return NextResponse.json({
+      posts: result.posts ?? [],
+      count: result.count ?? 0,
+    });
   } catch (error: unknown) {
-    const message =
-      error instanceof Error ? error.message : "Unexpected server error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("Community posts fetch failed", error);
+    return NextResponse.json({ posts: [], count: 0 }, { status: 200 });
   }
 }
 

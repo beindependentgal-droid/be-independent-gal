@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import {
-  requireAuth,
+  getUserIdFromRequest,
   successResponse,
   errorResponse,
   supabase,
@@ -8,22 +8,24 @@ import {
 } from "@/lib/api-utils";
 
 export async function GET(request: NextRequest) {
-  const authResult = await requireAuth(request);
-  if (authResult instanceof Response) return authResult;
-
-  const { userId } = authResult;
+  const userId = await getUserIdFromRequest(request);
   const { pageSize, offset } = getPaginationParams(request);
 
   try {
-    const { data, error, count } = await supabase
+    let query = supabase
       .from("user_profiles")
       .select(
         "id, first_name, last_name, avatar_url, profession, bio, total_points, location",
         { count: "exact" },
       )
-      .neq("id", userId)
       .order("total_points", { ascending: false })
       .range(offset, offset + pageSize - 1);
+
+    if (userId) {
+      query = query.neq("id", userId);
+    }
+
+    const { data, error, count } = await query;
 
     if (error) throw error;
 

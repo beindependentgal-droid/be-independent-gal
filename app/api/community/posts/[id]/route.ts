@@ -6,8 +6,9 @@ export const dynamic = "force-dynamic";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   const userId = await getCurrentUserId();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,7 +20,7 @@ export async function PATCH(
   }
 
   try {
-    const post = await updatePost(userId, params.id, body);
+    const post = await updatePost(userId, id, body);
     return NextResponse.json(post);
   } catch (error: unknown) {
     const message =
@@ -30,15 +31,16 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   const userId = await getCurrentUserId();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    await deletePost(userId, params.id);
+    await deletePost(userId, id);
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message =

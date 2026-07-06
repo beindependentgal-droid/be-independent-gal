@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
-export function createServerSupabase() {
+export async function createServerSupabase() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -9,7 +9,7 @@ export function createServerSupabase() {
     throw new Error("Missing Supabase server environment variables");
   }
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
@@ -26,7 +26,7 @@ export function createServerSupabase() {
 }
 
 export async function getCurrentUserId() {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const { data } = await supabase.auth.getSession();
   return data.session?.user?.id ?? null;
 }

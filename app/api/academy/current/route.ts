@@ -14,7 +14,7 @@ function getTrackFromCircle(circle: string) {
 }
 
 export async function GET() {
-  const supabase = createServerSupabase();
+  const supabase = await createServerSupabase();
   const userId = await getCurrentUserId();
 
   let selectedCourse =

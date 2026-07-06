@@ -69,17 +69,17 @@ export const postSchema = z.object({
   visibility: z
     .enum(["public", "private", "connections", "circles"])
     .default("public"),
-  location: z.string().max(255).nullable(),
-  link: z.string().url().nullable(),
-  metadata: z.record(z.any()).optional(),
-  hashtags: z.array(z.string()).optional(),
+  location: z.string().max(255).nullable().optional().default(null),
+  link: z.string().url().nullable().optional().default(null),
+  metadata: z.record(z.any()).optional().default({}),
+  hashtags: z.array(z.string()).optional().default([]),
 });
 
 export type PostInput = z.infer<typeof postSchema>;
 
 export const commentSchema = z.object({
   post_id: z.string().uuid(),
-  parent_comment_id: z.string().uuid().nullable(),
+  parent_comment_id: z.string().uuid().nullable().optional().default(null),
   content: z.string().min(1).max(2000),
   user_id: z.string().uuid(),
 });

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import CommunityFeed from '@/components/community/community-feed'
+import CommunityFeed from '@/components/community/community-feed-redesign'
 
 export const metadata: Metadata = {
   title: 'Community | BIG',

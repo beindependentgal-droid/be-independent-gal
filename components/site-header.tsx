@@ -23,6 +23,7 @@ const guestNavLinks = [
 ]
 
 const authNavLinks = [
+  { href: '/dashboard', label: 'Dashboard' },
   { href: '/community', label: 'Community' },
   { href: '/academy', label: 'Academy' },
   { href: '/circles', label: 'Circles' },
@@ -134,21 +135,50 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <button
-          type="button"
-          aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
-          onClick={() => setOpen((value) => !value)}
-          className={cn(
-            'inline-flex h-10 w-10 items-center justify-center rounded-full border transition lg:hidden',
-            isTransparentHero
-              ? 'border-white/30 bg-white/10 text-white hover:bg-white/20'
-              : 'border-border/70 bg-background text-foreground hover:bg-muted',
-          )}
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          {!isAuthenticated ? (
+            <>
+              <Link
+                href={`/auth/login?redirect=${encodeURIComponent(redirectPath)}`}
+                className={cn(
+                  'inline-flex items-center justify-center rounded-full border px-3 py-2 text-xs font-semibold transition-colors',
+                  isTransparentHero
+                    ? 'border-white/30 bg-white/10 text-white hover:bg-white/20'
+                    : 'border-border/70 bg-background text-foreground hover:bg-muted',
+                )}
+              >
+                Sign In
+              </Link>
+              <Button
+                asChild
+                className={cn(
+                  'rounded-full px-3 py-2 text-xs font-semibold',
+                  isTransparentHero
+                    ? 'bg-white text-[#5B21B6] hover:bg-white/90'
+                    : 'bg-primary text-primary-foreground hover:bg-primary/90',
+                )}
+              >
+                <Link href={`/auth/sign-up?redirect=${encodeURIComponent(redirectPath)}`}>Join</Link>
+              </Button>
+            </>
+          ) : null}
 
-        <div className="hidden items-center gap-2 lg:flex">
+          <button
+            type="button"
+            aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
+            onClick={() => setOpen((value) => !value)}
+            className={cn(
+              'inline-flex h-10 w-10 items-center justify-center rounded-full border transition',
+              isTransparentHero
+                ? 'border-white/30 bg-white/10 text-white hover:bg-white/20'
+                : 'border-border/70 bg-background text-foreground hover:bg-muted',
+            )}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+
+        <div className="hidden items-center gap-2 md:flex lg:flex">
           <button
             type="button"
             onClick={toggleTheme}
