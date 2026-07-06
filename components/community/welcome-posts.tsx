@@ -14,7 +14,7 @@ const samplePosts = [
   {
     id: 'w2',
     author: 'Amina W.',
-    avatar: '/images/placeholder-user.jpg',
+    avatar: '/images/member-placeholder.svg',
     text: "Excited to join the Learn Circle — any resources for building confidence?",
     time: '2h',
   },

@@ -4,9 +4,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 const suggested = [
-  { id: 's1', name: 'Zainab K.', role: 'Entrepreneur', avatar: '/images/placeholder-user.jpg' },
-  { id: 's2', name: 'Grace M.', role: 'Designer', avatar: '/images/placeholder-user.jpg' },
-  { id: 's3', name: 'Lydia O.', role: 'Coach', avatar: '/images/placeholder-user.jpg' },
+  { id: 's1', name: 'Zainab K.', role: 'Entrepreneur', avatar: '/images/member-placeholder.svg' },
+  { id: 's2', name: 'Grace M.', role: 'Designer', avatar: '/images/member-placeholder.svg' },
+  { id: 's3', name: 'Lydia O.', role: 'Coach', avatar: '/images/member-placeholder.svg' },
 ]
 
 export default function SuggestedMembers() {

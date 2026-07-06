@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { type ChangeEvent, type DragEvent, useEffect, useMemo, useRef, useState } from 'react'
 import {
   BarChart3,
@@ -137,6 +138,7 @@ const fetchJson = async <T,>(url: string, init?: FetchOptions): Promise<T> => {
 
 export default function CommunityFeed() {
   const { user, loading: authLoading, isAuthenticated } = useAuth()
+  const pathname = usePathname()
   const displayName = user?.first_name ? `${user.first_name} ${user.last_name ?? ''}`.trim() : 'Community Member'
   const [posts, setPosts] = useState<Post[]>([])
   const [eventsState, setEventsState] = useState({ data: [] as Event[], loading: true, failed: false })
@@ -182,6 +184,8 @@ export default function CommunityFeed() {
   const COMPOSER_DRAFT_KEY = 'big-community-composer-draft'
 
   const visibleFeed = useMemo(() => posts.slice(0, visiblePosts), [posts, visiblePosts])
+  const activePath = pathname?.split('?')[0] ?? '/community'
+  const isNavActive = (href: string) => href === '/community' ? activePath === '/community' : activePath === href
   const profileCompletion = Math.min(100, 28 + (user?.first_name ? 28 : 0) + (user?.last_name ? 24 : 0) + (user?.email ? 20 : 0))
   const storyCards = useMemo(() => {
     const baseStories = buildStoryCards(user, membersState.data)
@@ -675,20 +679,22 @@ export default function CommunityFeed() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-3 py-4 sm:px-4 md:px-6 lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:gap-8 lg:px-8 lg:py-6">
+      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-3 py-4 pb-24 sm:px-4 md:px-6 lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:gap-8 lg:px-8 lg:py-6">
         <aside className="hidden lg:block">
           <div className="sticky top-24 space-y-4">
             <div className="rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-[0_18px_50px_-25px_rgba(15,23,42,0.25)]">
               <nav className="space-y-1.5">
                 {navLinks.map((item) => {
                   const Icon = item.icon
+                  const active = isNavActive(item.href)
                   return (
                     <Link
                       key={item.label}
                       href={item.href}
-                      className="group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-semibold text-slate-600 transition-all duration-300 hover:-translate-y-0.5 hover:bg-violet-50 hover:text-violet-700"
+                      aria-current={active ? 'page' : undefined}
+                      className={`group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-semibold transition-all duration-300 ${active ? 'bg-violet-50 text-violet-700 shadow-sm' : 'text-slate-600 hover:-translate-y-0.5 hover:bg-violet-50 hover:text-violet-700'}`}
                     >
-                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition group-hover:bg-violet-100 group-hover:text-violet-700">
+                      <span className={`inline-flex h-10 w-10 items-center justify-center rounded-2xl transition ${active ? 'bg-violet-100 text-violet-700' : 'bg-slate-100 text-slate-600 group-hover:bg-violet-100 group-hover:text-violet-700'}`}>
                         <Icon className="h-4 w-4" />
                       </span>
                       <span>{item.label}</span>
@@ -788,7 +794,7 @@ export default function CommunityFeed() {
               </div>
             ) : null}
 
-            <div className="mt-5 flex gap-3 overflow-x-auto pb-2 sm:gap-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="mt-5 flex gap-3 overflow-x-auto pb-3 sm:gap-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {storyCards.map((story, index) => (
                 <button
                   key={`${story.name}-${index}`}
@@ -1223,14 +1229,14 @@ export default function CommunityFeed() {
         </aside>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 p-3 shadow-[0_-10px_30px_-20px_rgba(15,23,42,0.2)] lg:hidden">
-        <div className="mx-auto flex max-w-lg items-center justify-between gap-2">
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/98 p-2 shadow-[0_-10px_30px_-20px_rgba(15,23,42,0.2)] lg:hidden">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-1 px-1">
           {bottomNav.map((item) => {
             const Icon = item.icon
             return (
-              <Link key={item.label} href={item.href} className="flex flex-1 flex-col items-center justify-center gap-1 rounded-3xl px-3 py-2 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-violet-700">
-                <Icon className="h-5 w-5" />
-                {item.label}
+              <Link key={item.label} href={item.href} className="flex min-w-[60px] flex-1 flex-col items-center justify-center gap-1 rounded-3xl px-2 py-2 text-[10px] font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-violet-700">
+                <Icon className="h-4 w-4" />
+                <span className="truncate">{item.label}</span>
               </Link>
             )
           })}

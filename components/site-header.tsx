@@ -26,10 +26,9 @@ const authNavLinks = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/community', label: 'Community' },
   { href: '/academy', label: 'Academy' },
-  { href: '/circles', label: 'Circles' },
+  { href: '/circles', label: 'Sister Circles' },
   { href: '/opportunities', label: 'Opportunities' },
-  { href: '/programs', label: 'Programs' },
-  { href: '/fund', label: 'BIG Fund' },
+  { href: '/events', label: 'Events' },
 ]
 
 export function SiteHeader() {
@@ -245,9 +244,15 @@ export function SiteHeader() {
                 </button>
 
                 {profileMenuOpen ? (
-                  <div className="absolute right-0 mt-2 w-44 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-200/60">
+                  <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-200/60">
                     <Link href={profileHref} onClick={() => setProfileMenuOpen(false)} className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
-                      View profile
+                      Profile
+                    </Link>
+                    <Link href="/messages" onClick={() => setProfileMenuOpen(false)} className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                      Messages
+                    </Link>
+                    <Link href="/settings" onClick={() => setProfileMenuOpen(false)} className="block rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                      Settings
                     </Link>
                     <button type="button" onClick={() => { setProfileMenuOpen(false); void handleSignOut() }} className="mt-1 flex w-full items-center rounded-xl px-3 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-50">
                       Sign out

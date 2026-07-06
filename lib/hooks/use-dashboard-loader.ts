@@ -27,8 +27,7 @@ export function useDashboardLoader() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetch = useCallback(async () => {
-    // Check if cache is fresh (less than 5 seconds old)
+  const loadDashboard = useCallback(async () => {
     const now = Date.now();
     if (globalCache.data && now - globalCache.timestamp < 5000) {
       setData(globalCache.data);
@@ -38,12 +37,11 @@ export function useDashboardLoader() {
 
     try {
       setLoading(true);
-      const response = await fetch("/api/dashboard/loader");
+      const response = await window.fetch("/api/dashboard/loader");
       if (!response.ok) throw new Error("Failed to load dashboard");
       const json = await response.json();
       if (json.error) throw new Error(json.error);
 
-      // Update global cache
       globalCache = {
         data: json,
         timestamp: now,
@@ -61,13 +59,13 @@ export function useDashboardLoader() {
   }, []);
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    loadDashboard();
+  }, [loadDashboard]);
 
   return {
     data,
     loading,
     error,
-    refetch: fetch,
+    refetch: loadDashboard,
   };
 }

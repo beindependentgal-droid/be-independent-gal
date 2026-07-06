@@ -328,7 +328,7 @@
           "id": "post-thrive-1",
           "author": {
             "name": "Rania",
-            "avatar": "/images/member-4.png",
+            "avatar": "/images/member-placeholder.svg",
             "rank": "Wellness Coach"
           },
           "content": "We are sharing simple daily rituals to bring more peace and energy.",
@@ -511,7 +511,7 @@
       "id": "post-thrive-1",
       "author": {
         "name": "Rania",
-        "avatar": "/images/member-4.png",
+        "avatar": "/images/member-placeholder.svg",
         "rank": "Wellness Coach"
       },
       "content": "We are sharing simple daily rituals to bring more peace and energy.",
