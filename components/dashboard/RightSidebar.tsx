@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Bell, Sparkles, Star, Trophy, Gift, CalendarDays } from 'lucide-react'
+import { Bell, Star, Trophy, CalendarDays } from 'lucide-react'
 import { useDashboardLoader } from '@/lib/hooks/use-dashboard-loader'
 
 const ROTATING_QUOTES = [
@@ -20,8 +20,8 @@ export default function RightSidebar() {
   return (
     <div className="space-y-4 sticky top-6">
       <div className="rounded-[20px] bg-white p-5 shadow-sm border border-slate-200">
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Today's quote</p>
-        <p className="mt-4 text-sm leading-6 text-slate-700">“{quote}”</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Today&apos;s quote</p>
+        <p className="mt-4 text-sm leading-6 text-slate-700">&ldquo;{quote}&rdquo;</p>
       </div>
 
       <div className="rounded-[20px] bg-white p-5 shadow-sm border border-slate-200">

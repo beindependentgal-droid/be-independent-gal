@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { ProfileSkeleton } from '@/components/ui/skeleton-loaders'
 import { useDashboardLoader } from '@/lib/hooks/use-dashboard-loader'
 
-function computeProfileCompletion(p: any) {
+function computeProfileCompletion(p: { [key: string]: unknown } | null | undefined) {
   if (!p) return 0
   const fields = ['full_name', 'avatar_url', 'bio', 'skills', 'interests']
   const filled = fields.reduce((acc, f) => (p[f] ? acc + 1 : acc), 0)
@@ -50,7 +50,7 @@ export default function WelcomeCard() {
 
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         <div className="rounded-[20px] bg-slate-50 p-4">
-          <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Today's goal</p>
+          <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Today&apos;s goal</p>
           <p className="mt-3 text-sm text-slate-700">Finish one Academy lesson and connect with a circle.</p>
         </div>
         <div className="rounded-[20px] bg-slate-50 p-4">

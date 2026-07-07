@@ -3,24 +3,24 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  Home,
-  Users,
+  ArrowRight,
+  Award,
+  BellRing,
   BookOpen,
-  Users as Users2,
   Briefcase,
   Calendar,
-  Sparkles,
-  Plus,
-  MessageCircle,
-  ArrowRight,
+  CheckCircle2,
+  ChevronRight,
   Clock3,
   Compass,
-  Target,
-  BellRing,
-  ChevronRight,
-  CheckCircle2,
   HandHeart,
-  Award,
+  Home,
+  MessageCircle,
+  Plus,
+  Sparkles,
+  Target,
+  Users,
+  Users2,
 } from 'lucide-react'
 import { useDashboardLoader } from '@/lib/hooks/use-dashboard-loader'
 
@@ -39,15 +39,8 @@ const quickActions = [
   { label: 'Browse Academy', icon: BookOpen, href: '/academy' },
   { label: 'Explore Opportunities', icon: Briefcase, href: '/opportunities' },
   { label: 'Join a Circle', icon: Users2, href: '/circles' },
-  { label: 'Volunteer', icon: HandHeart, href: '/get-involved' },
+  { label: 'Join BIG Club', icon: HandHeart, href: '/big-club' },
 ]
-
-function computeProfileCompletion(profile: { [key: string]: unknown } | null | undefined) {
-  if (!profile) return 0
-  const fields = ['full_name', 'avatar_url', 'bio', 'skills', 'interests']
-  const filled = fields.reduce((acc, field) => (profile[field] ? acc + 1 : acc), 0)
-  return Math.round((filled / fields.length) * 100)
-}
 
 function formatRelativeTime(value?: string | null) {
   if (!value) return 'recently'
@@ -58,31 +51,33 @@ function formatRelativeTime(value?: string | null) {
   return `${Math.round(diffInMinutes / 10080)}w ago`
 }
 
+function getGreeting() {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Good Morning'
+  if (hour < 18) return 'Good Afternoon'
+  return 'Good Evening'
+}
+
 export default function DashboardShell() {
   const pathname = usePathname() || '/dashboard'
   const { data, loading } = useDashboardLoader()
 
   const profile = data?.profile
-  const circles = data?.circles || []
-  const upcomingEvent = data?.upcomingEvent
+  const upcomingEvents = data?.upcomingEvents || []
   const opportunities = data?.opportunities || []
-  const course = data?.course
   const communityPosts = data?.communityPosts || []
   const recentActivity = data?.recentActivity || []
-  const stats = data?.stats || {}
+  const stats = data?.stats
+  const nextSteps = data?.nextSteps || []
+  const goals = data?.goals || []
+  const club = data?.club
+  const notifications = data?.notifications || []
+  const registeredEventIds = data?.registeredEventIds || []
 
   const firstName = profile?.first_name || profile?.full_name?.split(' ')[0] || 'there'
-  const profileCompletion = computeProfileCompletion(profile)
+  const profileCompletion = stats?.profileCompletion ?? 0
   const today = new Intl.DateTimeFormat('en', { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date())
-  const club = circles[0]
-
-  const goals = [
-    { title: 'Complete one Academy lesson', done: Boolean(course) },
-    { title: 'Attend one event', done: Boolean(upcomingEvent) },
-    { title: 'Comment on three posts', done: Number(stats.commentsMade || 0) >= 3 },
-    { title: 'Join a Sister Circle', done: Number(stats.circlesJoined || 0) >= 1 },
-    { title: 'Apply for an opportunity', done: Number(stats.eventsRegistered || 0) >= 1 },
-  ]
+  const greeting = getGreeting()
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(139,92,246,0.08),_transparent_35%),linear-gradient(180deg,_#fcfbff_0%,_#f8f7ff_100%)] text-slate-900">
@@ -91,8 +86,8 @@ export default function DashboardShell() {
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-violet-600">BIG member dashboard</p>
-              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Welcome Back, {firstName} 👋</h1>
-              <p className="mt-2 max-w-2xl text-sm text-slate-600">Here&apos;s what&apos;s happening in your BIG journey today.</p>
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">{greeting}, {firstName} 👋</h1>
+              <p className="mt-2 max-w-2xl text-sm text-slate-600">Here&apos;s the live view of your BIG journey today.</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               {navItems.map((item) => {
@@ -124,30 +119,33 @@ export default function DashboardShell() {
                     <Sparkles className="h-4 w-4" />
                     Your community, your growth, your impact
                   </div>
-                  <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Good to see you back.</h2>
-                  <p className="mt-3 text-base text-slate-600">Keep the momentum going with a clear view of what you have done and what is next.</p>
+                  <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Living your BIG journey in real time.</h2>
+                  <p className="mt-3 text-base text-slate-600">Every number below is pulled from your latest Supabase activity.</p>
                   <div className="mt-5 flex flex-wrap gap-3 text-sm text-slate-600">
                     <span className="rounded-full bg-slate-100 px-3 py-2">{today}</span>
-                    <span className="rounded-full bg-slate-100 px-3 py-2">{stats.circlesJoined || 0} circles joined</span>
-                    <span className="rounded-full bg-slate-100 px-3 py-2">{stats.eventsRegistered || 0} events registered</span>
+                    <span className="rounded-full bg-slate-100 px-3 py-2">{stats?.circlesJoined ?? 0} circles joined</span>
+                    <span className="rounded-full bg-slate-100 px-3 py-2">{stats?.eventsRegistered ?? 0} events registered</span>
                   </div>
                 </div>
 
                 <div className="rounded-[24px] border border-violet-100 bg-gradient-to-br from-violet-600 to-fuchsia-500 p-5 text-white shadow-lg shadow-violet-200">
                   <p className="text-sm font-medium text-violet-100">Profile progress</p>
+                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/25">
+                    <div className="h-full rounded-full bg-white" style={{ width: `${profileCompletion}%` }} />
+                  </div>
                   <p className="mt-3 text-4xl font-semibold">{profileCompletion}%</p>
-                  <p className="mt-2 text-sm text-violet-100">Complete your profile to unlock more connections</p>
+                  <p className="mt-2 text-sm text-violet-100">Complete your profile to unlock stronger connections.</p>
                 </div>
               </div>
             </section>
 
             <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {[
-                { label: 'Posts Created', value: stats.postsCreated ?? 0, icon: MessageCircle, tone: 'from-violet-500 to-fuchsia-500' },
-                { label: 'Comments Made', value: stats.commentsMade ?? 0, icon: MessageCircle, tone: 'from-sky-500 to-cyan-500' },
-                { label: 'Circles Joined', value: stats.circlesJoined ?? 0, icon: Users2, tone: 'from-amber-500 to-orange-500' },
-                { label: 'Events Registered', value: stats.eventsRegistered ?? 0, icon: Calendar, tone: 'from-emerald-500 to-lime-500' },
-                { label: 'Courses Completed', value: stats.coursesCompleted ?? 0, icon: BookOpen, tone: 'from-indigo-500 to-violet-500' },
+                { label: 'Posts Created', value: stats?.postsCreated ?? 0, icon: MessageCircle, tone: 'from-violet-500 to-fuchsia-500' },
+                { label: 'Comments Made', value: stats?.commentsMade ?? 0, icon: MessageCircle, tone: 'from-sky-500 to-cyan-500' },
+                { label: 'Circles Joined', value: stats?.circlesJoined ?? 0, icon: Users2, tone: 'from-amber-500 to-orange-500' },
+                { label: 'Events Registered', value: stats?.eventsRegistered ?? 0, icon: Calendar, tone: 'from-emerald-500 to-lime-500' },
+                { label: 'Courses Completed', value: stats?.coursesCompleted ?? 0, icon: BookOpen, tone: 'from-indigo-500 to-violet-500' },
                 { label: 'Profile Completion', value: `${profileCompletion}%`, icon: Award, tone: 'from-rose-500 to-pink-500' },
               ].map((item) => {
                 const Icon = item.icon
@@ -168,7 +166,7 @@ export default function DashboardShell() {
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-lg font-semibold text-slate-950">Recent Activity</p>
-                    <p className="text-sm text-slate-500">What you have done lately</p>
+                    <p className="text-sm text-slate-500">Your latest BIG moments</p>
                   </div>
                   <div className="rounded-full bg-violet-50 px-3 py-1 text-sm font-medium text-violet-700">Live</div>
                 </div>
@@ -176,13 +174,11 @@ export default function DashboardShell() {
                 <div className="mt-6 space-y-3">
                   {loading ? (
                     <div className="space-y-3">
-                      {[1, 2, 3].map((item) => (
-                        <div key={item} className="h-16 animate-pulse rounded-[20px] bg-slate-100" />
-                      ))}
+                      {[1, 2, 3].map((item) => <div key={item} className="h-16 animate-pulse rounded-[20px] bg-slate-100" />)}
                     </div>
                   ) : recentActivity.length > 0 ? (
                     recentActivity.map((item) => (
-                      <div key={`${item.title}-${item.created_at}`} className="flex items-start gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-4">
+                      <div key={`${item.kind}-${item.created_at}`} className="flex items-start gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-4">
                         <div className="rounded-full bg-violet-100 p-2 text-violet-700">
                           <Clock3 className="h-4 w-4" />
                         </div>
@@ -195,7 +191,7 @@ export default function DashboardShell() {
                     ))
                   ) : (
                     <div className="rounded-[20px] border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-                      Start by creating your first post or joining a circle.
+                      No activity yet. Start by posting, joining a circle, or registering for an event.
                     </div>
                   )}
                 </div>
@@ -205,29 +201,39 @@ export default function DashboardShell() {
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-lg font-semibold text-slate-950">Upcoming Events</p>
-                    <p className="text-sm text-slate-500">Reserve your spot before it fills</p>
+                    <p className="text-sm text-slate-500">Your next opportunities to connect</p>
                   </div>
                   <Link href="/events" className="text-sm font-semibold text-violet-700">View all</Link>
                 </div>
 
                 {loading ? (
-                  <div className="mt-6 h-24 animate-pulse rounded-[20px] bg-slate-100" />
-                ) : upcomingEvent ? (
-                  <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-                    <div className="h-24 rounded-[20px] bg-gradient-to-r from-violet-500 to-fuchsia-500" />
-                    <div className="mt-4">
-                      <p className="font-semibold text-slate-900">{upcomingEvent.title}</p>
-                      <p className="mt-1 text-sm text-slate-500">{new Date(upcomingEvent.date).toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                      <p className="mt-1 text-sm text-slate-500">{upcomingEvent.location || 'Virtual'}</p>
-                      <button className="mt-4 inline-flex items-center gap-2 rounded-full bg-violet-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-700">
-                        Register
-                        <ArrowRight className="h-4 w-4" />
-                      </button>
-                    </div>
+                  <div className="mt-6 space-y-3">
+                    {[1, 2].map((item) => <div key={item} className="h-24 animate-pulse rounded-[20px] bg-slate-100" />)}
+                  </div>
+                ) : upcomingEvents.length > 0 ? (
+                  <div className="mt-6 space-y-3">
+                    {upcomingEvents.map((event) => (
+                      <div key={event.id} className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="font-semibold text-slate-900">{event.title}</p>
+                            <p className="mt-1 text-sm text-slate-500">{event.date ? new Date(event.date).toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD'}</p>
+                            <p className="mt-1 text-sm text-slate-500">{event.location || 'Virtual'}</p>
+                          </div>
+                          <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${registeredEventIds.includes(event.id) ? 'bg-emerald-100 text-emerald-700' : 'bg-violet-100 text-violet-700'}`}>
+                            {registeredEventIds.includes(event.id) ? 'Registered' : 'Open'}
+                          </span>
+                        </div>
+                        <Link href="/events" className="mt-4 inline-flex items-center gap-2 rounded-full bg-violet-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-700">
+                          {registeredEventIds.includes(event.id) ? 'View event' : 'Register'}
+                          <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <div className="mt-6 rounded-[20px] border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-                    There are no upcoming events yet. Keep an eye on the calendar for new opportunities.
+                    No upcoming events.
                   </div>
                 )}
               </div>
@@ -240,7 +246,7 @@ export default function DashboardShell() {
                     <p className="text-lg font-semibold text-slate-950">BIG Club Membership</p>
                     <p className="text-sm text-slate-500">Your home base in the BIG ecosystem</p>
                   </div>
-                  <Link href="/circles" className="text-sm font-semibold text-violet-700">View club</Link>
+                  <Link href="/big-club" className="text-sm font-semibold text-violet-700">View club</Link>
                 </div>
 
                 {club ? (
@@ -248,18 +254,19 @@ export default function DashboardShell() {
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <p className="text-lg font-semibold text-slate-950">{club.name}</p>
-                        <p className="mt-1 text-sm text-slate-600">You are an active member of this circle</p>
+                        <p className="mt-1 text-sm text-slate-600">You are an active member of this BIG club.</p>
                       </div>
                       <div className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-violet-700">Active</div>
                     </div>
                     <div className="mt-4 flex items-center gap-2 text-sm text-slate-600">
                       <Calendar className="h-4 w-4 text-violet-600" />
-                      Next meeting: {upcomingEvent?.title || 'Join the next BIG session'}
+                      Next meeting: {club.next_meeting || 'TBA'}
                     </div>
                   </div>
                 ) : (
                   <div className="mt-6 rounded-[20px] border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-                    Join your first circle to start building the community around you.
+                    You&apos;re not yet part of a BIG Club.
+                    <Link href="/big-club" className="mt-3 inline-flex items-center gap-2 rounded-full bg-violet-600 px-4 py-2 font-semibold text-white">Join Club <ArrowRight className="h-4 w-4" /></Link>
                   </div>
                 )}
               </div>
@@ -268,7 +275,7 @@ export default function DashboardShell() {
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-lg font-semibold text-slate-950">Recommended Opportunities</p>
-                    <p className="text-sm text-slate-500">Good next moves for you</p>
+                    <p className="text-sm text-slate-500">The best next moves for your journey</p>
                   </div>
                   <Link href="/opportunities" className="text-sm font-semibold text-violet-700">See all</Link>
                 </div>
@@ -277,24 +284,25 @@ export default function DashboardShell() {
                   {loading ? (
                     <div className="h-20 animate-pulse rounded-[20px] bg-slate-100" />
                   ) : opportunities.length > 0 ? (
-                    opportunities.map((opportunity: { id: string; title: string; category?: string | null }) => (
+                    opportunities.map((opportunity) => (
                       <div key={opportunity.id} className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
                         <div className="flex items-center justify-between gap-3">
                           <div>
                             <p className="font-semibold text-slate-900">{opportunity.title}</p>
-                            <p className="mt-1 text-sm text-slate-500">{opportunity.category || 'Featured opportunity'}</p>
+                            <p className="mt-1 text-sm text-slate-500">{opportunity.category || 'Opportunity'}</p>
                           </div>
                           <span className="rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-violet-700">Open</span>
                         </div>
-                        <button className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">
+                        <p className="mt-3 text-sm text-slate-600">{opportunity.deadline ? `Deadline: ${new Date(opportunity.deadline).toLocaleDateString('en', { month: 'short', day: 'numeric' })}` : 'Open now'}</p>
+                        <Link href="/opportunities" className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">
                           Apply
                           <ArrowRight className="h-4 w-4" />
-                        </button>
+                        </Link>
                       </div>
                     ))
                   ) : (
                     <div className="rounded-[20px] border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-                      New opportunities will appear here as they are added to BIG.
+                      No active opportunities right now.
                     </div>
                   )}
                 </div>
@@ -306,7 +314,7 @@ export default function DashboardShell() {
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-lg font-semibold text-slate-950">Weekly Goals</p>
-                    <p className="text-sm text-slate-500">Small wins that build real momentum</p>
+                    <p className="text-sm text-slate-500">Your next milestones</p>
                   </div>
                   <div className="rounded-full bg-violet-50 px-3 py-1 text-sm font-medium text-violet-700">{goals.filter((goal) => goal.done).length}/{goals.length} complete</div>
                 </div>
@@ -332,7 +340,7 @@ export default function DashboardShell() {
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-lg font-semibold text-slate-950">Community Feed Preview</p>
-                    <p className="text-sm text-slate-500">Your latest posts and updates</p>
+                    <p className="text-sm text-slate-500">The latest conversation from your community</p>
                   </div>
                   <Link href="/community" className="text-sm font-semibold text-violet-700">Open feed</Link>
                 </div>
@@ -340,12 +348,10 @@ export default function DashboardShell() {
                 <div className="mt-6 space-y-3">
                   {loading ? (
                     <div className="space-y-3">
-                      {[1, 2].map((item) => (
-                        <div key={item} className="h-16 animate-pulse rounded-[20px] bg-slate-100" />
-                      ))}
+                      {[1, 2].map((item) => <div key={item} className="h-16 animate-pulse rounded-[20px] bg-slate-100" />)}
                     </div>
                   ) : communityPosts.length > 0 ? (
-                    communityPosts.map((post: { id: string; content?: string | null; created_at?: string | null }) => (
+                    communityPosts.map((post) => (
                       <div key={post.id} className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
                         <p className="text-sm text-slate-700">{post.content?.slice(0, 120) || 'Shared an update'}</p>
                         <p className="mt-2 text-xs uppercase tracking-[0.2em] text-slate-500">{formatRelativeTime(post.created_at)}</p>
@@ -353,7 +359,7 @@ export default function DashboardShell() {
                     ))
                   ) : (
                     <div className="rounded-[20px] border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-                      Start your first community post to spark conversation.
+                      No posts yet. Share the first update with your community.
                     </div>
                   )}
                 </div>
@@ -374,17 +380,15 @@ export default function DashboardShell() {
                   </div>
                 </div>
                 <div className="mt-5 space-y-3">
-                  {data?.notifications?.length ? (
-                    data.notifications.map((item: { id: string; message?: string | null; title?: string | null }) => (
+                  {notifications.length > 0 ? (
+                    notifications.map((item) => (
                       <div key={item.id} className="flex items-start gap-3 rounded-[16px] bg-slate-50 p-3 text-sm text-slate-700">
                         <Clock3 className="mt-0.5 h-4 w-4 text-violet-600" />
                         <span>{item.message || item.title}</span>
                       </div>
                     ))
                   ) : (
-                    <div className="rounded-[16px] bg-slate-50 p-3 text-sm text-slate-600">
-                      You are all caught up.
-                    </div>
+                    <div className="rounded-[16px] bg-slate-50 p-3 text-sm text-slate-600">You&apos;re all caught up.</div>
                   )}
                 </div>
               </section>
@@ -393,25 +397,23 @@ export default function DashboardShell() {
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-lg font-semibold text-slate-950">Recommended Next Steps</p>
-                    <p className="text-sm text-slate-500">Small actions that move you forward</p>
+                    <p className="text-sm text-slate-500">Keep momentum going</p>
                   </div>
                   <div className="rounded-full bg-slate-100 p-2 text-slate-600">
                     <Compass className="h-4 w-4" />
                   </div>
                 </div>
                 <div className="mt-5 grid gap-2">
-                  {[
-                    'Complete your profile',
-                    'Join a Sister Circle',
-                    'Register for an upcoming event',
-                    'Continue your Academy course',
-                    'Apply for an opportunity',
-                  ].map((step) => (
-                    <div key={step} className="flex items-center justify-between rounded-[16px] border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700">
-                      <span>{step}</span>
-                      <ChevronRight className="h-4 w-4 text-slate-400" />
-                    </div>
-                  ))}
+                  {nextSteps.length > 0 ? (
+                    nextSteps.map((step) => (
+                      <div key={step} className="flex items-center justify-between rounded-[16px] border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700">
+                        <span>{step}</span>
+                        <ChevronRight className="h-4 w-4 text-slate-400" />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="rounded-[16px] border border-dashed border-slate-300 bg-slate-50 p-3 text-sm text-slate-600">You&apos;re on track. Keep going.</div>
+                  )}
                 </div>
               </section>
 
@@ -459,7 +461,7 @@ export default function DashboardShell() {
             <Users2 className="h-5 w-5" />
             Circles
           </Link>
-          <Link href="/auth/profile" className="inline-flex flex-col items-center gap-1 text-xs text-slate-700 hover:text-violet-700">
+          <Link href="/profile" className="inline-flex flex-col items-center gap-1 text-xs text-slate-700 hover:text-violet-700">
             <Calendar className="h-5 w-5" />
             Profile
           </Link>

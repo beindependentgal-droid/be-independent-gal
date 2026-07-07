@@ -56,7 +56,6 @@ export function SiteHeader() {
     ),
   )
   const isTransparentHero = pathname === '/' && !scrolled
-  const isMemberAppRoute = ['/dashboard', '/community', '/feed', '/messages', '/profile', '/settings', '/saved', '/events/my-events', '/opportunities/my', '/big-club', '/admin'].some((route) => pathname === route || pathname.startsWith(`${route}/`))
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 18)
