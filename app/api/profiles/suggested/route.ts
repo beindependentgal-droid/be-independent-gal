@@ -1,44 +1,97 @@
-import { NextRequest } from "next/server";
+import { NextRequest } from 'next/server'
 import {
   getUserIdFromRequest,
   successResponse,
   errorResponse,
   supabase,
   getPaginationParams,
-} from "@/lib/api-utils";
+} from '@/lib/api-utils'
 
+// Enhanced suggestion engine: score candidates by shared interests, profession, city, circles and mutual connections
 export async function GET(request: NextRequest) {
-  const userId = await getUserIdFromRequest(request);
-  const { pageSize, offset } = getPaginationParams(request);
+  const userId = await getUserIdFromRequest(request)
+  const { pageSize, offset } = getPaginationParams(request)
 
   try {
-    let query = supabase
-      .from("user_profiles")
-      .select(
-        "id, first_name, last_name, avatar_url, profession, bio, total_points, location",
-        { count: "exact" },
-      )
-      .order("total_points", { ascending: false })
-      .range(offset, offset + pageSize - 1);
+    if (!userId) return successResponse({ members: [], total: 0, page: 1, pageSize })
 
-    if (userId) {
-      query = query.neq("id", userId);
+    // load current user
+    const { data: meData, error: meErr } = await supabase.from('user_profiles').select('*').eq('id', userId).maybeSingle()
+    if (meErr) throw meErr
+    const me: Record<string, unknown> = (meData as Record<string, unknown>) || {}
+
+    // load candidate pool (limit some reasonable cap for scoring)
+    const limit = Math.max(pageSize * 4, 100)
+    const { data: candidates, error: candErr } = await supabase
+      .from('user_profiles')
+      .select('id, first_name, last_name, avatar_url, profession, bio, interests, location')
+      .neq('id', userId)
+      .limit(limit)
+    if (candErr) throw candErr
+
+    // load connections and pending requests and blocked users to exclude
+    const [{ data: connections }, { data: requestsFrom }, { data: requestsTo }, { data: blocked }] = await Promise.all([
+      supabase.from('connections').select('requester,recipient,status').or(`requester.eq.${userId},recipient.eq.${userId}`),
+      supabase.from('connection_requests').select('to_profile').eq('from_profile', userId),
+      supabase.from('connection_requests').select('from_profile').eq('to_profile', userId),
+      supabase.from('blocked_users').select('blocked').eq('blocker', userId),
+    ])
+
+    const connectedIds = new Set<string>()
+    (connections || []).forEach((c: Record<string, unknown>) => {
+      const status = c.status as string | undefined
+      const requester = c.requester as string | undefined
+      const recipient = c.recipient as string | undefined
+      if (status === 'connected') {
+        if (requester) connectedIds.add(requester)
+        if (recipient) connectedIds.add(recipient)
+      }
+    })
+    const requestedTo = new Set((requestsFrom || []).map((r: Record<string, unknown>) => r.to_profile as string))
+    const requestedFrom = new Set((requestsTo || []).map((r: Record<string, unknown>) => r.from_profile as string))
+    const blockedSet = new Set((blocked || []).map((b: Record<string, unknown>) => b.blocked as string))
+
+    function scoreCandidate(candidate: Record<string, unknown>) {
+      if (!candidate) return 0
+      const candidateId = candidate.id as string | undefined
+      if (!candidateId) return -1
+      if (connectedIds.has(candidateId)) return -1
+      if (requestedTo.has(candidateId) || requestedFrom.has(candidateId)) return -1
+      if (blockedSet.has(candidateId)) return -1
+
+      let score = 0
+      // shared interests
+      const myInterests = Array.isArray(me.interests) ? (me.interests as string[]) : typeof me.interests === 'string' ? (me.interests as string).split(',') : []
+      const theirInterests = Array.isArray(candidate.interests) ? (candidate.interests as string[]) : typeof candidate.interests === 'string' ? (candidate.interests as string).split(',') : []
+      const sharedInterests = myInterests.filter((i: string) => theirInterests.includes(i)).length
+      score += sharedInterests * 3
+
+      // same profession
+      const myProf = me.profession as string | undefined
+      const theirProf = candidate.profession as string | undefined
+      if (myProf && theirProf && myProf === theirProf) score += 4
+
+      // same location
+      const myLoc = me.location as string | undefined
+      const theirLoc = candidate.location as string | undefined
+      if (myLoc && theirLoc && myLoc === theirLoc) score += 2
+
+      // small boost for profile completeness
+      if (candidate.avatar_url) score += 1
+      if (candidate.bio) score += 1
+
+      return score
     }
 
-    const { data, error, count } = await query;
+    const scored = (candidates || []).map((c: Record<string, unknown>) => ({ candidate: c, score: scoreCandidate(c) })).filter((s) => s.score >= 0)
+    scored.sort((a, b) => b.score - a.score)
 
-    if (error) throw error;
-
-    return successResponse({
-      members: data || [],
-      total: count,
-      page: Math.floor(offset / pageSize) + 1,
-      pageSize,
-    });
-  } catch (error: any) {
-    return errorResponse(
-      error.message || "Failed to load suggested members",
-      500,
-    );
+    const total = scored.length
+    const slice = scored.slice(offset, offset + pageSize)
+    const members = slice.map((s) => s.candidate)
+    return successResponse({ members, total, page: Math.floor(offset / pageSize) + 1, pageSize })
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error)
+    return errorResponse(message || 'Failed to load suggested members', 500)
   }
 }

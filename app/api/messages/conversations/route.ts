@@ -1,13 +1,5 @@
 import { NextRequest } from "next/server";
-import {
-  requireAuth,
-  successResponse,
-  errorResponse,
-  supabase,
-  getPaginationParams,
-  recordActivity,
-  sendNotification,
-} from "@/lib/api-utils";
+import { requireAuth, successResponse, errorResponse, supabase, getPaginationParams, recordActivity } from '@/lib/api-utils'
 
 // GET /api/messages/conversations - List user's conversations
 export async function GET(request: NextRequest) {
@@ -41,12 +33,9 @@ export async function GET(request: NextRequest) {
     if (error) throw error;
 
     // Get the other participant for each conversation
-    const formattedConversations = conversations?.map((conv: any) => {
-      const otherParticipant =
-        conv.participant_1_id === userId
-          ? conv.participant_2
-          : conv.participant_1;
-      const lastMessage = conv.messages?.[0];
+    const formattedConversations = (conversations || []).map((conv: Record<string, unknown>) => {
+      const otherParticipant = conv.participant_1_id === userId ? conv.participant_2 : conv.participant_1
+      const lastMessage = (conv.messages || [])[0]
 
       return {
         id: conv.id,
@@ -54,8 +43,8 @@ export async function GET(request: NextRequest) {
         lastMessage,
         updatedAt: conv.updated_at,
         createdAt: conv.created_at,
-      };
-    });
+      }
+    })
 
     return successResponse({
       conversations: formattedConversations,
@@ -63,8 +52,9 @@ export async function GET(request: NextRequest) {
       page: Math.floor(offset / pageSize) + 1,
       pageSize,
     });
-  } catch (error: any) {
-    return errorResponse(error.message, 500);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error)
+    return errorResponse(message, 500)
   }
 }
 
@@ -116,7 +106,8 @@ export async function POST(request: NextRequest) {
     }
 
     return successResponse(conversation, 201);
-  } catch (error: any) {
-    return errorResponse(error.message, 500);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error)
+    return errorResponse(message, 500)
   }
 }
