@@ -1,16 +1,99 @@
 import { useEffect, useState, useCallback } from "react";
+import { createClient } from "@/lib/supabase-client";
 
-interface DashboardData {
-  profile: any | null;
-  circles: any[];
-  notifications: any[];
-  upcomingEvent: any | null;
-  opportunities: any[];
-  course: any | null;
-  communityPosts: any[];
+interface Profile {
+  id?: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  avatar_url?: string | null;
+  member_level?: string | null;
+  full_name?: string | null;
+  bio?: string | null;
+  skills?: string[] | string | null;
+  interests?: string[] | string | null;
+  created_at?: string | null;
 }
 
-const DASHBOARD_LOADER_KEY = "dashboard-loader-cache";
+interface Circle {
+  id?: string;
+  name?: string | null;
+  description?: string | null;
+  avatar_url?: string | null;
+  created_at?: string | null;
+}
+
+interface NotificationItem {
+  id: string;
+  type?: string | null;
+  title?: string | null;
+  message?: string | null;
+  created_at?: string | null;
+  read?: boolean | null;
+}
+
+interface EventItem {
+  id?: string;
+  title?: string | null;
+  date?: string | null;
+  location?: string | null;
+  description?: string | null;
+}
+
+interface OpportunityItem {
+  id: string;
+  title?: string | null;
+  description?: string | null;
+  cover_image?: string | null;
+  category?: string | null;
+  featured?: boolean | null;
+}
+
+interface CourseItem {
+  id?: string;
+  course_id?: string | null;
+  progress?: number | null;
+  updated_at?: string | null;
+  courses?: {
+    id?: string;
+    title?: string | null;
+    description?: string | null;
+    image_url?: string | null;
+  } | null;
+}
+
+interface CommunityPost {
+  id: string;
+  content?: string | null;
+  created_at?: string | null;
+}
+
+interface RecentActivity {
+  title: string;
+  description: string;
+  created_at?: string | null;
+  kind: string;
+}
+
+interface DashboardStats {
+  postsCreated?: number;
+  commentsMade?: number;
+  circlesJoined?: number;
+  eventsRegistered?: number;
+  coursesCompleted?: number;
+  profileCompletion?: number;
+}
+
+interface DashboardData {
+  profile: Profile | null;
+  circles: Circle[];
+  notifications: NotificationItem[];
+  upcomingEvent: EventItem | null;
+  opportunities: OpportunityItem[];
+  course: CourseItem | null;
+  communityPosts: CommunityPost[];
+  recentActivity: RecentActivity[];
+  stats: DashboardStats;
+}
 
 // Global cache to prevent duplicate fetches
 let globalCache: { data: DashboardData | null; timestamp: number } = {
@@ -37,7 +120,21 @@ export function useDashboardLoader() {
 
     try {
       setLoading(true);
-      const response = await window.fetch("/api/dashboard/loader");
+
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const headers: HeadersInit = {};
+      if (session?.access_token) {
+        headers.Authorization = `Bearer ${session.access_token}`;
+      }
+
+      const response = await window.fetch("/api/dashboard/loader", {
+        headers,
+        credentials: "same-origin",
+      });
       if (!response.ok) throw new Error("Failed to load dashboard");
       const json = await response.json();
       if (json.error) throw new Error(json.error);
@@ -59,7 +156,11 @@ export function useDashboardLoader() {
   }, []);
 
   useEffect(() => {
-    loadDashboard();
+    const timer = window.setTimeout(() => {
+      void loadDashboard();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [loadDashboard]);
 
   return {

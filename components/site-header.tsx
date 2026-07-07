@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Bell, ChevronDown, Menu, Moon, Search, Sun, X } from 'lucide-react'
+import { Bell, BookOpen, CalendarDays, ChevronDown, CircleUserRound, House, Info, LogIn, Menu, MessageCircleMore, Moon, Sun, UsersRound, X } from 'lucide-react'
 import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -18,8 +18,9 @@ const guestNavLinks = [
   { href: '/opportunities', label: 'Opportunities' },
   { href: '/programs', label: 'Programs' },
   { href: '/fund', label: 'BIG Fund' },
-  { href: '/join', label: 'Join' },
   { href: '/contact', label: 'Contact' },
+  { href: '/join', label: 'Join' },
+  { href: '/signin', label: 'Sign In' },
 ]
 
 const authNavLinks = [
@@ -29,6 +30,7 @@ const authNavLinks = [
   { href: '/circles', label: 'Sister Circles' },
   { href: '/opportunities', label: 'Opportunities' },
   { href: '/events', label: 'Events' },
+  { href: '/big-club', label: 'BIG Club' },
 ]
 
 export function SiteHeader() {
@@ -42,9 +44,9 @@ export function SiteHeader() {
   const redirectPath = pathname?.startsWith('/auth') ? '/dashboard' : pathname || '/dashboard'
   const menuLinks = isAuthenticated ? authNavLinks : guestNavLinks
   const userName = user?.user_metadata?.full_name || user?.email || 'Member'
-  const userRole = user?.user_metadata?.role || 'Member'
+  const userRole = user?.user_metadata?.role || user?.user_metadata?.membership_level || 'Member'
   const avatarLabel = user?.user_metadata?.avatar_url ? null : userName.charAt(0).toUpperCase()
-  const profileHref = isAuthenticated ? '/auth/profile' : `/auth/login?redirect=${encodeURIComponent(redirectPath)}`
+  const profileHref = isAuthenticated ? '/profile' : `/signin?redirect=${encodeURIComponent(redirectPath)}`
   const adminHref = '/admin'
   const userRoleLower = typeof user?.user_metadata?.role === 'string' ? user.user_metadata.role.toLowerCase() : ''
   const isSuperAdmin = Boolean(
@@ -54,6 +56,7 @@ export function SiteHeader() {
     ),
   )
   const isTransparentHero = pathname === '/' && !scrolled
+  const isMemberAppRoute = ['/dashboard', '/community', '/feed', '/messages', '/profile', '/settings', '/saved', '/events/my-events', '/opportunities/my', '/big-club', '/admin'].some((route) => pathname === route || pathname.startsWith(`${route}/`))
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 18)
@@ -147,33 +150,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2 lg:hidden">
-          {!isAuthenticated ? (
-            <>
-              <Link
-                href={`/auth/login?redirect=${encodeURIComponent(redirectPath)}`}
-                className={cn(
-                  'inline-flex items-center justify-center rounded-full border px-3 py-2 text-xs font-semibold transition-colors',
-                  isTransparentHero
-                    ? 'border-white/30 bg-white/10 text-white hover:bg-white/20'
-                    : 'border-border/70 bg-background text-foreground hover:bg-muted',
-                )}
-              >
-                Sign In
-              </Link>
-              <Button
-                asChild
-                className={cn(
-                  'rounded-full px-3 py-2 text-xs font-semibold',
-                  isTransparentHero
-                    ? 'bg-white text-[#5B21B6] hover:bg-white/90'
-                    : 'bg-primary text-primary-foreground hover:bg-primary/90',
-                )}
-              >
-                <Link href={`/auth/sign-up?redirect=${encodeURIComponent(redirectPath)}`}>Join</Link>
-              </Button>
-            </>
-          ) : null}
-
           <button
             type="button"
             aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
@@ -219,12 +195,12 @@ export function SiteHeader() {
                   Superadmin
                 </Link>
               ) : null}
-              <button type="button" className="rounded-full border border-border/70 bg-background p-2.5 text-foreground transition hover:bg-muted" aria-label="Search">
-                <Search className="h-4 w-4" />
-              </button>
-              <button type="button" className="rounded-full border border-border/70 bg-background p-2.5 text-foreground transition hover:bg-muted" aria-label="Notifications">
+              <Link href="/messages" className="rounded-full border border-border/70 bg-background p-2.5 text-foreground transition hover:bg-muted" aria-label="Messages">
+                <MessageCircleMore className="h-4 w-4" />
+              </Link>
+              <Link href="/notifications" className="rounded-full border border-border/70 bg-background p-2.5 text-foreground transition hover:bg-muted" aria-label="Notifications">
                 <Bell className="h-4 w-4" />
-              </button>
+              </Link>
               <div ref={profileMenuRef} className="relative">
                 <button
                   type="button"
@@ -240,6 +216,7 @@ export function SiteHeader() {
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-700 text-xs font-bold text-white">{avatarLabel}</span>
                   )}
                   <span className="hidden sm:inline">{userName.split(' ')[0]}</span>
+                  <span className="hidden rounded-full bg-violet-100 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-violet-700 sm:inline">{userRole}</span>
                   <ChevronDown className="h-4 w-4" />
                 </button>
 
@@ -264,7 +241,7 @@ export function SiteHeader() {
           ) : (
             <>
               <Link
-                href={`/auth/login?redirect=${encodeURIComponent(redirectPath)}`}
+                href={`/signin?redirect=${encodeURIComponent(redirectPath)}`}
                 className="rounded-full border border-secondary/30 px-4 py-2 text-sm font-semibold text-secondary transition-colors hover:bg-secondary hover:text-secondary-foreground"
               >
                 Sign In
@@ -278,7 +255,7 @@ export function SiteHeader() {
                     : 'bg-primary text-primary-foreground hover:bg-primary/90',
                 )}
               >
-                <Link href={`/auth/sign-up?redirect=${encodeURIComponent(redirectPath)}`}>Become a BIG Member</Link>
+                <Link href={`/join?redirect=${encodeURIComponent(redirectPath)}`}>Become a BIG Member</Link>
               </Button>
             </>
           )}
@@ -353,7 +330,7 @@ export function SiteHeader() {
               ) : (
                 <>
                   <Link
-                    href={`/auth/login?redirect=${encodeURIComponent(pathname?.startsWith('/auth') ? '/dashboard' : pathname || '/dashboard')}`}
+                    href={`/signin?redirect=${encodeURIComponent(pathname?.startsWith('/auth') ? '/dashboard' : pathname || '/dashboard')}`}
                     onClick={() => setOpen(false)}
                     className="rounded-full border border-secondary/30 px-4 py-2 text-center font-semibold text-secondary transition-colors hover:bg-secondary hover:text-secondary-foreground"
                   >
@@ -379,6 +356,46 @@ export function SiteHeader() {
           </nav>
         </div>
       )}
+
+      <div className="border-t border-border/60 bg-white/95 backdrop-blur lg:hidden">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-3">
+          {isAuthenticated ? (
+            [
+              { href: '/dashboard', label: 'Dashboard', icon: House },
+              { href: '/community', label: 'Community', icon: UsersRound },
+              { href: '/events', label: 'Events', icon: CalendarDays },
+              { href: '/big-club', label: 'BIG Club', icon: CircleUserRound },
+              { href: '/profile', label: 'Profile', icon: CircleUserRound },
+            ].map((item) => {
+              const Icon = item.icon
+              const active = pathname === item.href || pathname.startsWith(`${item.href}/`)
+              return (
+                <Link key={item.href} href={item.href} className={cn('flex flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[11px] font-semibold', active ? 'text-violet-700' : 'text-slate-600')}> 
+                  <Icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </Link>
+              )
+            })
+          ) : (
+            [
+              { href: '/', label: 'Home', icon: House },
+              { href: '/about', label: 'About', icon: Info },
+              { href: '/academy', label: 'Academy', icon: BookOpen },
+              { href: '/join', label: 'Join', icon: LogIn },
+              { href: '/signin', label: 'Sign In', icon: LogIn },
+            ].map((item) => {
+              const Icon = item.icon
+              const active = pathname === item.href || pathname.startsWith(`${item.href}/`)
+              return (
+                <Link key={item.href} href={item.href} className={cn('flex flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[11px] font-semibold', active ? 'text-violet-700' : 'text-slate-600')}> 
+                  <Icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </Link>
+              )
+            })
+          )}
+        </div>
+      </div>
     </header>
   )
 }
