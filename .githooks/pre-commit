@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root=$(git rev-parse --show-toplevel)
+cd "$repo_root"
+
+patterns=(
+  'sk_live_' 'sk_test_' 'ghp_' 'github_pat_' 'AIza' 'AKIA' 'ASIA'
+  'SUPABASE_SERVICE_ROLE_KEY=' 'SUPABASE_SERVICE_ROLE=' 'RESEND_API_KEY='
+  '-----BEGIN (RSA|EC|OPENSSH|PRIVATE) KEY-----'
+)
+
+matches=()
+while IFS= read -r file; do
+  if [[ "$file" == ".githooks/pre-commit" || "$file" == *.png || "$file" == *.jpg || "$file" == *.jpeg || "$file" == *.gif || "$file" == *.webp || "$file" == *.svg || "$file" == *.ico || "$file" == *.pdf || "$file" == *.woff || "$file" == *.woff2 || "$file" == *.ttf || "$file" == *.map ]]; then
+    continue
+  fi
+
+  for pattern in "${patterns[@]}"; do
+    if grep -nE "$pattern" "$file" >/dev/null 2>&1; then
+      matches+=("$file")
+      break
+    fi
+  done
+done < <(git diff --cached --name-only --diff-filter=ACMR)
+
+if [[ ${#matches[@]} -gt 0 ]]; then
+  echo "Potential secrets detected in staged files:"
+  printf ' - %s\n' "${matches[@]}"
+  echo
+  echo "Remove the sensitive values or unstage the files before committing."
+  exit 1
+fi
+
+echo "No obvious secrets detected in staged changes."
