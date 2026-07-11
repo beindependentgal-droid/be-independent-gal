@@ -14,6 +14,7 @@ interface Profile {
   skills?: string[] | string | null;
   interests?: string[] | string | null;
   member_level?: string | null;
+  level?: number | null;
   created_at?: string | null;
 }
 
@@ -72,6 +73,15 @@ interface RecentActivity {
   kind: string;
 }
 
+interface ActivityEntry {
+  id?: string;
+  activity_type?: string | null;
+  action?: string | null;
+  points_earned?: number | null;
+  created_at?: string | null;
+  circle_id?: string | null;
+}
+
 interface DashboardStats {
   postsCreated: number;
   commentsMade: number;
@@ -96,6 +106,8 @@ interface DashboardData {
   goals: Array<{ title: string; done: boolean }>;
   club: Circle | null;
   registeredEventIds: string[];
+  analyticsCounts: Record<string, number>;
+  analyticsSeries: Array<{ date: string; count: number }>;
   course: {
     course_id?: string | null;
     progress?: number | null;
@@ -162,7 +174,8 @@ export function useDashboardLoader() {
 
     try {
       const [
-        profileResult,
+        userProfileResult,
+        profileRecordResult,
         postsResult,
         commentsResult,
         membershipsResult,
@@ -171,6 +184,8 @@ export function useDashboardLoader() {
         eventsResult,
         opportunitiesResult,
         notificationsResult,
+        activityResult,
+        analyticsResult,
       ] = await Promise.allSettled([
         tryQuery(
           [
@@ -178,17 +193,9 @@ export function useDashboardLoader() {
               supabase
                 .from("user_profiles")
                 .select(
-                  "id, first_name, last_name, full_name, avatar_url, bio, city, phone, skills, interests, member_level, created_at",
+                  "id, user_id, first_name, last_name, full_name, avatar_url, bio, profession, industry, business, city, phone, experience, why_joining, skills, interests, mentoring_areas, location, website, total_points, level, badges_count, joined_at, created_at, updated_at",
                 )
-                .eq("id", userId)
-                .maybeSingle(),
-            () =>
-              supabase
-                .from("profiles")
-                .select(
-                  "id, first_name, last_name, full_name, avatar_url, bio, city, phone, skills, interests, member_level, created_at",
-                )
-                .eq("id", userId)
+                .eq("user_id", userId)
                 .maybeSingle(),
           ],
           null,
@@ -197,55 +204,25 @@ export function useDashboardLoader() {
           [
             () =>
               supabase
-                .from("posts")
-                .select("id, content, created_at, user_id")
-                .eq("user_id", userId)
-                .order("created_at", { ascending: false })
-                .limit(8),
-            () =>
-              supabase
-                .from("community_posts")
-                .select("id, content, created_at, author_id")
-                .eq("author_id", userId)
-                .order("created_at", { ascending: false })
-                .limit(8),
+                .from("profiles")
+                .select(
+                  "id, first_name, last_name, email, phone, city, profession, business, bio, avatar_url, primary_circle, join_reason, member_level, points, created_at, updated_at",
+                )
+                .eq("id", userId)
+                .maybeSingle(),
           ],
-          [],
+          null,
         ),
+        tryQuery([], []),
+        tryQuery([], []),
         tryQuery(
           [
-            () =>
-              supabase
-                .from("comments")
-                .select("id, created_at, user_id")
-                .eq("user_id", userId)
-                .order("created_at", { ascending: false })
-                .limit(20),
-            () =>
-              supabase
-                .from("community_comments")
-                .select("id, created_at, user_id")
-                .eq("user_id", userId)
-                .order("created_at", { ascending: false })
-                .limit(20),
-          ],
-          [],
-        ),
-        tryQuery(
-          [
-            () =>
-              supabase
-                .from("circle_memberships")
-                .select("id, created_at, circle_id, circles(id, name)")
-                .eq("user_id", userId)
-                .order("created_at", { ascending: false })
-                .limit(8),
             () =>
               supabase
                 .from("circle_members")
-                .select("id, created_at, circle_id, circles(id, name)")
-                .eq("member_id", userId)
-                .order("created_at", { ascending: false })
+                .select("id, joined_at, circle_id, role, circles(id, name)")
+                .eq("user_id", userId)
+                .order("joined_at", { ascending: false })
                 .limit(8),
           ],
           [],
@@ -255,72 +232,78 @@ export function useDashboardLoader() {
             () =>
               supabase
                 .from("event_registrations")
-                .select("id, event_id, created_at")
+                .select("id, event_id, registered_at")
                 .eq("user_id", userId)
-                .order("created_at", { ascending: false }),
+                .order("registered_at", { ascending: false }),
           ],
           [],
         ),
-        tryQuery(
-          [
-            () =>
-              supabase
-                .from("academy_progress")
-                .select("id, completed, user_id, updated_at")
-                .eq("user_id", userId),
-            () =>
-              supabase
-                .from("academy_enrollments")
-                .select("id, progress, user_id, updated_at")
-                .eq("user_id", userId),
-          ],
-          [],
-        ),
+        tryQuery([], []),
         tryQuery(
           [
             () =>
               supabase
                 .from("events")
-                .select("id, title, date, event_date, location, description")
-                .order("date", { ascending: true }),
-            () =>
-              supabase
-                .from("events")
-                .select("id, title, event_date, location, description")
-                .order("event_date", { ascending: true }),
+                .select("id, title, start_date, location, description")
+                .order("start_date", { ascending: true })
+                .limit(10),
           ],
           [],
         ),
-        tryQuery(
-          [
-            () =>
-              supabase
-                .from("opportunities")
-                .select(
-                  "id, title, category, deadline, application_deadline, closing_date, location, description",
-                )
-                .order("created_at", { ascending: false })
-                .limit(6),
-          ],
-          [],
-        ),
+        tryQuery([], []),
         tryQuery(
           [
             () =>
               supabase
                 .from("notifications")
-                .select("id, title, message, created_at, read")
+                .select("id, title, message, created_at, is_read")
                 .eq("user_id", userId)
-                .eq("read", false)
+                .eq("is_read", false)
                 .order("created_at", { ascending: false })
                 .limit(6),
           ],
           [],
         ),
+        tryQuery(
+          [
+            () =>
+              supabase
+                .from("user_activity")
+                .select(
+                  "id, activity_type, action, points_earned, created_at, circle_id",
+                )
+                .eq("user_id", userId)
+                .order("created_at", { ascending: false })
+                .limit(8),
+          ],
+          [],
+        ),
+        tryQuery(
+          [
+            () =>
+              supabase
+                .from("analytics_events")
+                .select("event_type, created_at")
+                .eq("user_id", userId)
+                .order("created_at", { ascending: false })
+                .limit(100),
+          ],
+          [],
+        ),
       ]);
 
-      const profileData =
-        profileResult.status === "fulfilled" ? profileResult.value : null;
+      const userProfileData =
+        userProfileResult.status === "fulfilled"
+          ? userProfileResult.value
+          : null;
+      const profileRecordData =
+        profileRecordResult.status === "fulfilled"
+          ? profileRecordResult.value
+          : null;
+      const profileData = {
+        ...(userProfileData as Record<string, unknown> | null),
+        ...(profileRecordData as Record<string, unknown> | null),
+      } as Record<string, unknown> | null;
       const postsData =
         postsResult.status === "fulfilled" ? (postsResult.value ?? []) : [];
       const commentsData =
@@ -346,6 +329,14 @@ export function useDashboardLoader() {
       const notificationsData =
         notificationsResult.status === "fulfilled"
           ? (notificationsResult.value ?? [])
+          : [];
+      const activityData =
+        activityResult.status === "fulfilled"
+          ? (activityResult.value ?? [])
+          : [];
+      const analyticsData =
+        analyticsResult.status === "fulfilled"
+          ? (analyticsResult.value ?? [])
           : [];
 
       const postsArray = toArray(
@@ -404,8 +395,26 @@ export function useDashboardLoader() {
           | null
           | undefined,
       );
+      const activityArray = toArray(
+        activityData as
+          | Array<Record<string, unknown>>
+          | Record<string, unknown>
+          | null
+          | undefined,
+      );
+      const analyticsArray = toArray(
+        analyticsData as
+          | Array<Record<string, unknown>>
+          | Record<string, unknown>
+          | null
+          | undefined,
+      );
 
       const profile = profileData as Record<string, unknown> | null;
+      const analyticsEvents = analyticsArray.map((event) => ({
+        event_type: getValue(event.event_type as string | null) ?? "unknown",
+        created_at: getValue(event.created_at as string | null),
+      }));
       const profileCompletion = (() => {
         if (!profile) return 0;
         const fields = ["avatar_url", "bio", "city", "phone", "interests"];
@@ -441,7 +450,9 @@ export function useDashboardLoader() {
             id: String(circle?.id ?? membership.circle_id ?? ""),
             name: getValue(circle?.name as string | null),
             role: getValue(membership.role as string | null),
-            created_at: getValue(membership.created_at as string | null),
+            created_at: getValue(
+              (membership.joined_at ?? membership.created_at) as string | null,
+            ),
             next_meeting: getValue(membership.next_meeting as string | null),
           };
         })
@@ -513,7 +524,7 @@ export function useDashboardLoader() {
           title: getValue(notification.title as string | null),
           message: getValue(notification.message as string | null),
           created_at: getValue(notification.created_at as string | null),
-          read: Boolean(notification.read),
+          read: Boolean(notification.read ?? notification.is_read),
         }))
         .filter((notification) => notification.id);
 
@@ -522,6 +533,11 @@ export function useDashboardLoader() {
         if (typeof completed === "boolean") return completed;
         const progress = Number(entry.progress ?? 0);
         return progress >= 0.99;
+      }).length;
+
+      const activityCount = activityArray.filter((entry) => {
+        const activityType = String(entry.activity_type ?? "").toLowerCase();
+        return activityType === "post" || activityType === "comment";
       }).length;
 
       const courseEntry = academyEntries.find(
@@ -550,6 +566,51 @@ export function useDashboardLoader() {
         : null;
 
       const recentActivity: RecentActivity[] = [
+        ...activityArray.map((entry) => {
+          const activityType = String(entry.activity_type ?? "").toLowerCase();
+          const actionText = getValue(entry.action as string | null);
+          if (activityType === "post") {
+            return {
+              title: "Created a post",
+              description:
+                actionText || "You shared an update in the community",
+              created_at: getValue(entry.created_at as string | null),
+              kind: "post",
+            };
+          }
+          if (activityType === "comment") {
+            return {
+              title: "Left a comment",
+              description: actionText || "You contributed to the conversation",
+              created_at: getValue(entry.created_at as string | null),
+              kind: "comment",
+            };
+          }
+          if (activityType === "circle") {
+            return {
+              title: "Joined a circle",
+              description:
+                actionText || "You became part of a community circle",
+              created_at: getValue(entry.created_at as string | null),
+              kind: "circle",
+            };
+          }
+          if (activityType === "event") {
+            return {
+              title: "Registered for an event",
+              description:
+                actionText || "You saved a seat for an upcoming event",
+              created_at: getValue(entry.created_at as string | null),
+              kind: "event",
+            };
+          }
+          return {
+            title: "Activity update",
+            description: actionText || "Your progress is being tracked",
+            created_at: getValue(entry.created_at as string | null),
+            kind: activityType || "activity",
+          };
+        }),
         ...(postsWithAuthors.length > 0
           ? [
               {
@@ -594,11 +655,36 @@ export function useDashboardLoader() {
               },
             ]
           : []),
-      ].sort(
-        (left, right) =>
-          new Date(right.created_at ?? 0).getTime() -
-          new Date(left.created_at ?? 0).getTime(),
+      ]
+        .sort(
+          (left, right) =>
+            new Date(right.created_at ?? 0).getTime() -
+            new Date(left.created_at ?? 0).getTime(),
+        )
+        .slice(0, 5);
+
+      const analyticsCounts = analyticsEvents.reduce(
+        (counts, event) => {
+          const type = event.event_type || "unknown";
+          counts[type] = (counts[type] ?? 0) + 1;
+          return counts;
+        },
+        {} as Record<string, number>,
       );
+
+      const analyticsSeries = Array.from({ length: 7 }, (_, index) => {
+        const date = new Date();
+        date.setHours(0, 0, 0, 0);
+        date.setDate(date.getDate() - (6 - index));
+        const dateString = date.toISOString().split("T")[0];
+        const count = analyticsEvents.filter((event) => {
+          const created = parseDate(event.created_at);
+          return created
+            ? created.toISOString().split("T")[0] === dateString
+            : false;
+        }).length;
+        return { date: dateString, count };
+      });
 
       const nextSteps = [
         ...(profileCompletion < 100 ? ["Complete your profile"] : []),
@@ -609,7 +695,10 @@ export function useDashboardLoader() {
       ];
 
       const goals = [
-        { title: "Create one post", done: posts.length >= 1 },
+        {
+          title: "Create one post",
+          done: activityCount >= 1 || posts.length >= 1,
+        },
         { title: "Comment three times", done: comments.length >= 3 },
         { title: "Attend one event", done: registeredEventIds.length >= 1 },
         { title: "Complete one lesson", done: coursesCompleted >= 1 },
@@ -652,7 +741,12 @@ export function useDashboardLoader() {
         phone: getValue(profile?.phone as string | null),
         skills: getValue(profile?.skills as string[] | string | null),
         interests: getValue(profile?.interests as string[] | string | null),
-        member_level: getValue(profile?.member_level as string | null),
+        member_level:
+          getValue(profile?.member_level as string | null) ??
+          (typeof profile?.level === "number"
+            ? `Level ${profile.level}`
+            : null),
+        level: typeof profile?.level === "number" ? profile.level : null,
         created_at: getValue(profile?.created_at as string | null),
       };
 
@@ -667,13 +761,15 @@ export function useDashboardLoader() {
         communityPosts: postsWithAuthors,
         recentActivity,
         stats: {
-          postsCreated: posts.length,
+          postsCreated: Math.max(posts.length, activityCount),
           commentsMade: comments.length,
           circlesJoined: circles.length,
           eventsRegistered: registeredEventIds.length,
           coursesCompleted,
           profileCompletion,
         },
+        analyticsCounts,
+        analyticsSeries,
         nextSteps,
         goals,
         club: circles[0] ?? null,
@@ -704,23 +800,13 @@ export function useDashboardLoader() {
     const channel = supabase.channel("dashboard-live-updates");
 
     const tables = [
-      { table: "posts", filter: `user_id=eq.${userId}` },
-      { table: "comments", filter: `user_id=eq.${userId}` },
       { table: "notifications", filter: `user_id=eq.${userId}` },
       { table: "events" },
       { table: "event_registrations", filter: `user_id=eq.${userId}` },
-      { table: "circle_memberships", filter: `user_id=eq.${userId}` },
-      { table: "academy_progress", filter: `user_id=eq.${userId}` },
-      { table: "academy_enrollments", filter: `user_id=eq.${userId}` },
-      { table: "user_profiles", filter: `id=eq.${userId}` },
+      { table: "circle_members", filter: `user_id=eq.${userId}` },
+      { table: "user_profiles", filter: `user_id=eq.${userId}` },
       { table: "profiles", filter: `id=eq.${userId}` },
-      { table: "opportunities" },
-      { table: "community_posts" },
-      { table: "community_comments" },
-      { table: "connections" },
-      { table: "connection_requests" },
-      { table: "messages" },
-      { table: "conversations" },
+      { table: "user_activity", filter: `user_id=eq.${userId}` },
     ];
 
     tables.forEach(({ table, filter }) => {
