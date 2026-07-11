@@ -15,9 +15,17 @@ import { SectionHeading } from '@/components/section-heading'
 import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
-  title: 'About Us | Be Independent Gal',
+  title: 'About Be Independent Gal',
   description:
     'Discover BIG (Be Independent Gal), a movement empowering women through learning, community, opportunity, and impact.',
+  alternates: { canonical: 'https://big.org/about' },
+  openGraph: {
+    title: 'About Be Independent Gal',
+    description:
+      'A women’s empowerment movement helping women learn, connect, and build independent, purpose-driven lives.',
+    url: 'https://big.org/about',
+    type: 'website',
+  },
 }
 
 const bigLooks = [

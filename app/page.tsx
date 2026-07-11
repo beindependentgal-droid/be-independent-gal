@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
   ArrowRight,
@@ -106,6 +107,20 @@ const academyPrograms = [
     desc: 'Immersive experiences designed to restore, connect, and unlock new possibilities.',
   },
 ]
+
+export const metadata: Metadata = {
+  title: 'Be Independent Gal | Women’s Community, Learning & Growth',
+  description:
+    'Join Be Independent Gal to learn, connect, find opportunities, and build a more independent life through community support and mentorship.',
+  alternates: { canonical: 'https://big.org/' },
+  openGraph: {
+    title: 'Be Independent Gal | Women’s Community, Learning & Growth',
+    description:
+      'A women’s community platform for learning, mentorship, networking, and purpose-driven growth.',
+    url: 'https://big.org/',
+    type: 'website',
+  },
+}
 
 const stories = [
   {

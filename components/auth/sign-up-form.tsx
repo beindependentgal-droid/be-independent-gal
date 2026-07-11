@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Sparkles } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
+import { sanitizeAuthError } from '@/lib/security'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -81,15 +82,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
       await signUp(email, password, { first_name: firstName.trim(), last_name: lastName.trim() })
       setVerificationSent(true)
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err ?? '').toLowerCase()
-
-      if (message.includes('already') || message.includes('exists') || message.includes('registered')) {
-        setError('This email is already registered. Please sign in or use a different email.')
-      } else if (message.includes('rate limit')) {
-        setError('Too many signup attempts. Please try again in a few minutes.')
-      } else {
-        setError(err instanceof Error ? err.message : 'Sign up failed. Please try again.')
-      }
+      setError(sanitizeAuthError(err))
     } finally {
       setLoading(false)
     }
@@ -101,7 +94,7 @@ export default function SignUpForm({ redirect = '/auth/onboarding/profile', goog
     try {
       await signInWithProvider('google', redirect)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Google sign-in failed. Please try again.')
+      setError(sanitizeAuthError(err))
       setLoading(false)
     }
   }

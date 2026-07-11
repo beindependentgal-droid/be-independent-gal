@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Privacy Policy | Be Independent Gal',
   description: 'How Be Independent Gal handles your information and privacy preferences.',
+  alternates: { canonical: 'https://big.org/privacy' },
 }
 
 export default function PrivacyPage() {

@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react'
 import Link from 'next/link'
 import { Eye, EyeOff, Sparkles } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
+import { sanitizeAuthError } from '@/lib/security'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -50,17 +51,7 @@ export default function LoginForm({ redirect = DEFAULT_AUTH_REDIRECT, googleRetu
     try {
       await signIn(email, password)
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message.toLowerCase() : String(err).toLowerCase()
-
-      if (message.includes('invalid') || message.includes('wrong') || message.includes('credentials')) {
-        setError('Invalid email or password. Please try again.')
-      } else if (message.includes('confirm') || message.includes('verify')) {
-        setError('Please verify your email before signing in. Check your inbox for a verification link.')
-      } else if (message.includes('not found')) {
-        setError('No account found with this email. Please sign up first.')
-      } else {
-        setError(err instanceof Error ? err.message : 'Sign in failed. Please try again.')
-      }
+      setError(sanitizeAuthError(err))
     } finally {
       setLoading(false)
     }
@@ -72,7 +63,7 @@ export default function LoginForm({ redirect = DEFAULT_AUTH_REDIRECT, googleRetu
     try {
       await signInWithProvider('google', redirect)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Google sign-in failed. Please try again.')
+      setError(sanitizeAuthError(err))
     } finally {
       setLoading(false)
     }

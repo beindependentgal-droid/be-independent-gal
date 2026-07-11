@@ -42,9 +42,8 @@ export default function ResetPage() {
       setMessage('If an account exists, a reset email has been sent. Check your inbox.')
       setEmailSent(true)
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send reset email. Please try again.'
       setMessageType('error')
-      setMessage(errorMessage)
+      setMessage('We could not send the reset email. Please try again.')
     } finally {
       setLoading(false)
     }

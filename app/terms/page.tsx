@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Terms of Service | Be Independent Gal',
   description: 'The terms for using the Be Independent Gal platform and community.',
+  alternates: { canonical: 'https://big.org/terms' },
 }
 
 export default function TermsPage() {

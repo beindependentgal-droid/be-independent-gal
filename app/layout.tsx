@@ -37,6 +37,9 @@ export const metadata: Metadata = {
     default: 'Be Independent Gal (BIG) | Women\'s Community & Growth Platform',
     template: '%s | BIG',
   },
+  alternates: {
+    canonical: 'https://big.org',
+  },
   description:
     'Be Independent Gal (BIG) is a women\'s growth movement helping women build independent, purpose-driven lives through community, mentorship, and opportunity.',
   keywords: [
@@ -102,9 +105,8 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
-  alternates: {
-    canonical: 'https://big.org',
-  },
+  category: 'community',
+  classification: 'women empowerment community platform',
 }
 
 export const viewport: Viewport = {
