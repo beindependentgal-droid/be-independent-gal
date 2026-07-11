@@ -20,7 +20,7 @@ const isValidRedirect = (path?: string) => path?.startsWith('/') && !path.starts
 
 const benefits = [
   'Access your Academy courses',
-  'Join your Sister Circles',
+  'Join your Circles',
   'Discover new opportunities',
   'Manage your BIG profile',
 ]

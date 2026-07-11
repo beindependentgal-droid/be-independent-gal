@@ -48,7 +48,7 @@ const journeySteps = [
 
 const benefits = [
   'Access to the BIG Community',
-  'Sister Circles',
+  'Circles',
   'BIG Academy',
   'Girl Talk Friday',
   'Networking Events',

@@ -15,7 +15,7 @@ export default function SisterCircles() {
     <section className="rounded-[20px] bg-white p-5 shadow-sm border border-slate-200">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold">Sister circles</p>
+          <p className="text-sm font-semibold">Circles</p>
           <p className="mt-2 text-sm text-slate-600">Your community spaces for connection and growth.</p>
         </div>
         <Link href="/circles" className="text-sm font-semibold text-violet-600 hover:text-violet-700">

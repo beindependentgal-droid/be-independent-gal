@@ -43,6 +43,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let isMounted = true;
 
+    if (!supabase) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     const checkAuth = async () => {
       try {
         const { data } = await supabase.auth.getSession();
@@ -99,6 +105,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
+    if (!supabase?.auth) {
+      throw new Error('Authentication is unavailable because Supabase is not configured.');
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -121,6 +131,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithProvider = async (provider: 'google', redirectTo?: string) => {
     if (provider !== 'google') throw new Error('Only Google provider is supported');
+
+    if (!supabase?.auth) {
+      throw new Error('Authentication is unavailable because Supabase is not configured.');
+    }
 
     const DEFAULT_AUTH_REDIRECT = '/dashboard'
     const safeRedirect = redirectTo?.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : DEFAULT_AUTH_REDIRECT;

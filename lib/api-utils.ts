@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { createServerSupabase } from "./supabase-server";
 
 // Initialize Supabase client lazily to avoid build-time errors
 let supabaseInstance: ReturnType<typeof createClient> | null = null;
@@ -33,18 +34,27 @@ export async function getUserIdFromRequest(
   request: NextRequest,
 ): Promise<string | null> {
   const authHeader = request.headers.get("authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
-    return null;
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.slice(7);
+    const { data, error } = await supabase.auth.getUser(token);
+
+    if (!error && data?.user) {
+      return data.user.id;
+    }
   }
 
-  const token = authHeader.slice(7);
-  const { data, error } = await supabase.auth.getUser(token);
+  try {
+    const serverSupabase = await createServerSupabase();
+    const { data, error } = await serverSupabase.auth.getSession();
 
-  if (error || !data?.user) {
-    return null;
+    if (!error && data?.session?.user) {
+      return data.session.user.id;
+    }
+  } catch (error) {
+    console.warn("Unable to resolve current user from session cookies:", error);
   }
 
-  return data.user.id;
+  return null;
 }
 
 // API Response helpers

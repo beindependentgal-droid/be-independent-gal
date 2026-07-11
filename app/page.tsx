@@ -28,7 +28,7 @@ const trustItems = [
   },
   {
     icon: HeartHandshake,
-    title: 'Sister Circles',
+    title: 'Circles',
     description: 'Small groups where belonging, accountability, and trust are nurtured.',
   },
   {
@@ -97,7 +97,7 @@ const academyPrograms = [
   },
   {
     image: '/images/sister.jpg',
-    title: 'Sister Circles',
+    title: 'Circles',
     desc: 'Small, intentional circles that help women process, grow, and stay accountable.',
   },
   {
@@ -307,17 +307,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Sister Circles CTA */}
+      {/* Circles CTA */}
       <section className="py-16 bg-primary text-white px-6 sm:px-12 lg:px-16">
         <div className="max-w-4xl mx-auto text-center space-y-6">
-          <h2 className="text-4xl font-bold">Sister Circles</h2>
+          <h2 className="text-4xl font-bold">Circles</h2>
           <p className="text-xl text-white/90 leading-relaxed">
-            Sister Circles offer women a brave, gentle, and powerful space to be fully seen, share honestly, and grow
+            Circles offer women a brave, gentle, and powerful space to be fully seen, share honestly, and grow
             together through life&apos;s seasons.
           </p>
           <Link href="/circles">
             <Button className="bg-white text-secondary hover:bg-gray-100 font-bold rounded-full h-12 px-8 flex items-center gap-2 mx-auto">
-              Explore Sister Circles
+              Explore Circles
               <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>

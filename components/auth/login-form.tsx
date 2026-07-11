@@ -61,6 +61,7 @@ export default function LoginForm({ redirect = DEFAULT_AUTH_REDIRECT, googleRetu
       } else {
         setError(err instanceof Error ? err.message : 'Sign in failed. Please try again.')
       }
+    } finally {
       setLoading(false)
     }
   }
@@ -72,6 +73,7 @@ export default function LoginForm({ redirect = DEFAULT_AUTH_REDIRECT, googleRetu
       await signInWithProvider('google', redirect)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Google sign-in failed. Please try again.')
+    } finally {
       setLoading(false)
     }
   }

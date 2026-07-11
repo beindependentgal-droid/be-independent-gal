@@ -26,7 +26,7 @@ import type { Post } from '@/lib/db'
 const navItems = [
   { label: 'Community', icon: Users, href: '/community' },
   { label: 'Academy', icon: Sparkles, href: '/academy' },
-  { label: 'Sister Circles', icon: Grid, href: '/circles' },
+  { label: 'Circles', icon: Grid, href: '/circles' },
   { label: 'Events', icon: CalendarDays, href: '/events' },
   { label: 'Opportunities', icon: Briefcase, href: '/opportunities' },
   { label: 'Mentors', icon: UserCircle, href: '/mentorship' },

@@ -27,7 +27,7 @@ const bigLooks = [
     icon: BookOpen,
   },
   {
-    title: 'Sister Circles',
+    title: 'Circles',
     description: 'Small communities where meaningful friendships and accountability grow.',
     icon: Users,
   },
@@ -314,7 +314,7 @@ export default function AboutPage() {
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {[
               { value: '100+', label: 'Community Members' },
-              { value: '4', label: 'Sister Circles' },
+              { value: '4', label: 'Circles' },
               { value: '20+', label: 'Learning Sessions' },
               { value: '10+', label: 'Partner Organizations' },
               { value: 'Growing Daily', label: 'Across Kenya' },

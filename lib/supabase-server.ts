@@ -1,12 +1,21 @@
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
+function createMissingServerClient() {
+  return {
+    auth: {
+      getSession: async () => ({ data: { session: null }, error: null }),
+      getUser: async () => ({ data: { user: null }, error: null }),
+    },
+  } as any;
+}
+
 export async function createServerSupabase() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing Supabase server environment variables");
+    return createMissingServerClient();
   }
 
   const cookieStore = await cookies();

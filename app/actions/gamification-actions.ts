@@ -6,22 +6,26 @@ import type { Badge, Challenge, Leaderboard } from "@/lib/db-types";
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-  const candidateKeys = [serviceRoleKey, anonKey].filter(Boolean);
 
-  if (!url || candidateKeys.length === 0) {
+  if (!url || !serviceRoleKey) {
     return null;
   }
 
-  for (const key of candidateKeys) {
-    try {
-      return createClient(url, key, { auth: { persistSession: false } });
-    } catch {
-      continue;
-    }
+  try {
+    return createClient(url, serviceRoleKey, {
+      auth: { persistSession: false },
+    });
+  } catch {
+    return null;
   }
+}
 
-  return null;
+function isRecoverableReadError(error: { code?: string } | null | undefined) {
+  return (
+    error?.code === "PGRST205" ||
+    error?.code === "PGRST116" ||
+    error?.code === "42501"
+  );
 }
 
 const supabase = new Proxy({} as any, {
@@ -83,8 +87,7 @@ export async function getActiveChallenges() {
     .order("end_date", { ascending: true });
 
   if (error) {
-    // Return empty list if table is missing during build-time prerendering
-    if (error.code === "PGRST205" || error.code === "PGRST116") {
+    if (isRecoverableReadError(error)) {
       return [];
     }
     throw error;

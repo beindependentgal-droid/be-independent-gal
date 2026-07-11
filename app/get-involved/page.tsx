@@ -142,7 +142,7 @@ export default function GetInvolvedPage() {
                 <ul className="space-y-3">
                   {[
                     'Access to the BIG Community',
-                    'Join Sister Circles (Learn, Connect, Earn, Thrive)',
+                    'Join Circles (Learn, Connect, Earn, Thrive)',
                     'BIG Academy courses and workshops',
                     'Networking events and meetups',
                     'Mentorship opportunities',

@@ -1,49 +1,207 @@
 "use client"
 
 import React, { useMemo, useState } from 'react'
+import { Archive, MessageCircleMore, Pin, Search, Sparkles } from 'lucide-react'
 
 type Conversation = {
   id: string
   title?: string
   last_message?: { body?: string; sender_avatar?: string }
   last_activity?: string
+  unread_count?: number
+  avatar_url?: string
+  participant_name?: string
+  is_online?: boolean
+  is_typing?: boolean
+  category?: 'all' | 'unread' | 'club' | 'mentors' | 'circles'
 }
 
-function ConversationItem({ conv, selected, onClick }: { conv: Conversation; selected: boolean; onClick: (id: string) => void }) {
+type Filter = 'all' | 'unread' | 'club' | 'mentors' | 'circles'
+
+function formatPreviewTime(value?: string) {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+}
+
+function ConversationItem({
+  conv,
+  selected,
+  onClick,
+  onPin,
+  onArchive,
+  pinned,
+}: {
+  conv: Conversation
+  selected: boolean
+  onClick: (id: string) => void
+  onPin: (id: string) => void
+  onArchive: (id: string) => void
+  pinned: boolean
+}) {
+  const preview = conv.last_message?.body || 'Start the conversation with a warm hello.'
+  const displayTitle = conv.participant_name || conv.title || 'Conversation'
+  const badge = conv.category && conv.category !== 'all' ? conv.category : 'social'
+
   return (
-    <div onClick={() => onClick(conv.id)} className={`p-3 flex items-center gap-3 cursor-pointer ${selected ? 'bg-violet-50' : 'hover:bg-slate-50'}`}>
-      <img src={conv.last_message?.sender_avatar || '/images/avatar-placeholder.png'} className="w-10 h-10 rounded-full" alt="avatar" />
-      <div className="flex-1">
-        <div className="flex justify-between">
-          <div className="font-medium">{conv.title || 'Conversation'}</div>
-          <div className="text-xs text-slate-400">{new Date(conv.last_activity).toLocaleTimeString()}</div>
+    <button
+      type="button"
+      onClick={() => onClick(conv.id)}
+      className={`w-full rounded-[20px] border p-3 text-left transition ${selected ? 'border-violet-200 bg-violet-50/70 shadow-sm' : 'border-transparent bg-white hover:border-violet-100 hover:bg-slate-50'}`}
+    >
+      <div className="flex items-start gap-3">
+        <div className="relative mt-0.5 shrink-0">
+          <img
+            src={conv.avatar_url || conv.last_message?.sender_avatar || '/images/avatar-placeholder.png'}
+            className="h-11 w-11 rounded-full object-cover"
+            alt={displayTitle}
+          />
+          {conv.is_online && <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500" />}
         </div>
-        <div className="text-sm text-slate-500 truncate">{conv.last_message?.body || 'No messages yet'}</div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="truncate text-sm font-semibold text-slate-900">{displayTitle}</p>
+                {conv.is_typing && <span className="text-xs font-medium text-violet-600">typing…</span>}
+              </div>
+              <div className="mt-1 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-slate-500">
+                <span className="rounded-full bg-slate-100 px-2 py-0.5">{badge}</span>
+                {conv.is_online ? <span className="text-emerald-600">online</span> : <span>away</span>}
+              </div>
+            </div>
+            <span className="text-[11px] text-slate-400">{formatPreviewTime(conv.last_activity)}</span>
+          </div>
+
+          <div className="mt-2 flex items-center justify-between gap-2">
+            <p className="truncate text-sm text-slate-600">{preview}</p>
+            <div className="flex items-center gap-2">
+              {conv.unread_count && conv.unread_count > 0 ? (
+                <span className="rounded-full bg-violet-600 px-2.5 py-1 text-[11px] font-semibold text-white">{conv.unread_count}</span>
+              ) : null}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div className="mt-3 flex items-center justify-end gap-2">
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation()
+            onPin(conv.id)
+          }}
+          className={`rounded-full p-1.5 ${pinned ? 'bg-violet-100 text-violet-700' : 'bg-slate-100 text-slate-500 hover:bg-violet-50 hover:text-violet-700'}`}
+          aria-label="Pin conversation"
+        >
+          <Pin className="h-3.5 w-3.5" />
+        </button>
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation()
+            onArchive(conv.id)
+          }}
+          className="rounded-full bg-slate-100 p-1.5 text-slate-500 hover:bg-slate-200"
+          aria-label="Archive conversation"
+        >
+          <Archive className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    </button>
   )
 }
 
 export default function Sidebar({ conversations, selected, onSelect }: { conversations: Conversation[]; selected: string | null; onSelect: (id: string) => void }) {
   const [query, setQuery] = useState('')
+  const [filter, setFilter] = useState<Filter>('all')
+  const [pinnedIds, setPinnedIds] = useState<string[]>([])
+  const [archivedIds, setArchivedIds] = useState<string[]>([])
 
   const filtered = useMemo(() => {
-    if (!query) return conversations
-    return conversations.filter((c) => (c.title || '').toLowerCase().includes(query.toLowerCase()))
-  }, [conversations, query])
+    const base = conversations.filter((conversation) => !archivedIds.includes(conversation.id))
+    const search = query.trim().toLowerCase()
+
+    return base.filter((conversation) => {
+      const title = `${conversation.title || ''} ${conversation.participant_name || ''} ${conversation.last_message?.body || ''}`.toLowerCase()
+      const matchesQuery = !search || title.includes(search)
+      const matchesFilter = (() => {
+        if (filter === 'unread') return (conversation.unread_count || 0) > 0
+        if (filter === 'club') return (conversation.category || '').includes('club')
+        if (filter === 'mentors') return (conversation.category || '').includes('mentor')
+        if (filter === 'circles') return (conversation.category || '').includes('circle')
+        return true
+      })()
+      return matchesQuery && matchesFilter
+    })
+  }, [archivedIds, conversations, filter, query])
+
+  const sorted = useMemo(() => {
+    const pinned = filtered.filter((conversation) => pinnedIds.includes(conversation.id))
+    const rest = filtered.filter((conversation) => !pinnedIds.includes(conversation.id))
+    return [...pinned, ...rest]
+  }, [filtered, pinnedIds])
 
   return (
-    <div className="bg-white rounded shadow overflow-hidden">
-      <div className="p-3 border-b">
-        <div className="flex items-center gap-2">
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search" className="flex-1 border rounded px-3 py-2 text-sm" />
-          <button className="ml-2 rounded bg-violet-600 text-white px-3 py-2">New</button>
+    <div className="overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-[0_20px_60px_-24px_rgba(15,23,42,0.18)]">
+      <div className="border-b border-slate-200 bg-gradient-to-r from-violet-50 to-fuchsia-50 p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-violet-700">Inbox</p>
+            <h2 className="mt-1 text-lg font-semibold text-slate-900">Conversations</h2>
+          </div>
+          <div className="rounded-full bg-white p-2 text-violet-700 shadow-sm">
+            <MessageCircleMore className="h-4 w-4" />
+          </div>
+        </div>
+
+        <div className="mt-4 flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+          <Search className="h-4 w-4 text-slate-400" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search conversations"
+            className="w-full bg-transparent text-sm text-slate-700 outline-none"
+          />
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-2">
+          {(['all', 'unread', 'club', 'mentors', 'circles'] as Filter[]).map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setFilter(value)}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] transition ${filter === value ? 'bg-violet-600 text-white' : 'bg-white text-slate-600 hover:bg-violet-50 hover:text-violet-700'}`}
+            >
+              {value}
+            </button>
+          ))}
         </div>
       </div>
-      <div className="max-h-[70vh] overflow-auto">
-        {filtered.map((c) => (
-          <ConversationItem key={c.id} conv={c} selected={c.id === selected} onClick={onSelect} />
-        ))}
+
+      <div className="max-h-[70vh] space-y-2 overflow-auto p-3">
+        {sorted.length > 0 ? (
+          sorted.map((conversation) => (
+            <ConversationItem
+              key={conversation.id}
+              conv={conversation}
+              selected={conversation.id === selected}
+              onClick={onSelect}
+              pinned={pinnedIds.includes(conversation.id)}
+              onPin={(id) => setPinnedIds((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]))}
+              onArchive={(id) => setArchivedIds((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]))}
+            />
+          ))
+        ) : (
+          <div className="rounded-[20px] border border-dashed border-slate-300 bg-slate-50 p-5 text-center text-sm text-slate-600">
+            <div className="mb-2 flex justify-center text-violet-600">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            No conversations match this view yet.
+          </div>
+        )}
       </div>
     </div>
   )

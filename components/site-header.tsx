@@ -27,7 +27,7 @@ const authNavLinks = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/community', label: 'Community' },
   { href: '/academy', label: 'Academy' },
-  { href: '/circles', label: 'Sister Circles' },
+  { href: '/circles', label: 'Circles' },
   { href: '/opportunities', label: 'Opportunities' },
   { href: '/events', label: 'Events' },
   { href: '/big-club', label: 'BIG Club' },

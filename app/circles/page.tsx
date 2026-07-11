@@ -9,11 +9,11 @@ import { Button } from '@/components/ui/button'
 import FallbackImage from '@/components/ui/fallback-image'
 
 export const metadata: Metadata = {
-  title: 'Sister Circles | BIG',
+  title: 'Circles | BIG',
   description:
     'Join your primary Sister Circle and grow with women in the Learn, Connect, Earn, and Thrive communities. Attend meetups, connect with sisters, and rise together.',
   openGraph: {
-    title: 'Sister Circles | BIG',
+    title: 'Circles | BIG',
     description: 'Find your community, choose your focus, rise together.',
     images: ['/og-image.jpg'],
   },
@@ -162,7 +162,7 @@ export default function CirclesPage() {
     <>
       {/* Hero */}
       <PageHero
-        title="Sister Circles"
+        title="Circles"
         subtitle="Find your community. Choose your focus. Rise together."
         description="Join women who are learning, connecting, earning, and thriving together in our four main circles."
         cta1={{ text: 'Browse Circles', href: '#circles-section' }}
