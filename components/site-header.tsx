@@ -20,7 +20,6 @@ const guestNavLinks = [
   { href: '/fund', label: 'BIG Fund' },
   { href: '/contact', label: 'Contact' },
   { href: '/join', label: 'Join' },
-  { href: '/signin', label: 'Sign In' },
 ]
 
 const authNavLinks = [
@@ -56,6 +55,7 @@ export function SiteHeader() {
     ),
   )
   const isTransparentHero = pathname === '/' && !scrolled
+  const isCompactCourseHeader = Boolean(pathname && /^\/academy\/[^/]+$/.test(pathname))
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 18)
@@ -118,7 +118,7 @@ export function SiteHeader() {
           : 'border-border/60 bg-white/95 shadow-[0_10px_30px_-20px_rgba(15,23,42,0.3)] backdrop-blur-xl',
       )}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className={cn('mx-auto max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8', isCompactCourseHeader ? 'flex h-12' : 'flex h-16')}>
         <Logo onLight={!isTransparentHero} showText={false} />
 
         <nav className="hidden items-center gap-1 lg:flex">
@@ -285,6 +285,27 @@ export function SiteHeader() {
                 </Link>
               )
             })}
+            {pathname?.startsWith('/academy') ? (
+              <div className="mt-3 rounded-3xl border border-border/70 bg-background p-4">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-secondary">Academy sections</p>
+                {[
+                  { href: '#academy-course-explorer', label: 'Courses' },
+                  { href: '#learning-tracks', label: 'Learning Paths' },
+                  { href: '#mentors', label: 'Mentors' },
+                  { href: '#resources', label: 'Resources' },
+                  { href: '#certificates', label: 'Certificates' },
+                ].map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className="block rounded-2xl px-4 py-2 text-sm text-foreground transition hover:bg-muted"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            ) : null}
             <div className="mt-2 flex flex-col gap-2">
               <button
                 type="button"
@@ -356,7 +377,7 @@ export function SiteHeader() {
         </div>
       )}
 
-      <div className="border-t border-border/60 bg-white/95 backdrop-blur lg:hidden">
+      <div className={cn('hidden border-t border-border/60 bg-white/95 backdrop-blur md:flex lg:hidden', isCompactCourseHeader ? 'hidden' : '')}>
         <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-3">
           {isAuthenticated ? (
             [
@@ -381,7 +402,6 @@ export function SiteHeader() {
               { href: '/about', label: 'About', icon: Info },
               { href: '/academy', label: 'Academy', icon: BookOpen },
               { href: '/join', label: 'Join', icon: LogIn },
-              { href: '/signin', label: 'Sign In', icon: LogIn },
             ].map((item) => {
               const Icon = item.icon
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`)

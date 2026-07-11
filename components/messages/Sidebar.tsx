@@ -53,7 +53,7 @@ function ConversationItem({
       <div className="flex items-start gap-3">
         <div className="relative mt-0.5 shrink-0">
           <img
-            src={conv.avatar_url || conv.last_message?.sender_avatar || '/images/avatar-placeholder.png'}
+            src={conv.avatar_url || conv.last_message?.sender_avatar || '/images/member-placeholder.svg'}
             className="h-11 w-11 rounded-full object-cover"
             alt={displayTitle}
           />

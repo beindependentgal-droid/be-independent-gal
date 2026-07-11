@@ -50,7 +50,7 @@ export default function SuggestedMembersClient({ currentUserId }: { currentUserI
       {members.map((m) => (
         <div key={m.id} className="flex items-center justify-between gap-3 p-2 border rounded">
           <div className="flex items-center gap-3">
-            <img src={m.avatar_url || '/images/avatar-placeholder.png'} alt="avatar" className="w-10 h-10 rounded-full" />
+            <img src={m.avatar_url || '/images/member-placeholder.svg'} alt="avatar" className="w-10 h-10 rounded-full" />
             <div>
               <div className="font-medium">{m.first_name} {m.last_name}</div>
               <div className="text-xs text-slate-500">{m.profession || m.city}</div>

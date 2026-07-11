@@ -85,6 +85,7 @@ export default function AboutPage() {
           src="/images/hero-women2.jpg"
           alt="Women walking together, laughing, and learning as a community"
           fill
+          sizes="100vw"
           className="object-cover"
         />
         <div className="absolute inset-0 bg-black/40" />
@@ -300,8 +301,14 @@ export default function AboutPage() {
           <SectionHeading eyebrow="Our Community" title="Moments that show what BIG feels like." />
           <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
             {['bswomen.jpg', 'together.jpg', 'sister.jpg', 'event.png', 'retr.jpg', 'hero-women3.jpg', 'hero-women.png', 'hero-women2.jpg'].slice(0, 8).map((src, index) => (
-              <div key={src} className="relative overflow-hidden rounded-[1.5rem] bg-slate-100 aspect-4/5">
-                <Image src={`/images/${src}`} alt={`BIG community ${index + 1}`} fill className="object-cover" />
+              <div key={src} className="relative overflow-hidden rounded-[1.5rem] bg-slate-100 aspect-[4/5]">
+                <Image
+                  src={`/images/${src}`}
+                  alt={`BIG community ${index + 1}`}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover"
+                />
               </div>
             ))}
           </div>

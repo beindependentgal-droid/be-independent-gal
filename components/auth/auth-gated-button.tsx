@@ -29,7 +29,7 @@ export function AuthGatedButton({
   }
 
   return (
-    <Button onClick={handleClick} {...props}>
+    <Button type="button" onClick={handleClick} {...props}>
       {children}
     </Button>
   )

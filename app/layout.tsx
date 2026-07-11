@@ -1,13 +1,13 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Outfit, Inter } from 'next/font/google'
+import { Sora, Inter } from 'next/font/google'
 import { SiteHeader } from '@/components/site-header'
 import { FooterGuard } from '@/components/footer-guard'
 import { AuthProvider } from '@/lib/auth-context'
 import './globals.css'
 
-const outfit = Outfit({
-  variable: '--font-outfit',
+const sora = Sora({
+  variable: '--font-sora',
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700', '800'],
 })
@@ -136,7 +136,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/images/biglogo.png" sizes="512x512" />
       </head>
 
-      <body className={`${outfit.variable} ${inter.variable} font-inter antialiased bg-background text-foreground`}>
+      <body className={`${sora.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}>
         <AuthProvider>
           <div className="flex flex-col min-h-screen">
             {/* Header */}

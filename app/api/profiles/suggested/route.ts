@@ -84,17 +84,17 @@ export async function GET(request: NextRequest) {
       supabase.from("blocked_users").select("blocked").eq("blocker", userId),
     ]);
 
-    const connectedIds = new Set<string>()(connections || []).forEach(
-      (c: Record<string, unknown>) => {
-        const status = c.status as string | undefined;
-        const requester = c.requester as string | undefined;
-        const recipient = c.recipient as string | undefined;
-        if (status === "connected") {
-          if (requester) connectedIds.add(requester);
-          if (recipient) connectedIds.add(recipient);
-        }
-      },
-    );
+    const connectedIds = new Set<string>();
+    (connections || []).forEach((c: Record<string, unknown>) => {
+      const status = c.status as string | undefined;
+      const requester = c.requester as string | undefined;
+      const recipient = c.recipient as string | undefined;
+      if (status === "connected") {
+        if (requester) connectedIds.add(requester);
+        if (recipient) connectedIds.add(recipient);
+      }
+    });
+
     const requestedTo = new Set(
       (requestsFrom || []).map(
         (r: Record<string, unknown>) => r.to_profile as string,
@@ -176,6 +176,14 @@ export async function GET(request: NextRequest) {
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
+    if (/permission denied/i.test(message)) {
+      return successResponse({
+        members: [],
+        total: 0,
+        page: 1,
+        pageSize,
+      });
+    }
     return errorResponse(message || "Failed to load suggested members", 500);
   }
 }

@@ -107,6 +107,7 @@ export default function SignUpScreen({ searchParams }: SignUpScreenProps) {
             src="/images/hero-women.png"
             alt="BIG Community"
             fill
+            sizes="100vw"
             className="object-cover"
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).src = '/images/hero-women2.jpg'

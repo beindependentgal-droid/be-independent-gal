@@ -130,7 +130,7 @@ export default function HomePage() {
           {/* Left - Image */}
           <div className="relative">
             <div className="relative overflow-hidden rounded-3xl shadow-2xl">
-              <div className="aspect-4/3 sm:aspect-square">
+              <div className="aspect-[4/3] sm:aspect-square">
                 <FallbackImage
                   src="/images/bswomen.jpg"
                   alt="Be Independent Gal Community"

@@ -81,7 +81,7 @@ export function PageHero({
         </div>
 
         {imageSrc && (
-          <div className="relative h-72 w-full overflow-hidden rounded-[2rem] bg-white/10 lg:h-105 lg:w-1/2">
+          <div className="relative h-72 w-full overflow-hidden rounded-[2rem] bg-white/10 lg:h-[40rem] lg:w-1/2">
             <Image
               src={imageSrc}
               alt={title}

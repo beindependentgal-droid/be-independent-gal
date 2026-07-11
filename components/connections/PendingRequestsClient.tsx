@@ -83,7 +83,7 @@ export default function PendingRequestsClient({ initialPending, currentUserId }:
       {pending.map((r) => (
         <div key={r.id} className="flex items-center justify-between gap-3 p-3 border rounded">
           <div className="flex items-center gap-3">
-            <img src={r.from_profile_data?.avatar_url || '/images/avatar-placeholder.png'} alt="avatar" className="w-10 h-10 rounded-full" />
+            <img src={r.from_profile_data?.avatar_url || '/images/member-placeholder.svg'} alt="avatar" className="w-10 h-10 rounded-full" />
             <div>
               <div className="font-medium">{r.from_profile_data?.first_name} {r.from_profile_data?.last_name}</div>
               <div className="text-xs text-slate-500">{r.from_profile_data?.profession || r.from_profile_data?.city}</div>

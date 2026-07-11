@@ -18,7 +18,12 @@ export type AcademyCourse = {
   price?: string;
   featured?: boolean;
   idealFor?: string;
+  audience?: string[];
+  mentorName?: string;
+  mentorTitle?: string;
+  mentorBlurb?: string;
   outcomes?: string[];
+  modules?: { module: string; title: string; lessons: number }[];
 };
 
 export type AcademyTrack = {
@@ -113,7 +118,7 @@ export const academyCourses: AcademyCourse[] = [
     lessons: 18,
     description:
       "Build a personal money system, kill debt, and start investing with whatever you have today.",
-    image: "/images/academy.png",
+    image: "/images/hero-women.png",
     featured: true,
     idealFor: "Women who want more control over their money",
     outcomes: [
@@ -121,6 +126,35 @@ export const academyCourses: AcademyCourse[] = [
       "Reduce financial stress with confidence-building systems",
       "Start investing with small, consistent steps",
     ],
+    audience: [
+      "Women building secure money habits",
+      "People ready to manage debt and savings",
+      "Learners who want clear investing steps",
+    ],
+    mentorName: "Amina Yusuf",
+    mentorTitle: "Founder & Money Confidence Coach",
+    mentorBlurb:
+      "Helping women feel more in control of their money with calm, practical steps.",
+    modules: [
+      { module: "Module 1", title: "Foundations of Budgeting", lessons: 4 },
+      {
+        module: "Module 2",
+        title: "Aggressive Debt Elimination Strategies",
+        lessons: 4,
+      },
+      {
+        module: "Module 3",
+        title: "Building Your Automated Savings Engine",
+        lessons: 5,
+      },
+      {
+        module: "Module 4",
+        title: "Introduction to Investing & Wealth Building",
+        lessons: 5,
+      },
+    ],
+    rating: 4.9,
+    certificate: true,
   },
   {
     slug: "launch-your-side-hustle",
@@ -140,6 +174,16 @@ export const academyCourses: AcademyCourse[] = [
       "Build your first offer and customer journey",
       "Turn passion into a practical income stream",
     ],
+    audience: [
+      "Women validating a business idea",
+      "Aspiring founders needing first customers",
+      "Makers who want a practical launch plan",
+    ],
+    mentorName: "Amina Yusuf",
+    mentorTitle: "Founder & Business Coach",
+    mentorBlurb: "Guiding women to launch offers with confidence and clarity.",
+    rating: 4.8,
+    certificate: true,
   },
   {
     slug: "own-the-interview-room",
@@ -150,7 +194,7 @@ export const academyCourses: AcademyCourse[] = [
     lessons: 12,
     description:
       "Craft a standout CV, tell your story with confidence, and negotiate the offer you deserve.",
-    image: "/images/mentorship.png",
+    image: "/images/hero-women3.jpg",
     price: "$39",
     idealFor: "Women preparing for career moves or promotions",
     outcomes: [
@@ -158,6 +202,16 @@ export const academyCourses: AcademyCourse[] = [
       "Answer interview questions with calm confidence",
       "Negotiate offers and next steps with clarity",
     ],
+    audience: [
+      "Women preparing for career moves",
+      "Professionals wanting interview confidence",
+      "Job seekers aiming to negotiate better offers",
+    ],
+    mentorName: "Amina Yusuf",
+    mentorTitle: "Founder & Career Confidence Coach",
+    mentorBlurb: "Helping women tell their story with clarity and calm.",
+    rating: 4.7,
+    certificate: true,
   },
   {
     slug: "personal-branding-on-social-media",
@@ -168,13 +222,23 @@ export const academyCourses: AcademyCourse[] = [
     lessons: 16,
     description:
       "Show up online with clarity, grow an audience, and turn attention into opportunity.",
-    image: "/images/community.png",
+    image: "/images/together.jpg",
     idealFor: "Women building visibility for their work or business",
     outcomes: [
       "Create content that feels aligned and consistent",
       "Grow your online presence with intention",
       "Turn attention into trusted opportunities",
     ],
+    audience: [
+      "Women growing their online presence",
+      "Creatives wanting a consistent personal brand",
+      "Professionals ready to share their work with clarity",
+    ],
+    mentorName: "Amina Yusuf",
+    mentorTitle: "Founder & Brand Coach",
+    mentorBlurb: "Helping women show up online with confidence and purpose.",
+    rating: 4.8,
+    certificate: true,
   },
   {
     slug: "confident-and-unstoppable",
@@ -185,13 +249,24 @@ export const academyCourses: AcademyCourse[] = [
     lessons: 9,
     description:
       "Rewire self-doubt, set healthy boundaries, and lead your life with intention.",
-    image: "/images/circles.png",
+    image: "/images/hero-women2.jpg",
     idealFor: "Women rebuilding confidence and momentum",
     outcomes: [
       "Strengthen self-trust and self-worth",
       "Set boundaries without guilt",
       "Create a calmer, more grounded routine",
     ],
+    audience: [
+      "Women rebuilding confidence",
+      "Professionals overcoming self-doubt",
+      "Entrepreneurs seeking stronger leadership",
+    ],
+    mentorName: "Amina Yusuf",
+    mentorTitle: "Founder & Brand Builder",
+    mentorBlurb:
+      "Helping women build confidence, clarity, and practical momentum.",
+    rating: 4.9,
+    certificate: true,
   },
   {
     slug: "grow-and-scale-your-business",
@@ -210,6 +285,17 @@ export const academyCourses: AcademyCourse[] = [
       "Build systems that reduce overwhelm",
       "Create a more sustainable growth plan",
     ],
+    audience: [
+      "Business owners ready to scale",
+      "Founders wanting better systems",
+      "Leaders building sustainable growth",
+    ],
+    mentorName: "Amina Yusuf",
+    mentorTitle: "Founder & Growth Coach",
+    mentorBlurb:
+      "Supporting women to scale their business with clarity and confidence.",
+    rating: 4.6,
+    certificate: true,
   },
 ];
 

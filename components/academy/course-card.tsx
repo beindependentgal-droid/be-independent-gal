@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Clock, BookOpen, BarChart, ArrowRight, Info } from 'lucide-react'
+import { Star, Clock, BookOpen, BarChart, ArrowRight, Info } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { AuthGatedButton } from '@/components/auth/auth-gated-button'
@@ -19,6 +19,10 @@ export type Course = {
   image: string
   price?: string
   featured?: boolean
+  idealFor?: string
+  outcomes?: string[]
+  rating?: number
+  certificate?: boolean
 }
 
 interface CourseCardProps {
@@ -93,65 +97,55 @@ export function CourseCard({ course, selected, onOpenDetails }: CourseCardProps)
             course.title
           )}
         </h3>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
-          {course.description}
-        </p>
 
-        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/5 px-2.5 py-1">
-            <BarChart className="h-4 w-4 text-accent" /> {course.level}
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/5 px-2.5 py-1">
-            <Clock className="h-4 w-4 text-accent" /> {course.duration}
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/5 px-2.5 py-1">
-            <BookOpen className="h-4 w-4 text-accent" /> {course.lessons} lessons
-          </span>
-          {course.price ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-1 text-accent">
-              {course.price}
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-primary">
-              Free
-            </span>
-          )}
-        </div>
-
-        <div
-          className="mt-5 space-y-3 border-t border-slate-200/80 pt-4"
-          onClick={(event) => event.stopPropagation()}
-          onKeyDown={(event) => event.stopPropagation()}
-        >
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-sm font-semibold text-primary">
-              <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs">↗</span>
-              Next step: explore
-            </div>
-            {onOpenDetails ? (
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold sm:w-auto"
-                onClick={(event) => {
-                  event.stopPropagation()
-                  onOpenDetails?.(course)
-                }}
-              >
-                <Info className="h-4 w-4" />
-                View details
-              </Button>
-            ) : null}
+        <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-secondary font-semibold">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Star key={index} className="h-4 w-4 text-amber-400" />
+            ))}
+            <span>{course.rating?.toFixed(1) ?? '4.9'}</span>
           </div>
-
-          <AuthGatedButton
-            variant="ghost"
-            className="w-full justify-center gap-1 px-0 font-semibold text-primary hover:bg-transparent hover:text-primary/80 sm:w-auto sm:justify-start"
-            redirectPath={`/academy/${course.slug}`}
-          >
-            Enroll free <ArrowRight className="h-4 w-4" />
-          </AuthGatedButton>
+          <span className="rounded-full border border-slate-200/80 bg-primary/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+            {course.level}
+          </span>
+          <span className="rounded-full border border-slate-200/80 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+            {course.lessons} Lessons
+          </span>
+          <span className="rounded-full border border-slate-200/80 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+            {course.duration}
+          </span>
+          <span className="rounded-full border border-slate-200/80 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            {course.certificate ? 'Certificate' : 'Certificate available'}
+          </span>
         </div>
+
+        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{course.description}</p>
+
+        <div className="mt-6 flex flex-col gap-3 border-t border-slate-200/80 pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="text-sm font-semibold text-primary">Explore Course →</div>
+          {onOpenDetails ? (
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold sm:w-auto"
+              onClick={(event) => {
+                event.stopPropagation()
+                onOpenDetails?.(course)
+              }}
+            >
+              <Info className="h-4 w-4" />
+              View details
+            </Button>
+          ) : null}
+        </div>
+
+        <AuthGatedButton
+          variant="ghost"
+          className="w-full justify-center gap-1 px-0 font-semibold text-primary hover:bg-transparent hover:text-primary/80 sm:w-auto sm:justify-start"
+          redirectPath={`/academy/${course.slug}`}
+        >
+          Start learning <ArrowRight className="h-4 w-4" />
+        </AuthGatedButton>
       </div>
     </article>
   )

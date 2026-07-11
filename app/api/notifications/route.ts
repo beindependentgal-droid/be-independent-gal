@@ -1,28 +1,47 @@
-import { NextRequest } from 'next/server';
-import { requireAuth, successResponse, errorResponse, supabase, getPaginationParams } from '@/lib/api-utils';
+import { NextRequest } from "next/server";
+import {
+  requireAuth,
+  successResponse,
+  errorResponse,
+  supabase,
+  getPaginationParams,
+} from "@/lib/api-utils";
 
 // GET /api/notifications - Get user notifications
 export async function GET(request: NextRequest) {
   const authResult = await requireAuth(request);
-  if (authResult instanceof Response) return authResult;
+  if (authResult instanceof Response) {
+    const { pageSize } = getPaginationParams(request);
+    return successResponse({
+      notifications: [],
+      total: 0,
+      unread: 0,
+      page: 1,
+      pageSize,
+    });
+  }
 
   const { userId } = authResult;
   const url = new URL(request.url);
-  const unreadOnly = url.searchParams.get('unread') === 'true';
+  const unreadOnly = url.searchParams.get("unread") === "true";
   const { pageSize, offset } = getPaginationParams(request);
 
   try {
     let query = supabase
-      .from('notifications')
-      .select('*', { count: 'exact' })
-      .eq('user_id', userId);
+      .from("notifications")
+      .select("*", { count: "exact" })
+      .eq("user_id", userId);
 
     if (unreadOnly) {
-      query = query.is('read_at', null);
+      query = query.is("read_at", null);
     }
 
-    const { data: notifications, error, count } = await query
-      .order('created_at', { ascending: false })
+    const {
+      data: notifications,
+      error,
+      count,
+    } = await query
+      .order("created_at", { ascending: false })
       .range(offset, offset + pageSize - 1);
 
     if (error) {
@@ -37,6 +56,6 @@ export async function GET(request: NextRequest) {
       pageSize,
     });
   } catch (error: any) {
-    return errorResponse(error.message || 'Unable to load notifications', 500);
+    return errorResponse(error.message || "Unable to load notifications", 500);
   }
 }

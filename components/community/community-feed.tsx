@@ -758,7 +758,13 @@ export default function CommunityFeed() {
                       {post.image ? (
                         <div className="mt-5 overflow-hidden rounded-[28px] border border-slate-200 bg-slate-100">
                           <div className="relative h-[330px] w-full">
-                            <Image src={post.image} alt="Post media" fill className="object-cover" />
+                            <Image
+                              src={post.image}
+                              alt="Post media"
+                              fill
+                              sizes="100vw"
+                              className="object-cover"
+                            />
                           </div>
                         </div>
                       ) : null}

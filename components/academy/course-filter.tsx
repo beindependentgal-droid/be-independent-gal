@@ -14,6 +14,7 @@ export function AcademyCourseFilter({ courses, initialTrack = 'All' }: { courses
   const [search, setSearch] = useState('')
   const [track, setTrack] = useState(initialTrack)
   const [level, setLevel] = useState('All')
+  const [sort, setSort] = useState('Newest')
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
 
   const tracks = useMemo(
@@ -28,7 +29,7 @@ export function AcademyCourseFilter({ courses, initialTrack = 'All' }: { courses
 
   const filteredCourses = useMemo(() => {
     const query = search.trim().toLowerCase()
-    return courses.filter((course) => {
+    const filtered = courses.filter((course) => {
       const matchesTrack = track === 'All' || course.track === track
       const matchesLevel = level === 'All' || course.level === level
       const matchesQuery =
@@ -40,7 +41,20 @@ export function AcademyCourseFilter({ courses, initialTrack = 'All' }: { courses
 
       return matchesTrack && matchesLevel && matchesQuery
     })
-  }, [courses, level, search, track])
+
+    return filtered.slice().sort((a, b) => {
+      if (sort === 'Most Popular') {
+        return (b.rating ?? 0) - (a.rating ?? 0)
+      }
+      if (sort === 'Free') {
+        return (a.price ? 1 : 0) - (b.price ? 1 : 0)
+      }
+      if (sort === 'Paid') {
+        return (b.price ? 1 : 0) - (a.price ? 1 : 0)
+      }
+      return 0
+    })
+  }, [courses, level, search, sort, track])
 
   useEffect(() => {
     const handle = requestAnimationFrame(() => {
@@ -64,10 +78,9 @@ export function AcademyCourseFilter({ courses, initialTrack = 'All' }: { courses
       <div className="rounded-3xl border border-border bg-card p-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="space-y-3">
-            <h3 className="text-lg font-bold text-secondary">Find the right course</h3>
+            <h3 className="text-lg font-bold text-secondary">Explore Courses</h3>
             <p className="text-sm text-muted-foreground">
-              Filter by track, level, or keywords to discover courses that match
-              your goals.
+              Sort, filter, and discover courses that match your goals.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -91,14 +104,30 @@ export function AcademyCourseFilter({ courses, initialTrack = 'All' }: { courses
                 </button>
               ) : null}
             </div>
-            <Button
-              type="button"
-              variant="outline"
-              className="rounded-full px-5 py-2 text-sm font-semibold"
-              onClick={resetFilters}
-            >
-              Reset filters
-            </Button>
+            <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-full px-5 py-2 text-sm font-semibold"
+                onClick={resetFilters}
+              >
+                Reset filters
+              </Button>
+              <div className="rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground">
+                <label className="sr-only" htmlFor="course-sort">Sort by</label>
+                <select
+                  id="course-sort"
+                  value={sort}
+                  onChange={(event) => setSort(event.target.value)}
+                  className="w-full bg-transparent text-sm font-semibold outline-none"
+                >
+                  <option>Newest</option>
+                  <option>Most Popular</option>
+                  <option>Free</option>
+                  <option>Paid</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -179,8 +208,8 @@ export function AcademyCourseFilter({ courses, initialTrack = 'All' }: { courses
       <Dialog.Root open={selectedCourse !== null} onOpenChange={(open) => open || closeCourseDetails()} modal>
         <Dialog.Portal>
           <Dialog.Backdrop className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
-          <Dialog.Viewport className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-            <Dialog.Popup className="w-full max-w-[min(100vw-2rem,40rem)] overflow-hidden rounded-3xl border border-border bg-background shadow-2xl shadow-black/20 sm:max-w-3xl lg:max-w-4xl">
+          <Dialog.Viewport className="fixed inset-0 z-50 flex items-center justify-center p-6 sm:p-8">
+            <Dialog.Popup className="mx-4 w-full max-w-[min(100vw-3rem,40rem)] overflow-hidden rounded-3xl border border-border bg-background shadow-2xl shadow-black/20 sm:max-w-3xl lg:max-w-4xl">
               <div className="flex flex-col gap-6 p-6 sm:p-8">
                 <div className="flex items-start justify-between gap-4">
                   <div>

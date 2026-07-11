@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-heading: var(--font-outfit), 'Outfit', sans-serif;
+  --font-heading: var(--font-sora), 'Sora', sans-serif;
   --font-sans: var(--font-inter), 'Inter', sans-serif;
   --font-mono: var(--font-geist-mono), 'Geist Mono Fallback';
   --color-sidebar-ring: var(--sidebar-ring);

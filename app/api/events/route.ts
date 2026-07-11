@@ -15,6 +15,15 @@ export async function GET(request: NextRequest) {
   const { pageSize, offset } = getPaginationParams(request);
 
   try {
+    if (!supabase) {
+      return successResponse({
+        events: [],
+        total: 0,
+        page: Math.floor(offset / pageSize) + 1,
+        pageSize,
+      });
+    }
+
     let query = supabase
       .from("events")
       .select(
@@ -32,7 +41,18 @@ export async function GET(request: NextRequest) {
       .order("start_time", { ascending: true, nullsFirst: false })
       .range(offset, offset + pageSize - 1);
 
-    if (error) throw error;
+    if (error) {
+      const message = error?.message || "Failed to fetch events";
+      if (/permission denied/i.test(message)) {
+        return successResponse({
+          events: [],
+          total: 0,
+          page: Math.floor(offset / pageSize) + 1,
+          pageSize,
+        });
+      }
+      throw error;
+    }
 
     return successResponse({
       events: data || [],

@@ -303,25 +303,51 @@ export default function CommunityFeed() {
 
       try {
         const feedPromise = fetchJson<{ posts: any[]; count: number }>('/api/community/posts?pageSize=8', { cache: 'no-store' }).catch(() => ({ posts: [], count: 0 }))
-      const eventsPromise = fetchJson<{ events: any[] }>('/api/events?upcoming=1&pageSize=4', {
-        cache: 'force-cache',
-        next: { revalidate: 1800 },
-      })
-      const membersPromise = fetchJson<{ members: any[] }>('/api/profiles/suggested?pageSize=4', {
-        cache: 'force-cache',
-        next: { revalidate: 3600 },
-      })
+      const eventsPromise = (async () => {
+        try {
+          return await fetchJson<{ events: any[] }>('/api/events?upcoming=1&pageSize=4', {
+            cache: 'force-cache',
+            next: { revalidate: 1800 },
+          })
+        } catch (error) {
+          return { events: [] }
+        }
+      })()
+      const membersPromise = (async () => {
+        try {
+          return await fetchJson<{ members: any[] }>('/api/profiles/suggested?pageSize=4', {
+            cache: 'force-cache',
+            next: { revalidate: 3600 },
+          })
+        } catch (error) {
+          return { members: [] }
+        }
+      })()
       const notificationsPromise = isAuthenticated
         ? (async () => {
             const token = await getAccessToken()
             if (!token) {
               return { notifications: [] }
             }
-            return fetchJson<{ notifications: any[] }>('/api/notifications?unread=true&pageSize=4', {
-              cache: 'force-cache',
-              next: { revalidate: 600 },
-              headers: { Authorization: `Bearer ${token}` },
-            })
+
+            try {
+              const response = await fetch('/api/notifications?unread=true&pageSize=4', {
+                cache: 'force-cache',
+                next: { revalidate: 600 },
+                headers: { Authorization: `Bearer ${token}` },
+              })
+
+              if (!response.ok) {
+                if (response.status === 401) {
+                  return { notifications: [] }
+                }
+                throw new Error(`Failed to fetch notifications: ${response.status}`)
+              }
+
+              return await response.json()
+            } catch (error) {
+              return { notifications: [] }
+            }
           })()
         : Promise.resolve({ notifications: [] })
 

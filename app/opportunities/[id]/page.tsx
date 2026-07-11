@@ -27,6 +27,7 @@ export default async function OpportunityDetail({ params }: Props) {
                   src={item.cover_image}
                   alt={item.title}
                   fill
+                  sizes="100vw"
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-transparent" />

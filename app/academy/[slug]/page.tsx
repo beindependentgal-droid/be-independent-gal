@@ -2,9 +2,11 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getCourseBySlug, getAllCourseSlugs } from '@/lib/academy-courses'
-import { PageHero } from '@/components/page-hero'
 import { SectionHeading } from '@/components/section-heading'
+import CurriculumAccordion from '@/components/academy/curriculum-accordion'
+import { CourseDetailsCTA } from '@/components/academy/course-details-cta'
 import { AuthGatedButton } from '@/components/auth/auth-gated-button'
+import { Star, Users, CheckCircle, BadgeCheck } from 'lucide-react'
 
 interface AcademyCoursePageProps {
   params: Promise<{
@@ -62,93 +64,140 @@ export default async function AcademyCoursePage({ params }: AcademyCoursePagePro
 
   return (
     <main className="bg-background">
-      <PageHero
-        eyebrow="BIG Academy"
-        title={course.title}
-        description={course.description}
-      />
+      <section className="relative overflow-hidden bg-white py-12 lg:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
+            <div>
+              <div className="inline-flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                <span>BIG Academy</span>
+                <span className="hidden sm:inline">•</span>
+                <span className="text-accent">{course.track}</span>
+              </div>
 
-      <section className="mx-auto max-w-6xl space-y-12 px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="space-y-6 rounded-3xl border border-border bg-card p-8">
-            <div className="flex flex-wrap items-center gap-4 text-sm font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-              <span>{course.track}</span>
-              <span className="text-accent">{course.level}</span>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-3xl bg-secondary/5 p-6 text-center">
-                <p className="text-3xl font-bold text-secondary">{course.duration}</p>
-                <p className="text-sm text-muted-foreground">Duration</p>
-              </div>
-              <div className="rounded-3xl bg-secondary/5 p-6 text-center">
-                <p className="text-3xl font-bold text-secondary">{course.lessons}</p>
-                <p className="text-sm text-muted-foreground">Lessons</p>
-              </div>
-              <div className="rounded-3xl bg-secondary/5 p-6 text-center">
-                <p className="text-3xl font-bold text-secondary">{course.price ?? 'Free'}</p>
-                <p className="text-sm text-muted-foreground">Enrollment</p>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <SectionHeading eyebrow="What you’ll learn" title="Course outcomes" />
-              <ul className="space-y-3 text-sm leading-relaxed text-muted-foreground">
-                {(course.outcomes ?? []).length > 0 ? (
-                  (course.outcomes ?? []).map((outcome) => (
-                    <li key={outcome} className="flex items-start gap-3">
-                      <span className="mt-1 inline-flex h-2 w-2 rounded-full bg-primary" />
-                      <span>{outcome}</span>
-                    </li>
-                  ))
-                ) : (
-                  <li className="text-sm leading-relaxed text-muted-foreground">
-                    This course includes practical lessons, examples, and tools to help you move forward with confidence.
-                  </li>
-                )}
-              </ul>
-            </div>
-          </div>
+              <h1 className="mt-4 text-3xl font-heading font-extrabold leading-tight text-slate-900 sm:text-4xl lg:text-5xl">
+                {course.title}
+              </h1>
 
-          <div className="space-y-6">
-            <div className="overflow-hidden rounded-3xl border border-border bg-muted">
-              <div className="relative aspect-[16/10]">
-                <Image
-                  src={course.image}
-                  alt={course.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
-                />
+              <p className="mt-4 max-w-2xl text-lg text-slate-700">{course.description}</p>
+
+              <div className="mt-6">
+                <div className="inline-flex items-center gap-3 text-sm font-medium text-slate-700">
+                  <span className="inline-flex items-center gap-2"> <Star className="h-4 w-4 text-amber-400" /> <span>{course.rating ?? 4.8}</span></span>
+                  <span className="text-muted-foreground">•</span>
+                  <span>{course.level}</span>
+                  <span className="text-muted-foreground">•</span>
+                  <span>{course.duration}</span>
+                  <span className="text-muted-foreground">•</span>
+                  <span>{course.lessons} Lessons</span>
+                  {course.certificate ? (
+                    <><span className="text-muted-foreground">•</span><span>🏆 Certificate</span></>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto]">
+                <div>
+                  <CourseDetailsCTA
+                    courseSlug={course.slug}
+                    courseTitle={course.title}
+                    price={course.price}
+                    hasLessons={Boolean(course.modules?.some((module) => module.lessons > 0))}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="flex items-center justify-center sm:justify-end">
+                  <a href="#lesson-1" className="inline-flex w-full items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50 sm:w-auto">
+                    Preview Curriculum
+                  </a>
+                </div>
               </div>
             </div>
 
-            <div className="rounded-3xl border border-border bg-card p-6">
-              <h2 className="text-base font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                Enroll with BIG Academy
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-foreground">
-                {course.idealFor
-                  ? `Ideal for ${course.idealFor.toLowerCase()}.`
-                  : 'Join the course instantly and access the learning path designed for women who want more financial independence, career momentum, or a stronger business foundation.'}
-              </p>
-              <div className="mt-4 inline-flex flex-wrap gap-2">
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary">
-                  {course.level}
-                </span>
-                <span className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-secondary">
-                  {course.track}
-                </span>
+            <div className="relative">
+              <div className="overflow-hidden rounded-2xl border border-border bg-muted">
+                <div className="relative aspect-[16/10]">
+                  <Image src={course.image} alt={course.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                </div>
               </div>
-              <AuthGatedButton
-                size="lg"
-                className="mt-6 w-full rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground hover:bg-primary/90"
-                redirectPath={`/academy/${course.slug}`}
-              >
-                Join this course
-              </AuthGatedButton>
+
+              {/* image area intentionally minimal for dashboard course-start */}
             </div>
           </div>
         </div>
       </section>
+
+      <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="space-y-8">
+          <div>
+            <SectionHeading title="What you'll learn" />
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              {[
+                'Validate your business idea',
+                'Find your first customers',
+                'Build a compelling offer',
+                'Market your business',
+                'Manage business finances',
+                'Launch with confidence',
+              ].map((outcome) => (
+                <div key={outcome} className="flex items-start gap-3">
+                  <span className="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary"><CheckCircle className="h-4 w-4" /></span>
+                  <p className="text-sm text-slate-700">{outcome}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900">Meet your mentor</h3>
+            <div className="mt-4 rounded-2xl border border-border bg-white p-4">
+              <div className="flex items-center gap-4">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-lg font-semibold text-primary">A</div>
+                <div>
+                  <p className="font-semibold text-slate-900">Amina Yusuf</p>
+                  <p className="text-sm text-muted-foreground">Founder & Brand Builder</p>
+                </div>
+                <div className="ml-auto inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-sm font-semibold text-slate-800">
+                  <Star className="h-4 w-4 text-amber-400" />{course.rating ?? 4.8}
+                </div>
+              </div>
+              <div className="mt-3">
+                <Link href="#" className="text-sm font-semibold text-primary">View profile</Link>
+              </div>
+            </div>
+          </div>
+
+          <div id="lesson-1">
+            <CurriculumAccordion
+              courseSlug={course.slug}
+              modules={course.modules ?? [
+                { module: 'Module 1', title: 'Finding Your Business Idea', lessons: 5 },
+                { module: 'Module 2', title: 'Validating Your Idea', lessons: 4 },
+                { module: 'Module 3', title: 'Branding', lessons: 4 },
+                { module: 'Module 4', title: 'Marketing', lessons: 5 },
+                { module: 'Module 5', title: 'Launch Strategy', lessons: 4 },
+              ]}
+            />
+          </div>
+          <div className="pt-6">
+            <div className="sticky top-24 z-20 mx-auto max-w-md rounded-2xl border border-border bg-white p-6 shadow-lg">
+              <div className="flex items-start gap-4">
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-slate-900">Ready to Begin?</p>
+                  <p className="mt-1 text-sm text-slate-700">You're one lesson away from building your next breakthrough.</p>
+                </div>
+                <div className="ml-4 flex-shrink-0">
+                  <AuthGatedButton size="md" className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground" redirectPath={`/academy/${course.slug}#lesson-1`}>
+                    Start Lesson 1 →
+                  </AuthGatedButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Floating sticky enroll card removed as requested */}
     </main>
   )
 }
