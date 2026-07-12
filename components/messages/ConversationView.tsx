@@ -124,7 +124,7 @@ export default function ConversationView({ conversationId, currentUserId, title 
   const typingTimerRef = useRef<number | null>(null)
   const callTimerRef = useRef<number | null>(null)
   const bottomRef = useRef<HTMLDivElement | null>(null)
-  const presenceChannelRef = useRef<any>(null)
+  const presenceChannelRef = useRef<{ track?: (payload: Record<string, unknown>) => Promise<unknown>; untrack?: () => Promise<unknown> } | null>(null)
 
   useEffect(() => {
     let mounted = true
@@ -437,16 +437,16 @@ export default function ConversationView({ conversationId, currentUserId, title 
   }, [])
 
   return (
-    <div className="flex h-[74vh] flex-col overflow-hidden rounded-[32px] border border-slate-200/80 bg-white shadow-[0_20px_60px_-24px_rgba(15,23,42,0.2)]">
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/95 px-4 py-4 backdrop-blur sm:px-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-violet-100 text-lg font-semibold text-violet-700">{title.charAt(0).toUpperCase()}</div>
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-semibold text-slate-900">{title}</p>
+    <div className="relative flex h-[calc(100dvh-8rem)] flex-col overflow-hidden rounded-[32px] border border-slate-200/80 bg-white shadow-[0_20px_60px_-24px_rgba(15,23,42,0.2)] sm:h-[74vh]">
+      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/95 px-3 py-3 backdrop-blur sm:px-6 sm:py-4">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-100 text-base font-semibold text-violet-700 sm:h-11 sm:w-11 sm:text-lg">{title.charAt(0).toUpperCase()}</div>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="truncate text-sm font-semibold text-slate-900">{title}</p>
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-600">{role}</span>
             </div>
-            <p className="text-sm text-slate-500">{subtitle}</p>
+            <p className="truncate text-sm text-slate-500">{subtitle}</p>
             <div className="flex items-center gap-2 text-sm text-slate-500">
               <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-slate-300'}`}>
                 {isOnline && !isTyping ? <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" /> : null}
@@ -465,19 +465,19 @@ export default function ConversationView({ conversationId, currentUserId, title 
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button className="rounded-full border border-slate-200 bg-slate-50 p-2.5 text-slate-600 transition hover:border-violet-200 hover:text-violet-700" aria-label="Search conversation">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <button className="rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-600 transition hover:border-violet-200 hover:text-violet-700 sm:p-2.5" aria-label="Search conversation">
             <Search className="h-4 w-4" />
           </button>
           <button
             type="button"
             onClick={handleCall}
-            className="rounded-full border border-slate-200 bg-slate-50 p-2.5 text-slate-600 transition hover:border-violet-200 hover:text-violet-700"
+            className="rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-600 transition hover:border-violet-200 hover:text-violet-700 sm:p-2.5"
             aria-label="Call"
           >
             <Phone className="h-4 w-4" />
           </button>
-          <button className="rounded-full border border-slate-200 bg-slate-50 p-2.5 text-slate-600 transition hover:border-violet-200 hover:text-violet-700" aria-label="More actions">
+          <button className="rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-600 transition hover:border-violet-200 hover:text-violet-700 sm:p-2.5" aria-label="More actions">
             <MoreVertical className="h-4 w-4" />
           </button>
         </div>
@@ -526,7 +526,7 @@ export default function ConversationView({ conversationId, currentUserId, title 
         </div>
       ) : null}
 
-      <div className="flex-1 overflow-auto bg-[radial-gradient(circle_at_top_left,rgba(214,0,109,0.08),transparent_30%),linear-gradient(180deg,#fcfbff_0%,#f8f7ff_100%)] px-3 py-4 sm:px-5">
+      <div className="flex-1 overflow-auto bg-[radial-gradient(circle_at_top_left,rgba(214,0,109,0.08),transparent_30%),linear-gradient(180deg,#fcfbff_0%,#f8f7ff_100%)] px-2 py-3 sm:px-5 sm:py-4">
         {loading ? (
           <div className="space-y-3 pt-6">
             {[1, 2, 3].map((item) => (
@@ -578,7 +578,7 @@ export default function ConversationView({ conversationId, currentUserId, title 
         <div ref={bottomRef} />
       </div>
 
-      <div className="border-t border-slate-200 bg-white p-3 sm:p-4">
+      <div className="border-t border-slate-200 bg-white p-2.5 sm:p-4">
         <Composer onSend={handleSend} onTypingChange={handleTypingChange} />
       </div>
     </div>

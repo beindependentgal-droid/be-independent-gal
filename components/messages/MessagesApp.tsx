@@ -108,8 +108,8 @@ export default function MessagesApp() {
           ]
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(214,0,109,0.06),_transparent_30%),linear-gradient(180deg,_#fcfbff_0%,_#f8f7ff_100%)] p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 xl:grid-cols-[320px_minmax(0,1fr)_280px]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(214,0,109,0.06),transparent_30%),linear-gradient(180deg,#fcfbff_0%,#f8f7ff_100%)] p-2 sm:p-6 lg:p-8">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3 xl:grid-cols-[320px_minmax(0,1fr)_280px]">
         <Sidebar conversations={conversations} selected={selected} onSelect={setSelected} />
 
         <div className="min-h-[74vh]">

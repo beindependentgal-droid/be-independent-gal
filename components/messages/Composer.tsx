@@ -52,9 +52,9 @@ export default function Composer({ onSend, onTypingChange }: { onSend: (text: st
   }
 
   return (
-    <div className="rounded-[24px] border border-slate-200 bg-slate-50/80 p-3 shadow-sm">
-      <form onSubmit={submit} className="space-y-3">
-        <div className="flex items-end gap-2">
+    <div className="rounded-[24px] border border-slate-200 bg-slate-50/80 p-2.5 shadow-sm sm:p-3">
+      <form onSubmit={submit} className="space-y-2 sm:space-y-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={() => setShowEmojiPicker((current) => !current)} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
               <Smile className="h-4 w-4" />
@@ -81,11 +81,11 @@ export default function Composer({ onSend, onTypingChange }: { onSend: (text: st
               }
             }}
             placeholder="Message Amina..."
-            className="min-h-[48px] flex-1 resize-none rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+            className="min-h-12 w-full flex-1 resize-none rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
             rows={1}
           />
 
-          <button type="submit" className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-violet-600 text-white shadow-sm transition hover:bg-violet-700">
+          <button type="submit" className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-violet-600 text-white shadow-sm transition hover:bg-violet-700">
             <Send className="h-4 w-4" />
           </button>
         </div>
@@ -100,7 +100,7 @@ export default function Composer({ onSend, onTypingChange }: { onSend: (text: st
           </div>
         )}
 
-        <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="flex flex-col gap-1 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <span className="flex items-center gap-1">
             <Sparkles className="h-3.5 w-3.5 text-violet-600" />
             Press Enter to send, Shift + Enter for a new line
