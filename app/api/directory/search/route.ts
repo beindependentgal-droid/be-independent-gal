@@ -3,9 +3,9 @@ import {
   requireAuth,
   successResponse,
   errorResponse,
-  supabase,
   getPaginationParams,
 } from "@/lib/api-utils";
+import { fetchDiscoverableProfiles } from "@/lib/profile-discovery";
 
 // GET /api/directory/search - Search members by filters
 export async function GET(request: NextRequest) {
@@ -20,50 +20,23 @@ export async function GET(request: NextRequest) {
   const isMentor = url.searchParams.get("mentor") === "true";
 
   try {
-    let dbQuery = supabase
-      .from("user_directory")
-      .select(
-        "id, first_name, last_name, email, avatar_url, headline, skills",
-        { count: "exact" },
-      );
-
-    // Full-text search if query provided
-    if (query) {
-      dbQuery = dbQuery.textSearch("search_vector", query);
-    }
-
-    // Filter by skill
-    if (skill) {
-      dbQuery = dbQuery.contains("skills", [skill]);
-    }
-
-    // Filter by circle
-    if (circle) {
-      dbQuery = dbQuery.contains("circles", [circle]);
-    }
-
-    // Filter by mentor status
-    if (isMentor) {
-      dbQuery = dbQuery.eq("is_mentor", true);
-    }
-
-    const {
-      data: members,
-      error,
-      count,
-    } = await dbQuery
-      .order("points", { ascending: false })
-      .range(offset, offset + pageSize - 1);
-
-    if (error) throw error;
+    const { members, total } = await fetchDiscoverableProfiles({
+      query,
+      skill: skill || undefined,
+      circle: circle || undefined,
+      isMentor,
+      pageSize,
+      offset,
+    });
 
     return successResponse({
       members,
-      total: count,
+      total,
       page: Math.floor(offset / pageSize) + 1,
       pageSize,
     });
-  } catch (error: any) {
-    return errorResponse(error.message, 500);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return errorResponse(message, 500);
   }
 }

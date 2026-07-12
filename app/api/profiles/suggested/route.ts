@@ -6,6 +6,7 @@ import {
   supabase,
   getPaginationParams,
 } from "@/lib/api-utils";
+import { fetchSuggestedProfiles } from "@/lib/profile-discovery";
 
 const isRecoverableSuggestionError = (message: string) =>
   /permission denied|relation .* does not exist|table .* does not exist|does not exist|not found/i.test(
@@ -65,6 +66,24 @@ export async function GET(request: NextRequest) {
       const { data: fallbackCandidates } =
         await fetchProfiles(fallbackProfileTable);
       candidateRows = (fallbackCandidates || []) as Record<string, unknown>[];
+    }
+
+    const sharedCandidates = await fetchSuggestedProfiles(
+      userId,
+      pageSize,
+      offset,
+    );
+    if (sharedCandidates.length) {
+      candidateRows = sharedCandidates.map((member) => ({
+        id: member.id,
+        first_name: member.first_name,
+        last_name: member.last_name,
+        avatar_url: member.avatar_url,
+        profession: member.profession,
+        bio: member.bio,
+        interests: member.interests,
+        location: member.city,
+      }));
     }
 
     // load connections and pending requests and blocked users to exclude
