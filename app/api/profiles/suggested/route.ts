@@ -7,6 +7,11 @@ import {
   getPaginationParams,
 } from "@/lib/api-utils";
 
+const isRecoverableSuggestionError = (message: string) =>
+  /permission denied|relation .* does not exist|table .* does not exist|does not exist|not found/i.test(
+    message,
+  );
+
 // Enhanced suggestion engine: score candidates by shared interests, profession, city, circles and mutual connections
 export async function GET(request: NextRequest) {
   const userId = await getUserIdFromRequest(request);
@@ -176,7 +181,10 @@ export async function GET(request: NextRequest) {
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
-    if (/permission denied/i.test(message)) {
+    if (
+      isRecoverableSuggestionError(message) ||
+      /permission denied/i.test(message)
+    ) {
       return successResponse({
         members: [],
         total: 0,

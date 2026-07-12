@@ -7,6 +7,11 @@ import {
   getPaginationParams,
 } from "@/lib/api-utils";
 
+const isRecoverableNotificationError = (message: string) =>
+  /permission denied|relation .* does not exist|table .* does not exist|does not exist|not found/i.test(
+    message,
+  );
+
 // GET /api/notifications - Get user notifications
 export async function GET(request: NextRequest) {
   const authResult = await requireAuth(request);
@@ -55,7 +60,17 @@ export async function GET(request: NextRequest) {
       page: Math.floor(offset / pageSize) + 1,
       pageSize,
     });
-  } catch (error: any) {
-    return errorResponse(error.message || "Unable to load notifications", 500);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (isRecoverableNotificationError(message)) {
+      return successResponse({
+        notifications: [],
+        total: 0,
+        unread: 0,
+        page: Math.floor(offset / pageSize) + 1,
+        pageSize,
+      });
+    }
+    return errorResponse(message || "Unable to load notifications", 500);
   }
 }

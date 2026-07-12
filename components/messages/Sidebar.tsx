@@ -16,7 +16,7 @@ type Conversation = {
   category?: 'all' | 'unread' | 'club' | 'mentors' | 'circles'
 }
 
-type Filter = 'all' | 'unread' | 'club' | 'mentors' | 'circles'
+type Filter = 'all' | 'unread' | 'club' | 'mentors' | 'circles' | 'community'
 
 function formatPreviewTime(value?: string) {
   if (!value) return ''
@@ -42,13 +42,23 @@ function ConversationItem({
 }) {
   const preview = conv.last_message?.body || 'Start the conversation with a warm hello.'
   const displayTitle = conv.participant_name || conv.title || 'Conversation'
-  const badge = conv.category && conv.category !== 'all' ? conv.category : 'social'
+  const roleLabel = conv.category === 'mentors' ? 'Mentor' : conv.category === 'circles' ? 'Circle' : conv.category === 'club' ? 'BIG Club' : conv.category === 'community' ? 'Community' : 'Member'
+  const badgeTone = conv.category === 'mentors' ? 'bg-violet-100 text-violet-700' : conv.category === 'circles' ? 'bg-amber-100 text-amber-700' : conv.category === 'club' ? 'bg-pink-100 text-pink-700' : 'bg-slate-100 text-slate-600'
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      onClick(conv.id)
+    }
+  }
 
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={() => onClick(conv.id)}
-      className={`w-full rounded-[20px] border p-3 text-left transition ${selected ? 'border-violet-200 bg-violet-50/70 shadow-sm' : 'border-transparent bg-white hover:border-violet-100 hover:bg-slate-50'}`}
+      onKeyDown={handleKeyDown}
+      className={`group w-full rounded-[20px] border p-3 text-left transition-all duration-200 ${selected ? 'border-violet-200 bg-violet-50/70 shadow-sm' : 'border-transparent bg-white hover:-translate-y-0.5 hover:border-violet-100 hover:bg-slate-50'}`}
     >
       <div className="flex items-start gap-3">
         <div className="relative mt-0.5 shrink-0">
@@ -68,8 +78,8 @@ function ConversationItem({
                 {conv.is_typing && <span className="text-xs font-medium text-violet-600">typing…</span>}
               </div>
               <div className="mt-1 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-slate-500">
-                <span className="rounded-full bg-slate-100 px-2 py-0.5">{badge}</span>
-                {conv.is_online ? <span className="text-emerald-600">online</span> : <span>away</span>}
+                <span className={`rounded-full px-2 py-0.5 ${badgeTone}`}>{roleLabel}</span>
+                {conv.is_online ? <span className="text-emerald-600">active</span> : <span>away</span>}
               </div>
             </div>
             <span className="text-[11px] text-slate-400">{formatPreviewTime(conv.last_activity)}</span>
@@ -110,7 +120,7 @@ function ConversationItem({
           <Archive className="h-3.5 w-3.5" />
         </button>
       </div>
-    </button>
+    </div>
   )
 }
 
@@ -132,6 +142,7 @@ export default function Sidebar({ conversations, selected, onSelect }: { convers
         if (filter === 'club') return (conversation.category || '').includes('club')
         if (filter === 'mentors') return (conversation.category || '').includes('mentor')
         if (filter === 'circles') return (conversation.category || '').includes('circle')
+        if (filter === 'community') return (conversation.category || '').includes('community') || (conversation.category || '').includes('social')
         return true
       })()
       return matchesQuery && matchesFilter
@@ -168,14 +179,21 @@ export default function Sidebar({ conversations, selected, onSelect }: { convers
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2">
-          {(['all', 'unread', 'club', 'mentors', 'circles'] as Filter[]).map((value) => (
+          {([
+            { id: 'all', label: 'All' },
+            { id: 'unread', label: 'Unread' },
+            { id: 'mentors', label: 'Mentors' },
+            { id: 'circles', label: 'Circles' },
+            { id: 'club', label: 'BIG Club' },
+            { id: 'community', label: 'Community' },
+          ] as Array<{ id: Filter; label: string }>).map((item) => (
             <button
-              key={value}
+              key={item.id}
               type="button"
-              onClick={() => setFilter(value)}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] transition ${filter === value ? 'bg-violet-600 text-white' : 'bg-white text-slate-600 hover:bg-violet-50 hover:text-violet-700'}`}
+              onClick={() => setFilter(item.id)}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] transition ${filter === item.id ? 'bg-violet-600 text-white' : 'bg-white text-slate-600 hover:bg-violet-50 hover:text-violet-700'}`}
             >
-              {value}
+              {item.label}
             </button>
           ))}
         </div>
@@ -199,7 +217,8 @@ export default function Sidebar({ conversations, selected, onSelect }: { convers
             <div className="mb-2 flex justify-center text-violet-600">
               <Sparkles className="h-5 w-5" />
             </div>
-            No conversations match this view yet.
+            <p className="font-semibold text-slate-900">No conversations yet</p>
+            <p className="mt-2 leading-6">Start connecting with mentors, circle members, and fellow BIG women.</p>
           </div>
         )}
       </div>

@@ -6,6 +6,11 @@ import {
   getPaginationParams,
 } from "@/lib/api-utils";
 
+const isRecoverableEventsError = (message: string) =>
+  /permission denied|relation .* does not exist|table .* does not exist|does not exist|not found/i.test(
+    message,
+  );
+
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const upcoming =
@@ -43,7 +48,10 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       const message = error?.message || "Failed to fetch events";
-      if (/permission denied/i.test(message)) {
+      if (
+        isRecoverableEventsError(message) ||
+        /permission denied/i.test(message)
+      ) {
         return successResponse({
           events: [],
           total: 0,

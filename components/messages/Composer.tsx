@@ -1,12 +1,13 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react'
-import { ImagePlus, Paperclip, Send, Smile, Sparkles } from 'lucide-react'
+import { ImagePlus, Mic, Paperclip, Send, Smile, Sparkles } from 'lucide-react'
 
 export default function Composer({ onSend, onTypingChange }: { onSend: (text: string) => void; onTypingChange?: (typing: boolean) => void }) {
   const [text, setText] = useState('')
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const lastTypingRef = useRef(false)
 
   const submit = (event?: React.FormEvent) => {
     event?.preventDefault()
@@ -25,7 +26,10 @@ export default function Composer({ onSend, onTypingChange }: { onSend: (text: st
   }, [text])
 
   useEffect(() => {
-    onTypingChange?.(text.trim().length > 0)
+    const isTyping = text.trim().length > 0
+    if (lastTypingRef.current === isTyping) return
+    lastTypingRef.current = isTyping
+    onTypingChange?.(isTyping)
   }, [text, onTypingChange])
 
   const insertEmoji = (emoji: string) => {
@@ -55,11 +59,14 @@ export default function Composer({ onSend, onTypingChange }: { onSend: (text: st
             <button type="button" onClick={() => setShowEmojiPicker((current) => !current)} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
               <Smile className="h-4 w-4" />
             </button>
-            <button type="button" className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
+            <button type="button" aria-label="Attach file" className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
               <Paperclip className="h-4 w-4" />
             </button>
-            <button type="button" className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
+            <button type="button" aria-label="Add image" className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
               <ImagePlus className="h-4 w-4" />
+            </button>
+            <button type="button" aria-label="Voice note" className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
+              <Mic className="h-4 w-4" />
             </button>
           </div>
 
@@ -73,7 +80,7 @@ export default function Composer({ onSend, onTypingChange }: { onSend: (text: st
                 submit(event as unknown as React.FormEvent)
               }
             }}
-            placeholder="Write a thoughtful message…"
+            placeholder="Message Amina..."
             className="min-h-[48px] flex-1 resize-none rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
             rows={1}
           />
@@ -98,7 +105,7 @@ export default function Composer({ onSend, onTypingChange }: { onSend: (text: st
             <Sparkles className="h-3.5 w-3.5 text-violet-600" />
             Press Enter to send, Shift + Enter for a new line
           </span>
-          <span>Rich messaging ready for future media upload</span>
+          <span>Private, thoughtful conversations</span>
         </div>
       </form>
     </div>

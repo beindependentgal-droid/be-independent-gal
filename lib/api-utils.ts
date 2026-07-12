@@ -5,6 +5,40 @@ import { createServerSupabase } from "./supabase-server";
 // Initialize Supabase client lazily to avoid build-time errors
 let supabaseInstance: ReturnType<typeof createClient> | null = null;
 
+function createMissingSupabaseClient() {
+  const emptyQueryBuilder = () => ({
+    select: () => emptyQueryBuilder(),
+    eq: () => emptyQueryBuilder(),
+    neq: () => emptyQueryBuilder(),
+    order: () => emptyQueryBuilder(),
+    limit: () => emptyQueryBuilder(),
+    lt: () => emptyQueryBuilder(),
+    gt: () => emptyQueryBuilder(),
+    gte: () => emptyQueryBuilder(),
+    lte: () => emptyQueryBuilder(),
+    in: () => emptyQueryBuilder(),
+    or: () => emptyQueryBuilder(),
+    maybeSingle: async () => ({ data: null, error: null }),
+    single: async () => ({ data: null, error: null }),
+    insert: async () => ({ data: null, error: null }),
+    update: async () => ({ data: null, error: null }),
+    upsert: async () => ({ data: null, error: null }),
+    delete: async () => ({ data: null, error: null }),
+    match: async () => ({ data: null, error: null }),
+  });
+
+  return {
+    auth: {
+      getUser: async () => ({ data: { user: null }, error: null }),
+      getSession: async () => ({ data: { session: null }, error: null }),
+      admin: {
+        getUserById: async () => ({ data: { user: null }, error: null }),
+      },
+    },
+    from: () => emptyQueryBuilder(),
+  } as any;
+}
+
 export function getSupabase(): ReturnType<typeof createClient> {
   if (!supabaseInstance) {
     const supabaseUrl =
@@ -17,12 +51,24 @@ export function getSupabase(): ReturnType<typeof createClient> {
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error("Missing Supabase environment variables");
+      console.warn(
+        "Missing Supabase environment variables; using fallback client",
+      );
+      supabaseInstance = createMissingSupabaseClient();
+      return supabaseInstance;
     }
 
-    supabaseInstance = createClient(supabaseUrl, supabaseKey, {
-      auth: { persistSession: false },
-    });
+    try {
+      supabaseInstance = createClient(supabaseUrl, supabaseKey, {
+        auth: { persistSession: false },
+      });
+    } catch (error) {
+      console.warn(
+        "Unable to initialize Supabase client, using fallback client:",
+        error,
+      );
+      supabaseInstance = createMissingSupabaseClient();
+    }
   }
 
   return supabaseInstance;
@@ -39,25 +85,32 @@ export const supabase = new Proxy({} as any, {
 export async function getUserIdFromRequest(
   request: NextRequest,
 ): Promise<string | null> {
-  const authHeader = request.headers.get("authorization");
-  if (authHeader?.startsWith("Bearer ")) {
-    const token = authHeader.slice(7);
-    const { data, error } = await supabase.auth.getUser(token);
-
-    if (!error && data?.user) {
-      return data.user.id;
-    }
-  }
-
   try {
-    const serverSupabase = await createServerSupabase();
-    const { data, error } = await serverSupabase.auth.getSession();
+    const authHeader = request.headers.get("authorization");
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.slice(7);
+      const { data, error } = await supabase.auth.getUser(token);
 
-    if (!error && data?.session?.user) {
-      return data.session.user.id;
+      if (!error && data?.user) {
+        return data.user.id;
+      }
+    }
+
+    try {
+      const serverSupabase = await createServerSupabase();
+      const { data, error } = await serverSupabase.auth.getSession();
+
+      if (!error && data?.session?.user) {
+        return data.session.user.id;
+      }
+    } catch (error) {
+      console.warn(
+        "Unable to resolve current user from session cookies:",
+        error,
+      );
     }
   } catch (error) {
-    console.warn("Unable to resolve current user from session cookies:", error);
+    console.warn("Unable to resolve current user from request:", error);
   }
 
   return null;

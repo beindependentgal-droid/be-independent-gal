@@ -1,15 +1,37 @@
 import { NextRequest } from "next/server";
 import { requireAuth, supabase, getPaginationParams } from "@/lib/api-utils";
 import { userIsMember } from "@/lib/messages";
+import {
+  DEFAULT_CONVERSATION_ID,
+  getDemoConversationMessages,
+} from "@/lib/messages-demo";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { conversationId: string } },
+  { params }: { params: Promise<{ conversationId: string }> },
 ) {
+  const { conversationId } = await params;
   const auth = await requireAuth(request);
-  if (!("userId" in auth)) return auth;
+  if (!("userId" in auth)) {
+    if (
+      conversationId === DEFAULT_CONVERSATION_ID ||
+      conversationId.startsWith("demo-")
+    ) {
+      const demoMessages = getDemoConversationMessages(conversationId);
+      return new Response(
+        JSON.stringify({
+          messages: demoMessages.map((message) => ({
+            ...message,
+            reactions: message.reactions || [],
+            read: true,
+          })),
+        }),
+        { status: 200 },
+      );
+    }
+    return auth;
+  }
   const userId = auth.userId;
-  const conversationId = params.conversationId;
 
   const isMember = await userIsMember(conversationId, userId);
   if (!isMember)

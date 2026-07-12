@@ -391,6 +391,19 @@
   },
   "communityFeed": [
     {
+      "id": "17f600c7-8929-47db-adb0-c5b37ea79170",
+      "author": {
+        "name": "You",
+        "avatar": "/images/member-1.png",
+        "rank": "Community Champion"
+      },
+      "content": "Hey Sunday, Be Blessed",
+      "timestamp": "Updated just now",
+      "likes": 0,
+      "comments": 0,
+      "liked": false
+    },
+    {
       "id": "1b06f008-0c0a-4d7b-a733-5e3b14606abf",
       "author": {
         "name": "You",

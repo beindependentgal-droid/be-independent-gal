@@ -1,0 +1,116 @@
+[
+  {
+    "id": "opp-001",
+    "title": "Women in Tech Bootcamp Scholarship",
+    "description": "A fully funded six-week digital skills bootcamp for women founders and career switchers.",
+    "category": "Scholarship",
+    "featured": true,
+    "deadline": "2026-08-15",
+    "remote": true,
+    "status": "published",
+    "country": "Kenya",
+    "location": "Remote",
+    "organization": "BIG Skills Lab",
+    "cover_image": "/images/hero-women.png",
+    "application_url": "https://example.com/apply/women-in-tech",
+    "process": "Submit a short motivation statement, your CV, and a brief profile.",
+    "eligibility": "Women aged 18+ who want to build digital skills and grow professionally.",
+    "requirements": [
+      "CV",
+      "Motivation letter",
+      "LinkedIn profile"
+    ],
+    "benefits": [
+      "Full scholarship",
+      "Mentor support",
+      "Career placement support"
+    ],
+    "funding": "Fully funded",
+    "duration": "6 weeks",
+    "tags": ["tech", "scholarship", "remote"],
+    "faqs": [
+      {
+        "q": "Who can apply?",
+        "a": "Women across Africa who are eager to grow their digital and business skills."
+      }
+    ],
+    "published_at": "2026-07-01T00:00:00.000Z",
+    "featured_order": 1
+  },
+  {
+    "id": "opp-002",
+    "title": "Founder Fellowship for Women Entrepreneurs",
+    "description": "A leadership fellowship helping women founders sharpen strategy and grow their businesses.",
+    "category": "Fellowship",
+    "featured": true,
+    "deadline": "2026-09-02",
+    "remote": false,
+    "status": "published",
+    "country": "Nigeria",
+    "location": "Lagos",
+    "organization": "She Builds Collective",
+    "cover_image": "/images/hero-women.png",
+    "application_url": "https://example.com/apply/fellowship",
+    "process": "Complete the short application and share your business vision.",
+    "eligibility": "Women founders with an operating business and growth goals.",
+    "requirements": [
+      "Business summary",
+      "Revenue snapshot",
+      "Growth goals"
+    ],
+    "benefits": [
+      "Peer mentor matching",
+      "Strategy coaching",
+      "Community visibility"
+    ],
+    "funding": "Seed support",
+    "duration": "3 months",
+    "tags": ["entrepreneurship", "leadership", "fellowship"],
+    "faqs": [
+      {
+        "q": "Is this available for early-stage founders?",
+        "a": "Yes, the fellowship is designed for early to growth-stage founders."
+      }
+    ],
+    "published_at": "2026-07-05T00:00:00.000Z",
+    "featured_order": 2
+  },
+  {
+    "id": "opp-003",
+    "title": "Grant for Community Impact Projects",
+    "description": "Support for women-led community projects that create strong local impact.",
+    "category": "Grant",
+    "featured": false,
+    "deadline": "2026-10-10",
+    "remote": true,
+    "status": "published",
+    "country": "Ghana",
+    "location": "Remote/Accra",
+    "organization": "Rise Together Fund",
+    "cover_image": "/images/hero-women.png",
+    "application_url": "https://example.com/apply/grant",
+    "process": "Share your project plan, budget, and expected impact.",
+    "eligibility": "Women-led organizations or community projects with measurable impact.",
+    "requirements": [
+      "Project plan",
+      "Budget",
+      "Impact story"
+    ],
+    "benefits": [
+      "Grant funding",
+      "Impact review",
+      "Visibility support"
+    ],
+    "funding": "$5,000-$15,000",
+    "duration": "6 months",
+    "tags": ["grant", "community", "impact"],
+    "faqs": [
+      {
+        "q": "What types of projects qualify?",
+        "a": "Projects that directly support women, families, or local community growth."
+      }
+    ],
+    "published_at": "2026-07-08T00:00:00.000Z",
+    "featured_order": 3
+  }
+]
